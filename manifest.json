@@ -92,7 +92,13 @@
     "permissions": {
       "main": {
         "url": "/",
-        "allowed": "visitors"
+        "allowed": "visitors",
+        "label": {
+          "en": "Main permission",
+          "fr": "Permission principale"
+        },
+        "show_tile": true,
+        "protected": true
       }
     },
     "apt": {
