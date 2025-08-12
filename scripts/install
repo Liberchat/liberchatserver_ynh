@@ -9,12 +9,11 @@ source /usr/share/yunohost/helpers
 ynh_script_progression --message="Installing dependencies..." --weight=7
 
 #=================================================
-# DOWNLOAD, CHECK AND UNPACK SOURCE
+# COPY SOURCE FILES
 #=================================================
 ynh_script_progression --message="Setting up source files..." --weight=1
 
-ynh_setup_source --dest_dir="$install_dir"
-
+cp -r . "$install_dir"
 chown -R $app:www-data "$install_dir"
 
 #=================================================
