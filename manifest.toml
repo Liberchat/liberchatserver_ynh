@@ -40,11 +40,6 @@ ram.runtime = "50M"
     default = "visitors"
 
 [resources]
-    [resources.sources]
-        [resources.sources.main]
-        url = "https://github.com/AnARCHIS12/Liberchat/archive/refs/heads/main.tar.gz"
-        sha256 = "auto"
-
     [resources.system_user]
 
     [resources.install_dir]
