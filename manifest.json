@@ -28,8 +28,10 @@
     "ldap": false,
     "sso": false,
     "disk": "50M",
-    "ram.build": "50M",
-    "ram.runtime": "50M"
+    "ram": {
+      "build": "50M",
+      "runtime": "50M"
+    }
   },
   "multi_instance": true,
   "services": ["nginx"],
