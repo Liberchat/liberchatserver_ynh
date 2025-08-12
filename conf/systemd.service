@@ -12,8 +12,6 @@ Environment=PORT=__PORT__
 ExecStart=/usr/bin/node server.js
 Restart=on-failure
 RestartSec=10
-StandardOutput=append:/var/log/__APP__/__APP__.log
-StandardError=inherit
 
 [Install]
 WantedBy=multi-user.target
