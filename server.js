@@ -59,6 +59,9 @@ app.use(
   })
 );
 
+// Configuration trust proxy pour YunoHost/Nginx
+app.set('trust proxy', true);
+
 // Limiteur de requêtes (anti-DDoS)
 const limiter = rateLimit({ windowMs: 1 * 60 * 1000, max: 100 });
 app.use(limiter);
