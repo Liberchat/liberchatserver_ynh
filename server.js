@@ -60,11 +60,11 @@ app.use(
 );
 
 // Configuration trust proxy pour YunoHost/Nginx
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
-// Limiteur de requêtes (anti-DDoS)
-const limiter = rateLimit({ windowMs: 1 * 60 * 1000, max: 100 });
-app.use(limiter);
+// Limiteur de requêtes désactivé pour YunoHost (Nginx gère déjà)
+// const limiter = rateLimit({ windowMs: 1 * 60 * 1000, max: 100 });
+// app.use(limiter);
 
 // CORS : autorise tous les domaines déclarés, .onion, IP locales, union
 app.use(cors({
