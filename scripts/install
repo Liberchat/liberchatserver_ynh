@@ -40,6 +40,7 @@ ynh_add_config --template="env" --destination="$install_dir/.env"
 ynh_script_progression --message="Installing app..." --weight=10
 
 pushd "$install_dir"
+	rm -rf node_modules package-lock.json
 	ynh_exec_warn_less ynh_exec_as $app npm install --production=false
 	ynh_exec_warn_less ynh_exec_as $app npm run build
 popd
