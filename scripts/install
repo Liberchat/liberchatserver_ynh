@@ -13,7 +13,7 @@ ynh_script_progression --message="Installing dependencies..." --weight=7
 #=================================================
 ynh_script_progression --message="Setting up source files..." --weight=1
 
-cp -r . "$install_dir"
+cp -r ../. "$install_dir"
 chown -R $app:www-data "$install_dir"
 
 #=================================================
