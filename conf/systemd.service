@@ -9,7 +9,7 @@ Group=__APP__
 WorkingDirectory=__INSTALL_DIR__
 Environment=NODE_ENV=production
 Environment=PORT=__PORT__
-ExecStart=__YNH_NODE__ server.js
+ExecStart=/usr/bin/node server.js
 Restart=on-failure
 RestartSec=10
 StandardOutput=append:/var/log/__APP__/__APP__.log

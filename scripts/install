@@ -39,10 +39,11 @@ ynh_add_config --template="env" --destination="$install_dir/.env"
 #=================================================
 ynh_script_progression --message="Installing app..." --weight=10
 
+ynh_use_nodejs
+ynh_node="$ynh_node_load_PATH node"
+
 pushd "$install_dir"
-	ynh_use_nodejs
-	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $ynh_npm install --production
-	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH $ynh_npm run build
+	ynh_exec_warn_less ynh_exec_as $app $ynh_npm install --production
 popd
 
 #=================================================
