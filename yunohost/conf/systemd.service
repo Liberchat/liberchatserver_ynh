@@ -1,0 +1,19 @@
+[Unit]
+Description=Liberchat chat application
+After=network.target
+
+[Service]
+Type=simple
+User=__APP__
+Group=__APP__
+WorkingDirectory=__INSTALL_DIR__
+Environment=NODE_ENV=production
+Environment=PORT=__PORT__
+ExecStart=__YNH_NODE__ server.js
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/var/log/__APP__/__APP__.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target
