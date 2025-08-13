@@ -10,7 +10,6 @@ name = "Configuration principale"
         ask = "Domaines autorisés supplémentaires"
         type = "string"
         help = "Liste de domaines séparés par des virgules (ex: https://example.com,https://other.com)"
-        bind = "allowed_domains:/opt/yunohost/__APP__/.env"
         
         [main.config.max_file_size]
         ask = "Taille maximale des fichiers (MB)"

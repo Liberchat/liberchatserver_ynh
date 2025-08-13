@@ -278,13 +278,6 @@ if (basePath) {
   app.get(`${basePath}`, (req, res) => {
     res.sendFile(join(__dirname, 'dist', 'index.html'));
   });
-  // Routes catch-all aussi sur la racine pour compatibilité proxy
-  app.get('/', (req, res) => {
-    res.sendFile(join(__dirname, 'dist', 'index.html'));
-  });
-  app.get('/*', (req, res) => {
-    res.sendFile(join(__dirname, 'dist', 'index.html'));
-  });
 } else {
   app.get('*', (req, res) => {
     res.sendFile(join(__dirname, 'dist', 'index.html'));

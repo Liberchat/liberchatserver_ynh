@@ -1,0 +1,145 @@
+#!/bin/bash
+
+#=================================================
+# GENERIC STARTING
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
+source _common.sh
+source /usr/share/yunohost/helpers
+
+#=================================================
+# RETRIEVE ARGUMENTS
+#=================================================
+
+app=$YNH_APP_INSTANCE_NAME
+
+#=================================================
+# SPECIFIC GETTERS FOR TOML SHORT KEY
+#=================================================
+
+get__allowed_domains() {
+    # Get the current allowed domains from .env file
+    if [ -f "$install_dir/.env" ]; then
+        grep "^ALLOWED_DOMAINS=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
+    else
+        echo ""
+    fi
+}
+
+get__max_file_size() {
+    # Get the current max file size from .env file
+    if [ -f "$install_dir/.env" ]; then
+        grep "^MAX_FILE_SIZE=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
+    else
+        echo "50"
+    fi
+}
+
+get__max_messages() {
+    # Get the current max messages from .env file
+    if [ -f "$install_dir/.env" ]; then
+        grep "^MAX_MESSAGES=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
+    else
+        echo "100"
+    fi
+}
+
+get__ping_timeout() {
+    # Get the current ping timeout from .env file
+    if [ -f "$install_dir/.env" ]; then
+        grep "^PING_TIMEOUT=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
+    else
+        echo "60000"
+    fi
+}
+
+get__ping_interval() {
+    # Get the current ping interval from .env file
+    if [ -f "$install_dir/.env" ]; then
+        grep "^PING_INTERVAL=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
+    else
+        echo "25000"
+    fi
+}
+
+#=================================================
+# SPECIFIC SETTERS FOR TOML SHORT KEY
+#=================================================
+
+set__allowed_domains() {
+    local allowed_domains="$1"
+    
+    # Update .env file
+    if [ -f "$install_dir/.env" ]; then
+        ynh_replace_string "^ALLOWED_DOMAINS=.*" "ALLOWED_DOMAINS=\"$allowed_domains\"" "$install_dir/.env"
+    else
+        echo "ALLOWED_DOMAINS=\"$allowed_domains\"" >> "$install_dir/.env"
+    fi
+    
+    # Restart the service
+    ynh_systemd_action --service_name=$app --action=restart
+}
+
+set__max_file_size() {
+    local max_file_size="$1"
+    
+    # Update .env file
+    if [ -f "$install_dir/.env" ]; then
+        ynh_replace_string "^MAX_FILE_SIZE=.*" "MAX_FILE_SIZE=\"$max_file_size\"" "$install_dir/.env"
+    else
+        echo "MAX_FILE_SIZE=\"$max_file_size\"" >> "$install_dir/.env"
+    fi
+    
+    # Restart the service
+    ynh_systemd_action --service_name=$app --action=restart
+}
+
+set__max_messages() {
+    local max_messages="$1"
+    
+    # Update .env file
+    if [ -f "$install_dir/.env" ]; then
+        ynh_replace_string "^MAX_MESSAGES=.*" "MAX_MESSAGES=\"$max_messages\"" "$install_dir/.env"
+    else
+        echo "MAX_MESSAGES=\"$max_messages\"" >> "$install_dir/.env"
+    fi
+    
+    # Restart the service
+    ynh_systemd_action --service_name=$app --action=restart
+}
+
+set__ping_timeout() {
+    local ping_timeout="$1"
+    
+    # Update .env file
+    if [ -f "$install_dir/.env" ]; then
+        ynh_replace_string "^PING_TIMEOUT=.*" "PING_TIMEOUT=\"$ping_timeout\"" "$install_dir/.env"
+    else
+        echo "PING_TIMEOUT=\"$ping_timeout\"" >> "$install_dir/.env"
+    fi
+    
+    # Restart the service
+    ynh_systemd_action --service_name=$app --action=restart
+}
+
+set__ping_interval() {
+    local ping_interval="$1"
+    
+    # Update .env file
+    if [ -f "$install_dir/.env" ]; then
+        ynh_replace_string "^PING_INTERVAL=.*" "PING_INTERVAL=\"$ping_interval\"" "$install_dir/.env"
+    else
+        echo "PING_INTERVAL=\"$ping_interval\"" >> "$install_dir/.env"
+    fi
+    
+    # Restart the service
+    ynh_systemd_action --service_name=$app --action=restart
+}
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+
+ynh_app_config_run $1
