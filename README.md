@@ -30,9 +30,7 @@ Liberchat is a free and decentralized chat application that allows secure and pr
 - **Multi-domain support** (Tor, local IPs, classic domains)
 - **No logging** for total privacy
 
-## Screenshots
 
-![Screenshot](./doc/screenshots/screenshot.png)
 
 ## Configuration
 
