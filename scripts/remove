@@ -1,0 +1,23 @@
+#!/bin/bash
+
+source _common.sh
+source /usr/share/yunohost/helpers
+
+#=================================================
+# REMOVE SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Stopping and removing the systemd service..." --weight=1
+
+ynh_remove_systemd_config
+
+#=================================================
+# REMOVE NGINX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Removing NGINX web server configuration..." --weight=1
+
+ynh_remove_nginx_config
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+ynh_script_progression --message="Removal of $app completed" --last

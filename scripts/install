@@ -1,0 +1,60 @@
+#!/bin/bash
+
+source _common.sh
+source /usr/share/yunohost/helpers
+
+#=================================================
+# INSTALL DEPENDENCIES
+#=================================================
+ynh_script_progression --message="Installing dependencies..." --weight=7
+
+#=================================================
+# COPY SOURCE FILES
+#=================================================
+ynh_script_progression --message="Setting up source files..." --weight=1
+
+cp -r ../. "$install_dir"
+chown -R $app:www-data "$install_dir"
+
+#=================================================
+# SYSTEM CONFIGURATION
+#=================================================
+ynh_script_progression --message="Adding system configurations..." --weight=1
+
+ynh_add_nginx_config
+
+ynh_add_systemd_config
+
+yunohost service add $app --description="Liberchat chat application"
+
+#=================================================
+# APP INITIAL CONFIGURATION
+#=================================================
+ynh_script_progression --message="Adding app's configuration..." --weight=1
+
+ynh_add_config --template="env" --destination="$install_dir/.env"
+
+#=================================================
+# INSTALL APP
+#=================================================
+ynh_script_progression --message="Installing app..." --weight=10
+
+pushd "$install_dir"
+	rm -rf node_modules package-lock.json
+	ynh_exec_warn_less ynh_exec_as $app npm install --production=false
+	ynh_exec_warn_less ynh_exec_as $app env YNH_APP_ARG_PATH="$path" npm run build
+popd
+
+#=================================================
+# START SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Starting a systemd service..." --weight=1
+
+ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+
+
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+ynh_script_progression --message="Installation of $app completed" --last
