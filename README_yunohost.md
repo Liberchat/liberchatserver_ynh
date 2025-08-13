@@ -1,8 +1,11 @@
 # Liberchat pour YunoHost
 
-[![Niveau d'intégration](https://dash.yunohost.org/integration/liberchat.svg)](https://dash.yunohost.org/appci/app/liberchat) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/liberchat.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/liberchat.maintain.svg)
-
-[![Installer Liberchat avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=liberchat)
+[![Version GitHub](https://img.shields.io/github/v/release/Liberchat/liberchatserver_ynh?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh/releases)
+[![Licence GitHub](https://img.shields.io/github/license/Liberchat/liberchatserver_ynh?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh/blob/main/LICENSE)
+[![Issues GitHub](https://img.shields.io/github/issues/Liberchat/liberchatserver_ynh?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh/issues)
+[![YunoHost](https://img.shields.io/badge/YunoHost-11.2%2B-blue?style=flat-square)](https://yunohost.org)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green?style=flat-square)](https://nodejs.org)
+[![Multi-instance](https://img.shields.io/badge/Multi--instance-✓-success?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh)
 
 *[Read this README in other languages.](./ALL_README.md)*
 

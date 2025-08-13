@@ -11,7 +11,7 @@ maintainers = ["Liberchat Team"]
 
 [upstream]
 license = "AGPL-3.0"
-website = "https://liberchat.net/"
+website = "https://liberchat-3-0-1.onrender.com"
 code = "https://github.com/AnARCHIS12/Liberchat"
 
 [integration]

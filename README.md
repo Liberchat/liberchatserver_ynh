@@ -1,8 +1,11 @@
 # Liberchat for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/liberchat.svg)](https://dash.yunohost.org/appci/app/liberchat) ![Working status](https://ci-apps.yunohost.org/ci/badges/liberchat.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/liberchat.maintain.svg)
-
-[![Install Liberchat with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=liberchat)
+[![GitHub release](https://img.shields.io/github/v/release/Liberchat/liberchatserver_ynh?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh/releases)
+[![GitHub license](https://img.shields.io/github/license/Liberchat/liberchatserver_ynh?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh/blob/main/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/Liberchat/liberchatserver_ynh?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh/issues)
+[![YunoHost](https://img.shields.io/badge/YunoHost-11.2%2B-blue?style=flat-square)](https://yunohost.org)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green?style=flat-square)](https://nodejs.org)
+[![Multi-instance](https://img.shields.io/badge/Multi--instance-✓-success?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh)
 
 *[Lire ce README en français.](./README_yunohost.md)*
 
@@ -15,7 +18,7 @@ Liberchat is a free and decentralized chat application that allows secure and pr
 
 **Shipped version:** 6.1.20~ynh1
 
-**Demo:** https://liberchat.net/
+**Demo:** https://liberchat-3-0-1.onrender.com
 
 ## Features
 
@@ -47,7 +50,7 @@ The application automatically works with:
 
 ## Documentation and resources
 
-- Official app website: <https://liberchat.net/>
+- Official app website: <https://liberchat-3-0-1.onrender.com>
 - Official user documentation: <https://github.com/AnARCHIS12/Liberchat>
 - Official admin documentation: <https://github.com/Liberchat/Liberchat_ynh>
 - Upstream app code repository: <https://github.com/AnARCHIS12/Liberchat>
