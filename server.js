@@ -161,6 +161,8 @@ const io = new Server(server, {
 // Servir les fichiers statiques avec le bon chemin de base
 if (basePath) {
   app.use(basePath, express.static(join(__dirname, 'dist')));
+  // Servir aussi sur la racine pour compatibilité avec proxy Nginx
+  app.use('/', express.static(join(__dirname, 'dist')));
 } else {
   app.use(express.static(join(__dirname, 'dist')));
 }
@@ -219,12 +221,68 @@ app.get(`${basePath}/api/link-preview`, async (req, res) => {
   }
 });
 
+// Route API aussi sur la racine pour compatibilité proxy
+if (basePath) {
+  app.get('/api/link-preview', async (req, res) => {
+    const url = req.query.url;
+    if (!url || typeof url !== 'string') return res.status(400).json({ error: 'URL manquante' });
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+          'Referer': url
+        },
+        redirect: 'follow'
+      });
+      const html = await response.text();
+      const dom = new JSDOM(html);
+      const doc = dom.window.document;
+      const title = doc.querySelector('title')?.textContent || url;
+      const description = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+      let imageRaw = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
+      if (!imageRaw) {
+        const imgs = Array.from(doc.querySelectorAll('img'));
+        const imgCandidate = imgs.find(img => {
+          const src = img.getAttribute('src') || '';
+          if (!src) return false;
+          if (/logo|icon|favicon|sprite|blank|pixel/i.test(src)) return false;
+          const w = parseInt(img.getAttribute('width') || '0', 10);
+          const h = parseInt(img.getAttribute('height') || '0', 10);
+          if ((w && w < 64) || (h && h < 64)) return false;
+          return true;
+        });
+        if (imgCandidate) imageRaw = imgCandidate.getAttribute('src') || '';
+      }
+      let image = imageRaw;
+      try {
+        if (imageRaw && !/^https?:\/\//i.test(imageRaw)) {
+          const u = new URL(url);
+          image = u.origin + (imageRaw.startsWith('/') ? imageRaw : '/' + imageRaw);
+        }
+      } catch {}
+      if (!image) image = '/liberchat-logo.svg';
+      res.json({ title, description, image });
+    } catch (e) {
+      res.status(500).json({ error: 'Impossible de récupérer le lien' });
+    }
+  });
+}
+
 // Route catch-all pour SPA
 if (basePath) {
   app.get(`${basePath}/*`, (req, res) => {
     res.sendFile(join(__dirname, 'dist', 'index.html'));
   });
   app.get(`${basePath}`, (req, res) => {
+    res.sendFile(join(__dirname, 'dist', 'index.html'));
+  });
+  // Routes catch-all aussi sur la racine pour compatibilité proxy
+  app.get('/', (req, res) => {
+    res.sendFile(join(__dirname, 'dist', 'index.html'));
+  });
+  app.get('/*', (req, res) => {
     res.sendFile(join(__dirname, 'dist', 'index.html'));
   });
 } else {
