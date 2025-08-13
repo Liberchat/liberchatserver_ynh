@@ -86,9 +86,16 @@ function App() {
     // Détection automatique du chemin de base pour YunoHost
     let socketPath = '/socket.io/';
     if (!import.meta.env.DEV) {
-      const basePath = window.location.pathname.split('/').slice(0, -1).join('/');
-      if (basePath && basePath !== '') {
-        socketPath = `${basePath}/socket.io/`;
+      const pathname = window.location.pathname;
+      // Si on est sur /liberchat/ ou /liberchat/quelquechose
+      if (pathname.startsWith('/liberchat')) {
+        socketPath = '/liberchat/socket.io/';
+      } else {
+        // Détection générique du chemin de base
+        const pathParts = pathname.split('/').filter(part => part !== '');
+        if (pathParts.length > 0 && pathParts[0] !== '') {
+          socketPath = `/${pathParts[0]}/socket.io/`;
+        }
       }
     }
     

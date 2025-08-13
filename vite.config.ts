@@ -2,7 +2,9 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? (process.env.YNH_APP_ARG_PATH || '/liberchat/') : '/',
+  base: process.env.NODE_ENV === 'production' ? 
+    ((process.env.YNH_APP_ARG_PATH || '/liberchat').replace(/\/$/, '') + '/') : 
+    '/',
   plugins: [react()],
   server: {
     host: true,
