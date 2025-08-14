@@ -1,66 +1,43 @@
 # Liberchat
 
-Liberchat is a free and decentralized chat application that prioritizes privacy and security.
+Liberchat est une application de chat libre et décentralisée qui privilégie la confidentialité et la sécurité.
 
-## Key Features
+## Fonctionnalités
 
-### 🔒 Privacy First
-- **No logging** of messages or user data
-- **Client-side encryption** for sensitive data
-- **No tracking** or analytics
+### 🔒 Confidentialité
+- Aucun enregistrement des messages
+- Chiffrement de bout en bout
+- Aucun tracking
 
-### 💬 Real-time Communication
-- **WebSocket-based** instant messaging
-- **Emoji reactions** on messages
-- **Typing indicators**
-- **Message editing and deletion**
+### 💬 Communication
+- Messages en temps réel
+- Réactions emoji
+- Messages vocaux
+- Modification/suppression
+- Réponses aux messages
 
-### 📁 File Sharing
-- **Image sharing** with preview
-- **Document upload** support
-- **Drag & drop** interface
-- **File size limits** configurable
+### 📁 Partage
+- Images avec aperçu
+- Documents
+- Glisser-déposer
 
-### 🌐 Multi-Domain Support
-- **Tor .onion** domains
-- **Local IP** addresses
-- **Classic domains** (HTTPS/HTTP)
-- **Automatic detection** of environment
+### 🌐 Multi-serveurs
+- Plusieurs domaines
+- Multi-instance
+- Tor .onion
 
-### 📱 Modern Interface
-- **Responsive design** for mobile and desktop
-- **Dark/Light theme** support
-- **Progressive Web App** (PWA) ready
-- **Accessibility** compliant
+### 📱 Interface
+- Responsive
+- Thème sombre/clair
+- PWA
 
-### 🔧 Self-Hostable
-- **Easy deployment** on YunoHost
-- **Multi-instance** support
-- **Automatic updates**
-- **Backup/Restore** integration
+## Technique
 
-## Technical Stack
+**Frontend :** React, TypeScript, Vite, Tailwind CSS
+**Backend :** Node.js, Express, Socket.IO
+**Sécurité :** Web Crypto API, Helmet.js, CORS, CSP
+**Déploiement :** YunoHost, multi-instance
 
-- **Frontend:** React + TypeScript + Vite
-- **Backend:** Node.js + Express + Socket.IO
-- **Styling:** Tailwind CSS
-- **Security:** Helmet.js + CORS + CSP
-- **Build:** Modern ES modules with optimization
+## Usage
 
-## Use Cases
-
-- **Private team communication**
-- **Family chat groups**
-- **Community discussions**
-- **Anonymous communication** (via Tor)
-- **Local network chat**
-- **Temporary chat rooms**
-
-## Security Features
-
-- **Content Security Policy** (CSP)
-- **CORS protection**
-- **XSS prevention**
-- **Rate limiting**
-- **Input sanitization**
-- **Secure headers** with Helmet.js
+Communication privée, groupes familiaux, discussions communautaires, anonymat via Tor, réseaux locaux.
