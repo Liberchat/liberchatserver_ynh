@@ -134,7 +134,7 @@ sudo yunohost app install https://github.com/Liberchat/liberchatserver_ynh
 - Emoji reactions on messages
 - Client-side encryption for privacy
 - Responsive interface mobile compatible
-- Multi-domain support (Tor, local IPs, classic domains)
+- Multi-domain support (local IPs, classic domains)
 - No logging for total privacy
 - Voice messages and message replies
 

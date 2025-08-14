@@ -33,4 +33,4 @@ Liberchat est une application de chat libre et décentralisée qui privilégie l
 
 ## Usage
 
-Communication privée, groupes familiaux, discussions communautaires, réseaux locaux.
+Communication privée, groupes familiaux, discussions militantes, réseaux locaux.
