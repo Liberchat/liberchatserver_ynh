@@ -69,42 +69,36 @@ function App() {
   }
 
   useEffect(() => {
-    // Connexion Socket.IO dynamique : IP locale, .onion, ou domaine, jamais localhost en prod
+    // Connexion Socket.IO dynamique: IP locale, .onion, ou domaine, jamais localhost en prod
     let socketUrl = '';
+    let socketPath = '/socket.io/';
+    
     if (import.meta.env.DEV) {
       socketUrl = 'http://localhost:3000';
     } else {
-      // Prend l’origine réelle de la page (IP locale, .onion, domaine, etc.)
+      // Prend l'origine réelle de la page (IP locale, .onion, domaine, etc.)
       let port = window.location.port;
       const portPart = port ? `:${port}` : '';
       socketUrl = `${window.location.protocol}//${window.location.hostname}${portPart}`;
-      // Si on est sur .onion, window.location.hostname le gère
-      // Si on est sur IP locale, idem
-      // Si on est sur un domaine, idem
-      // Jamais localhost en prod
-    }
-    // Détection automatique du chemin de base pour YunoHost
-    let socketPath = '/socket.io/';
-    if (!import.meta.env.DEV) {
-      const pathname = window.location.pathname;
-      console.log('Pathname détecté:', pathname);
-      // Si on est sur /liberchat/ ou /liberchat/quelquechose
-      if (pathname.startsWith('/liberchat')) {
-        socketPath = '/liberchat/socket.io/';
-        console.log('Socket path défini:', socketPath);
-      } else {
-        // Détection générique du chemin de base
-        const pathParts = pathname.split('/').filter(part => part !== '');
-        if (pathParts.length > 0 && pathParts[0] !== '') {
-          socketPath = `/${pathParts[0]}/socket.io/`;
-          console.log('Socket path générique:', socketPath);
+      
+      // Détection automatique du chemin YunoHost
+      const currentPath = window.location.pathname;
+      if (currentPath !== '/' && !currentPath.startsWith('/socket.io')) {
+        const pathMatch = currentPath.match(/^(\/[^/]+)/);
+        if (pathMatch) {
+          socketPath = `${pathMatch[1]}/socket.io/`;
         }
       }
     }
     
+    console.log('Socket.IO config:', { socketUrl, socketPath });
+    
     const newSocket = io(socketUrl, {
       path: socketPath,
-      transports: ['websocket', 'polling']
+      transports: ['websocket', 'polling'],
+      forceNew: true,
+      reconnection: true,
+      timeout: 20000
     });
     setSocket(newSocket);
 
