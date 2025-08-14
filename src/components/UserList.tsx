@@ -81,7 +81,7 @@ export const UserList = ({ users, currentUser, isMobile = false, inChatInput = f
           >
             <div className="absolute top-0 right-0 w-8 h-8 opacity-5">
               <img 
-                src="/icon.png" 
+                src="/liberchat/icon.png" 
                 alt="" 
                 className="w-full h-full"
               />
@@ -103,7 +103,7 @@ export const UserList = ({ users, currentUser, isMobile = false, inChatInput = f
           <div className="relative text-center p-3 border border-red-700/50 rounded-lg bg-gradient-to-r from-black/30 to-red-950/10 overflow-hidden">
             <div className="absolute top-1 right-1 w-6 h-6 opacity-5">
               <img 
-                src="/icon.png" 
+                src="/liberchat/icon.png" 
                 alt="" 
                 className="w-full h-full"
               />

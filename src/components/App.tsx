@@ -645,7 +645,7 @@ function App() {
         <div className="flex flex-col items-center justify-center flex-1 w-full pt-20 px-2 sm:px-0">
           <div className="p-4 sm:p-8 bg-black/90 rounded-2xl shadow-2xl flex flex-col items-center border-4 border-red-700 w-full max-w-xs sm:max-w-md animate-fade-in">
             <div className="flex flex-col items-center mb-3 sm:mb-4 w-full">
-              <img src="/icon.png" alt="Logo LiberChat" className="w-20 h-20 sm:w-24 sm:h-24 mb-3 sm:mb-4 drop-shadow-lg border-4 border-white rounded-full bg-black" />
+              <img src="/liberchat/icon.png" alt="Logo LiberChat" className="w-20 h-20 sm:w-24 sm:h-24 mb-3 sm:mb-4 drop-shadow-lg border-4 border-white rounded-full bg-black" />
               <h2 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 text-red-400 font-mono tracking-wider text-center">Clé de chiffrement</h2>
               <p className="text-xs sm:text-sm text-gray-300 mb-2 text-center font-mono leading-tight">Pour garantir la confidentialité, entrez un mot de passe partagé avec vos camarades.<br/>Il sera utilisé pour chiffrer/déchiffrer tous vos messages.</p>
             </div>
