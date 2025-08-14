@@ -50,10 +50,10 @@ The application automatically works with:
 
 - Official app website: <https://liberchat-3-0-1.onrender.com>
 - Official user documentation: <https://github.com/AnARCHIS12/Liberchat>
-- Official admin documentation: <https://github.com/Liberchat/Liberchat_ynh>
+- Official admin documentation: <https://github.com/Liberchat/liberchatserver_ynh>
 - Upstream app code repository: <https://github.com/AnARCHIS12/Liberchat>
-- YunoHost Store: <https://apps.yunohost.org/app/liberchat>
-- Report a bug: <https://github.com/Liberchat/Liberchat_ynh/issues>
+
+- Report a bug: <https://github.com/Liberchat/liberchatserver_ynh/issues>
 
 ## Developer info
 
