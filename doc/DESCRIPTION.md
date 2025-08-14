@@ -24,20 +24,13 @@ Liberchat est une application de chat libre et décentralisée qui privilégie l
 ### 🌐 Multi-serveurs
 - Plusieurs domaines
 - Multi-instance
-- Tor .onion
 
 ### 📱 Interface
 - Responsive
 - Thème sombre/clair
 - PWA
 
-## Technique
-
-**Frontend :** React, TypeScript, Vite, Tailwind CSS
-**Backend :** Node.js, Express, Socket.IO
-**Sécurité :** Web Crypto API, Helmet.js, CORS, CSP
-**Déploiement :** YunoHost, multi-instance
 
 ## Usage
 
-Communication privée, groupes familiaux, discussions communautaires, anonymat via Tor, réseaux locaux.
+Communication privée, groupes familiaux, discussions militant(e)s, réseaux locaux.
