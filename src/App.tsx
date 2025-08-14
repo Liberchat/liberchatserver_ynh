@@ -87,14 +87,17 @@ function App() {
     let socketPath = '/socket.io/';
     if (!import.meta.env.DEV) {
       const pathname = window.location.pathname;
+      console.log('Pathname détecté:', pathname);
       // Si on est sur /liberchat/ ou /liberchat/quelquechose
       if (pathname.startsWith('/liberchat')) {
         socketPath = '/liberchat/socket.io/';
+        console.log('Socket path défini:', socketPath);
       } else {
         // Détection générique du chemin de base
         const pathParts = pathname.split('/').filter(part => part !== '');
         if (pathParts.length > 0 && pathParts[0] !== '') {
           socketPath = `/${pathParts[0]}/socket.io/`;
+          console.log('Socket path générique:', socketPath);
         }
       }
     }
