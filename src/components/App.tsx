@@ -64,18 +64,36 @@ function App() {
   } = useCustomThemes();
 
   useEffect(() => {
-    // Connexion Socket.IO dynamique selon l’environnement
+    // Connexion Socket.IO dynamique selon l'environnement
     let socketUrl = '';
+    let socketPath = '/socket.io/';
+    
     if (import.meta.env.DEV) {
       socketUrl = 'http://localhost:3000';
     } else {
-      // Utilise l’origine de la page (supporte HTTPS, Tor, reverse proxy, etc.)
+      // Utilise l'origine de la page (supporte HTTPS, Tor, reverse proxy, etc.)
       let port = window.location.port;
       const portPart = port ? `:${port}` : '';
       socketUrl = `${window.location.protocol}//${window.location.hostname}${portPart}`;
+      
+      // Détection du chemin YunoHost depuis l'URL actuelle
+      const currentPath = window.location.pathname;
+      if (currentPath !== '/' && !currentPath.startsWith('/socket.io')) {
+        const pathMatch = currentPath.match(/^(\/[^/]+)/);
+        if (pathMatch) {
+          socketPath = `${pathMatch[1]}/socket.io/`;
+        }
+      }
     }
+    
+    console.log('Socket.IO config:', { socketUrl, socketPath });
+    
     const newSocket = io(socketUrl, {
-      transports: ['websocket', 'polling']
+      path: socketPath,
+      transports: ['websocket', 'polling'],
+      forceNew: true,
+      reconnection: true,
+      timeout: 20000
     });
     setSocket(newSocket);
 
@@ -120,6 +138,7 @@ function App() {
     };
   }, []);
 
+  // ... rest of the component remains the same
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -661,7 +680,7 @@ function App() {
                 >
                   J'ai partagé la clé, accéder au chat
                 </button>
-                <div className="text-[10px] text-yellow-400 mt-2 text-center font-mono">Partage cette clé avec tes camarades puis clique sur « J'ai partagé la clé, accéder au chat ».</div>
+                <div className="text-[10px] text-yellow-400 mt-2 text-center font-mono">Partage cette clé avec tes camarades puis clique sur « J'ai partagé la clé, accéder au chat ».</div>
               </div>
             )}
             <p className="text-[10px] sm:text-xs text-gray-400 mt-2 text-center font-mono leading-tight">Ce mot de passe doit être identique pour tous les membres du salon.<br/>Il n'est jamais transmis au serveur.</p>
@@ -784,7 +803,7 @@ function App() {
       {/* Affichage de l'avertissement si fallback JS */}
       {isFallbackCrypto && (
         <div className="fixed top-0 left-0 w-full bg-yellow-900 text-yellow-200 text-center py-2 z-50 font-mono text-xs shadow-lg">
-          ⚠️ Chiffrement fallback JS (crypto-js) utilisé : sécurité réduite, changez de navigateur si possible.
+          ⚠️ Chiffrement fallback JS (crypto-js) utilisé: sécurité réduite, changez de navigateur si possible.
         </div>
       )}
     </div>
