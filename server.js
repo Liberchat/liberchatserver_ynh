@@ -119,7 +119,7 @@ app.use(cors({
 const server = createServer(app);
 
 const io = new Server(server, {
-  path: basePath ? `${basePath}/socket.io/` : '/socket.io/',
+  path: '/socket.io/',
   cors: {
     origin: (origin, callback) => {
       const allowedOrigins = [
