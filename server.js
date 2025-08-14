@@ -120,6 +120,7 @@ const server = createServer(app);
 
 const io = new Server(server, {
   path: basePath ? `${basePath}/socket.io/` : '/socket.io/',
+  serveClient: false,
   cors: {
     origin: (origin, callback) => {
       const allowedOrigins = [
@@ -159,12 +160,13 @@ const io = new Server(server, {
 });
 
 // Servir les fichiers statiques avec le bon chemin de base
+const distPath = join(__dirname, 'dist');
 if (basePath) {
-  app.use(basePath, express.static(join(__dirname, 'dist')));
+  app.use(basePath, express.static(distPath));
   // Servir aussi sur la racine pour compatibilité avec proxy Nginx
-  app.use('/', express.static(join(__dirname, 'dist')));
+  app.use('/', express.static(distPath));
 } else {
-  app.use(express.static(join(__dirname, 'dist')));
+  app.use(express.static(distPath));
 }
 
 app.use(express.json({ limit: '50mb' }));
@@ -346,9 +348,9 @@ io.on('connection', (socket) => {
       socket.broadcast.emit('userJoined', username);
       io.emit('users', Array.from(users.values()));
 
-      logger.info(`Utilisateur enregistré: ${username}`);
+      logger.info(`Utilisateur enregistré: ${encodeURIComponent(username)}`);
     } catch (error) {
-      logger.error(`Erreur d'enregistrement pour ${username}:`, error);
+      logger.error(`Erreur d'enregistrement pour ${encodeURIComponent(username)}:`, error);
       socket.emit('registrationError', error.message);
     }
   });
@@ -360,7 +362,7 @@ io.on('connection', (socket) => {
       usersByName.delete(user.username);
       io.emit('userLeft', user.username);
       io.emit('users', Array.from(users.values()));
-      console.log('Utilisateur déconnecté:', user.username);
+      console.log('Utilisateur déconnecté:', encodeURIComponent(user.username));
     }
   });
 
@@ -407,7 +409,7 @@ io.on('connection', (socket) => {
     messages.push(message);
     io.emit('chat message', message);
     console.log('Message envoyé à tous les clients:', message);
-    logger.info(`Message ${message.type} reçu de ${user.username}`);
+    logger.info(`Message ${message.type} reçu de ${encodeURIComponent(user.username)}`);
   });
 
   // Suppression sécurisée d'un message
@@ -426,7 +428,7 @@ io.on('connection', (socket) => {
     }
     messages.splice(msgIndex, 1);
     io.emit('message deleted', { id });
-    logger.info(`Message supprimé par ${user.username}: ${id}`);
+    logger.info(`Message supprimé par ${encodeURIComponent(user.username)}: ${id}`);
     console.log('[SUPPRESSION] Message supprimé id:', id);
   });
 
@@ -441,7 +443,7 @@ io.on('connection', (socket) => {
     messages[msgIndex].content = content;
     messages[msgIndex].edited = true;
     io.emit('message edited', { id, content: messages[msgIndex].content });
-    logger.info(`Message modifié par ${user.username}: ${id}`);
+    logger.info(`Message modifié par ${encodeURIComponent(user.username)}: ${id}`);
   });
 
   // Réactions emoji sur les messages
