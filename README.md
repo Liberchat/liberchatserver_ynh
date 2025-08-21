@@ -88,8 +88,19 @@ L'application fonctionne automatiquement avec :
 - **Chiffrement de bout en bout** avec Web Crypto API
 - **Aucun stockage** des messages sur le serveur
 - **Protection CSP, CORS, XSS**
-
 - **Clés de session** pour la confidentialité
+
+## Dépannage
+
+### Problème de mise à jour avec erreur de backup
+
+Si vous rencontrez une erreur lors de la mise à jour concernant le fichier `_common.sh` manquant :
+
+```bash
+sudo yunohost app upgrade liberchat --no-safety-backup -u https://github.com/Liberchat/liberchatserver_ynh
+```
+
+Cette commande force la mise à jour sans créer de backup de sécurité.
 
 ## Documentation et ressources
 
