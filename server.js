@@ -318,15 +318,23 @@ if (basePath) {
 }
 
 // Route catch-all pour SPA
+// Define rate limiter for static file routes
+const staticFileLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 30, // limit each IP to 30 requests per minute
+  standardHeaders: true, // Return rate limit info in the RateLimit-* headers
+  legacyHeaders: false, // Disable the X-RateLimit-* headers
+});
+
 if (basePath) {
-  app.get(`${basePath}/*`, (req, res) => {
+  app.get(`${basePath}/*`, staticFileLimiter, (req, res) => {
     res.sendFile(join(__dirname, 'dist', 'index.html'));
   });
-  app.get(`${basePath}`, (req, res) => {
+  app.get(`${basePath}`, staticFileLimiter, (req, res) => {
     res.sendFile(join(__dirname, 'dist', 'index.html'));
   });
 } else {
-  app.get('*', (req, res) => {
+  app.get('*', staticFileLimiter, (req, res) => {
     res.sendFile(join(__dirname, 'dist', 'index.html'));
   });
 }
