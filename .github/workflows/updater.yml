@@ -1,11 +1,6 @@
-# This workflow allows GitHub Actions to automagically update your app whenever a new upstream release is detected.
-# You need to enable Actions in your repository settings, and update the APP_ID and APP_TOKEN environment variables.
-
 name: Check for new upstream releases
 on:
-  # Allow to manually trigger the workflow
   workflow_dispatch:
-  # Run it every day at 6:00 UTC
   schedule:
     - cron: '0 6 * * *'
 jobs:
@@ -16,19 +11,26 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y curl jq python3-pip
+          pip install --quiet toml
+
       - name: Run the updater script
         id: run_updater
         run: |
-          # Setting up Git user
           git config --global user.name 'yunohost-bot'
           git config --global user.email 'yunohost-bot@users.noreply.github.com'
-          # Run the updater script
           /bin/bash .github/workflows/updater.sh
+
       - name: Commit changes
         id: commit
         if: ${{ env.PROCEED == 'true' }}
         run: |
-          git commit -am "Upgrade to v$VERSION"
+          git commit -am "Upgrade to v$VERSION" || echo "No changes to commit"
+
       - name: Create Pull Request
         id: cpr
         if: ${{ env.PROCEED == 'true' }}
@@ -39,7 +41,7 @@ jobs:
           committer: 'yunohost-bot <yunohost-bot@users.noreply.github.com>'
           author: 'yunohost-bot <yunohost-bot@users.noreply.github.com>'
           signoff: false
-          base: testing
+          base: main  # ou testing si cette branche existe
           branch: ci-auto-update-v${{ env.VERSION }}
           delete-branch: true
           title: 'Upgrade to version ${{ env.VERSION }}'
