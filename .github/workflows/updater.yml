@@ -1,0 +1,54 @@
+name: Check for new upstream releases
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *'
+jobs:
+  updater:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Fetch the source code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y curl jq python3-pip
+          pip install --quiet toml
+
+      - name: Run the updater script
+        id: run_updater
+        run: |
+          git config --global user.name 'yunohost-bot'
+          git config --global user.email 'yunohost-bot@users.noreply.github.com'
+          /bin/bash .github/workflows/updater.sh
+
+      - name: Commit changes
+        id: commit
+        if: ${{ env.PROCEED == 'true' }}
+        run: |
+          git commit -am "Upgrade to v$VERSION" || echo "No changes to commit"
+
+      - name: Create Pull Request
+        id: cpr
+        if: ${{ env.PROCEED == 'true' }}
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Update to version ${{ env.VERSION }}
+          committer: 'yunohost-bot <yunohost-bot@users.noreply.github.com>'
+          author: 'yunohost-bot <yunohost-bot@users.noreply.github.com>'
+          signoff: false
+          base: main  # ou testing si cette branche existe
+          branch: ci-auto-update-v${{ env.VERSION }}
+          delete-branch: true
+          title: 'Upgrade to version ${{ env.VERSION }}'
+          body: |
+            Upgrade to v${{ env.VERSION }}
+            [See upstream release](${{ env.RELEASE_URL }})
+          draft: false

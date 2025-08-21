@@ -1,0 +1,49 @@
+#!/bin/bash
+
+source _common.sh
+source /usr/share/yunohost/helpers
+
+#=================================================
+# CHECK SERVICE STATUS
+#=================================================
+ynh_script_progression --message="Checking service status..." --weight=1
+
+if ! ynh_systemd_action --service_name=$app --action="status" --log_path="/var/log/$app/$app.log" --quiet
+then
+    ynh_die --message="Service $app is not running"
+fi
+
+#=================================================
+# CHECK HTTP RESPONSE
+#=================================================
+ynh_script_progression --message="Checking HTTP response..." --weight=1
+
+# Test de la page principale
+if ! curl -s -f "http://127.0.0.1:$port$path/" > /dev/null
+then
+    ynh_die --message="HTTP check failed for http://127.0.0.1:$port$path/"
+fi
+
+# Test de Socket.IO
+if ! curl -s -f "http://127.0.0.1:$port$path/socket.io/?EIO=4&transport=polling" > /dev/null
+then
+    ynh_die --message="Socket.IO check failed"
+fi
+
+#=================================================
+# CHECK CONFIGURATION
+#=================================================
+ynh_script_progression --message="Checking configuration..." --weight=1
+
+if [ ! -f "$install_dir/.env" ]; then
+    ynh_die --message="Configuration file .env not found"
+fi
+
+if [ ! -f "$install_dir/dist/index.html" ]; then
+    ynh_die --message="Built application not found"
+fi
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+ynh_script_progression --message="Check of $app completed successfully" --last
