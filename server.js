@@ -228,7 +228,52 @@ if (basePath) {
   app.get('/api/link-preview', async (req, res) => {
     const url = req.query.url;
     if (!url || typeof url !== 'string') return res.status(400).json({ error: 'URL manquante' });
+    // SSRF protection: validate the URL before proceeding
     try {
+      // Reject non-HTTP(S) protocol
+      let parsedUrl;
+      try {
+        parsedUrl = new URL(url);
+      } catch (e) {
+        return res.status(400).json({ error: 'URL invalide' });
+      }
+      if (!/^https?:$/i.test(parsedUrl.protocol)) {
+        return res.status(400).json({ error: 'Seules les URLs http(s) sont autorisées' });
+      }
+      // Disallow localhost, loopback, or private IPs/domains
+      const net = await import('net');
+      const dns = await import('dns').then(mod => mod.promises);
+      const hostname = parsedUrl.hostname;
+      // Forbid localhost and obvious local patterns
+      const forbiddenHosts = ['localhost', '127.0.0.1', '::1'];
+      if (forbiddenHosts.includes(hostname) || hostname.endsWith('.local')) {
+        return res.status(400).json({ error: 'Hôte non autorisé' });
+      }
+      // Attempt DNS resolution to IP to check private ranges
+      let addresses = [];
+      try {
+        addresses = await dns.lookup(hostname, { all: true });
+      } catch (e) {
+        return res.status(400).json({ error: 'Hôte introuvable' });
+      }
+      // Check if any IP address is private/reserved
+      for (const addr of addresses) {
+        if (net.isIP(addr.address)) {
+          // IPv4 Private Ranges
+          if (
+            addr.address.startsWith('10.') ||
+            addr.address.startsWith('192.168.') ||
+            (/^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(addr.address)) ||
+            addr.address === '127.0.0.1'
+          ) {
+            return res.status(400).json({ error: 'Accès à des adresses privées interdit' });
+          }
+          // IPv6 local/loopback
+          if (addr.address === '::1' || addr.address.startsWith('fe80:') || addr.address.startsWith('fc') || addr.address.startsWith('fd')) {
+            return res.status(400).json({ error: 'Accès à des adresses locales interdit' });
+          }
+        }
+      }
       const response = await fetch(url, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
