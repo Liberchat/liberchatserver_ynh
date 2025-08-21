@@ -6,6 +6,9 @@ on:
 jobs:
   updater:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - name: Fetch the source code
         uses: actions/checkout@v3
