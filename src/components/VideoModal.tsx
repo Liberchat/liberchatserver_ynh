@@ -53,6 +53,21 @@ const VideoModal: React.FC<VideoModalProps> = ({
     };
   }, [isOpen, roomName, jitsiUrl]);
 
+  // Bouton flottant de retour au chat si l'utilisateur a rejoint l'appel
+  if (!isOpen && hasJoined) {
+    return (
+      <div className="fixed bottom-4 right-4 z-50">
+        <button
+          onClick={() => setShowVideoModal(true)}
+          className="bg-red-700 hover:bg-red-600 text-white p-3 rounded-full shadow-lg border-2 border-red-600 font-mono text-sm font-bold transition-all"
+          title="Retour au chat"
+        >
+          💬 Chat
+        </button>
+      </div>
+    );
+  }
+
   if (!isOpen) return null;
 
   if (isMobile) {
@@ -106,15 +121,19 @@ const VideoModal: React.FC<VideoModalProps> = ({
               ) : (
                 <div className="space-y-3">
                   <div className="text-green-400 font-mono text-sm">
-                    ✓ Appel rejoint avec succès
+                    ✓ Appel en cours
                   </div>
                   <button
                     onClick={() => {
-                      window.open(`${jitsiUrl}/${roomName}`, '_blank');
+                      if (isWebView) {
+                        window.location.href = `${jitsiUrl}/${roomName}`;
+                      } else {
+                        window.open(`${jitsiUrl}/${roomName}`, '_blank');
+                      }
                     }}
                     className="w-full bg-green-700 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold font-mono transition-all duration-200 border-2 border-green-600"
                   >
-                    🔄 Rouvrir l'appel
+                    🔄 Retourner à l'appel
                   </button>
                 </div>
               )}
