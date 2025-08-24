@@ -14,6 +14,7 @@ const VideoModal: React.FC<VideoModalProps> = ({
   jitsiUrl = 'https://meet.jit.si' 
 }) => {
   const [isMinimized, setIsMinimized] = useState(false);
+  const [hasJoined, setHasJoined] = useState(false);
   const videoWindow = useRef<Window | null>(null);
 
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -86,14 +87,31 @@ const VideoModal: React.FC<VideoModalProps> = ({
             </div>
             
             <div className="space-y-4">
-              <button
-                onClick={() => {
-                  window.location.href = `${jitsiUrl}/${roomName}`;
-                }}
-                className="w-full bg-gradient-to-r from-red-700 to-red-500 hover:from-red-600 hover:to-red-400 text-white px-6 py-4 rounded-xl font-bold text-lg font-mono transition-all duration-200 shadow-lg border-2 border-red-600 hover:border-red-400"
-              >
-                🚀 REJOINDRE L'APPEL
-              </button>
+              {!hasJoined ? (
+                <button
+                  onClick={() => {
+                    setHasJoined(true);
+                    window.open(`${jitsiUrl}/${roomName}`, '_blank');
+                  }}
+                  className="w-full bg-gradient-to-r from-red-700 to-red-500 hover:from-red-600 hover:to-red-400 text-white px-6 py-4 rounded-xl font-bold text-lg font-mono transition-all duration-200 shadow-lg border-2 border-red-600 hover:border-red-400"
+                >
+                  🚀 REJOINDRE L'APPEL
+                </button>
+              ) : (
+                <div className="space-y-3">
+                  <div className="text-green-400 font-mono text-sm">
+                    ✓ Appel rejoint avec succès
+                  </div>
+                  <button
+                    onClick={() => {
+                      window.open(`${jitsiUrl}/${roomName}`, '_blank');
+                    }}
+                    className="w-full bg-green-700 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold font-mono transition-all duration-200 border-2 border-green-600"
+                  >
+                    🔄 Rouvrir l'appel
+                  </button>
+                </div>
+              )}
               
               <button
                 onClick={onClose}
