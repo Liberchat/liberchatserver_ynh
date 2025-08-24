@@ -54,33 +54,35 @@ const VideoModal: React.FC<VideoModalProps> = ({
   if (!isOpen) return null;
 
   if (isMobile) {
-    // Sur mobile, afficher Jitsi dans un iframe plein écran
+    // Sur mobile, overlay avec bouton pour ouvrir Jitsi
     return (
-      <div className="fixed inset-0 bg-black z-50">
-        <div className="flex justify-between items-center p-2 bg-black border-b-2 border-red-700">
-          <h2 className="text-white font-mono text-sm">
-            📹 {roomName}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-white hover:text-red-400 text-xl font-bold"
-            aria-label="Fermer l'appel vidéo"
-          >
-            ✕
-          </button>
-        </div>
-        
-        <div className="w-full h-[calc(100%-60px)]">
-          <iframe
-            src={`${jitsiUrl}/${roomName}`}
-            className="w-full h-full border-0"
-            allow="camera; microphone; fullscreen; display-capture; autoplay"
-            allowFullScreen
-            title="Jitsi Meet Video Call"
-            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-presentation allow-camera allow-microphone"
-            referrerPolicy="no-referrer-when-downgrade"
-            loading="eager"
-          />
+      <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4">
+        <div className="bg-black border-2 border-red-700 rounded-lg p-6 text-center max-w-sm w-full">
+          <h3 className="text-white font-mono text-lg mb-4">📹 Appel vidéo</h3>
+          <p className="text-gray-300 mb-6 text-sm">Salle: {roomName}</p>
+          
+          <div className="space-y-3">
+            <button
+              onClick={() => {
+                window.open(`${jitsiUrl}/${roomName}`, '_blank');
+                onClose();
+              }}
+              className="w-full bg-red-700 hover:bg-red-600 text-white px-4 py-3 rounded font-bold text-lg"
+            >
+              Rejoindre l'appel
+            </button>
+            
+            <button
+              onClick={onClose}
+              className="w-full bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded font-bold"
+            >
+              Annuler
+            </button>
+          </div>
+          
+          <p className="text-xs text-gray-400 mt-4">
+            L'appel s'ouvrira dans un nouvel onglet
+          </p>
         </div>
       </div>
     );
