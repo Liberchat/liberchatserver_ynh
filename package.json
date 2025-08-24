@@ -13,7 +13,7 @@
   "dependencies": {
     "@capacitor/android": "^7.0.1",
     "@capacitor/core": "^7.0.1",
-    "@capacitor/ios": "^7.0.1",
+    "@capacitor/ios": "^7.4.3",
     "@emoji-mart/data": "^1.2.1",
     "@emoji-mart/react": "^1.1.1",
     "@types/emoji-mart": "^3.0.14",
