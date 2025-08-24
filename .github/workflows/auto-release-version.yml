@@ -1,0 +1,56 @@
+name: Auto Release on Version Change
+
+on:
+  push:
+    branches: [ main, master, 6.1.21 ]
+    paths: [ 'manifest.toml' ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check version change
+        id: version
+        run: |
+          pip install toml
+          VERSION=$(python3 -c "import toml; print(toml.load('manifest.toml')['version'].split('~')[0])")
+          
+          if git tag -l "v$VERSION" | grep -q "v$VERSION"; then
+            echo "Tag exists, skipping"
+            exit 0
+          fi
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Get commit message
+        id: commit
+        run: |
+          MSG=$(git log -1 --pretty=%B)
+          echo "message=$MSG" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        if: steps.version.outputs.version
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Liberchat v${{ steps.version.outputs.version }}
+          body: |
+            # Liberchat v${{ steps.version.outputs.version }}
+            
+            ${{ steps.commit.outputs.message }}
+            
+            ## Installation
+            ```bash
+            sudo yunohost app install https://github.com/Liberchat/liberchatserver_ynh
+            ```
+            
+            ## Mise à jour
+            ```bash
+            sudo yunohost app upgrade liberchat --no-safety-backup -u https://github.com/Liberchat/liberchatserver_ynh
+            ```
