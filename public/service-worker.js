@@ -1,3 +1,4 @@
+// Version 6.1.21 - Force cache refresh
 self.addEventListener('install', event => {
   self.skipWaiting();
 });
@@ -11,8 +12,8 @@ self.addEventListener('push', event => {
   const title = data.title || 'Notification';
   const options = {
     body: data.body || '',
-    icon: '/images/liberchat-logo.svg',
-    badge: '/images/liberchat-logo.svg',
+    icon: '/liberchat-icon-192.png',
+    badge: '/liberchat-icon-192.png',
     data: data.url || '/' // URL à ouvrir au clic
   };
   event.waitUntil(
