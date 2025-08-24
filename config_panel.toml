@@ -1,0 +1,42 @@
+version = "1.0"
+
+[main]
+name = "Configuration principale"
+
+    [main.config]
+    name = "Configuration de l'application"
+
+        [main.config.allowed_domains]
+        ask = "Domaines autorisés supplémentaires"
+        type = "string"
+        help = "Liste de domaines séparés par des virgules (ex: https://example.com,https://other.com)"
+        
+        [main.config.max_file_size]
+        ask = "Taille maximale des fichiers (MB)"
+        type = "number"
+        default = 50
+        help = "Taille maximale des fichiers uploadés en mégaoctets"
+        
+        [main.config.max_messages]
+        ask = "Nombre maximum de messages en mémoire"
+        type = "number"
+        default = 100
+        help = "Nombre de messages gardés en mémoire sur le serveur"
+
+[advanced]
+name = "Configuration avancée"
+
+    [advanced.performance]
+    name = "Performance"
+    
+        [advanced.performance.ping_timeout]
+        ask = "Timeout de ping Socket.IO (ms)"
+        type = "number"
+        default = 60000
+        help = "Délai d'attente pour les pings Socket.IO en millisecondes"
+        
+        [advanced.performance.ping_interval]
+        ask = "Intervalle de ping Socket.IO (ms)"
+        type = "number"
+        default = 25000
+        help = "Intervalle entre les pings Socket.IO en millisecondes"
