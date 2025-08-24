@@ -129,6 +129,9 @@ set__ping_interval() {
     fi
     
     ynh_systemd_action --service_name=$app --action=restart
+    
+    # Clear YunoHost config cache
+    rm -f /var/cache/yunohost/app_config/$app.cache 2>/dev/null || true
 }
 
 #=================================================
