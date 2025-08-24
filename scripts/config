@@ -108,12 +108,19 @@ set__max_messages() {
 set__ping_timeout() {
     local ping_timeout="${1:-60000}"
     
+    echo "DEBUG: Setting PING_TIMEOUT to $ping_timeout" >&2
+    echo "DEBUG: .env file before:" >&2
+    cat "$install_dir/.env" >&2
+    
     if [ -f "$install_dir/.env" ] && grep -q "^PING_TIMEOUT=" "$install_dir/.env"; then
         sed -i "s/^PING_TIMEOUT=.*/PING_TIMEOUT=$ping_timeout/" "$install_dir/.env"
     else
         echo "" >> "$install_dir/.env"
         echo "PING_TIMEOUT=$ping_timeout" >> "$install_dir/.env"
     fi
+    
+    echo "DEBUG: .env file after:" >&2
+    cat "$install_dir/.env" >&2
     
     ynh_systemd_action --service_name=$app --action=restart
 }
