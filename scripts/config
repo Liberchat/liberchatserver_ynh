@@ -130,8 +130,9 @@ set__ping_interval() {
     
     ynh_systemd_action --service_name=$app --action=restart
     
-    # Force config reload
-    yunohost app config show $app >/dev/null 2>&1 || true
+    # Force immediate reload by clearing all caches
+    rm -rf /var/cache/yunohost/app_* 2>/dev/null || true
+    systemctl reload yunohost-api 2>/dev/null || true
 }
 
 #=================================================
