@@ -10,7 +10,7 @@ version = "6.1.20~ynh1"
 maintainers = ["Liberchat Team"]
 
 [icons]
-"64" = "icon.png"
+"64" = "icon-64.png"
 
 [upstream]
 license = "AGPL-3.0"
@@ -57,3 +57,4 @@ ram.runtime = "50M"
 
     [resources.apt]
     packages = ["nodejs", "npm"]
+
