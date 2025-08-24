@@ -575,7 +575,9 @@ function App() {
       console.error('Erreur lors de la récupération de l\'URL Jitsi:', error);
     }
     
-    const roomName = `liberchat-${Date.now()}`;
+    // Générer une salle unique basée sur la date du jour
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const roomName = `liberchat-${today}`;
     setVideoRoomName(roomName);
     setShowVideoModal(true);
   };

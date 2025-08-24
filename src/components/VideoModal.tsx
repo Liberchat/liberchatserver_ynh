@@ -54,35 +54,64 @@ const VideoModal: React.FC<VideoModalProps> = ({
   if (!isOpen) return null;
 
   if (isMobile) {
-    // Sur mobile, overlay avec bouton pour ouvrir Jitsi
+    // Sur mobile, interface vidéo intégrée dans l'app
     return (
-      <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4">
-        <div className="bg-black border-2 border-red-700 rounded-lg p-6 text-center max-w-sm w-full">
-          <h3 className="text-white font-mono text-lg mb-4">📹 Appel vidéo</h3>
-          <p className="text-gray-300 mb-6 text-sm">Salle: {roomName}</p>
-          
-          <div className="space-y-3">
-            <button
-              onClick={() => {
-                window.open(`${jitsiUrl}/${roomName}`, '_blank');
-                onClose();
-              }}
-              className="w-full bg-red-700 hover:bg-red-600 text-white px-4 py-3 rounded font-bold text-lg"
-            >
-              Rejoindre l'appel
-            </button>
-            
-            <button
-              onClick={onClose}
-              className="w-full bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded font-bold"
-            >
-              Annuler
-            </button>
+      <div className="fixed inset-0 bg-gradient-to-br from-black via-red-950 to-black z-50">
+        {/* Header vidéo */}
+        <div className="flex justify-between items-center p-4 bg-black/90 border-b-4 border-red-700">
+          <div className="flex items-center gap-3">
+            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+            <h2 className="text-white font-mono text-lg font-bold">
+              📹 Appel vidéo en cours
+            </h2>
           </div>
-          
-          <p className="text-xs text-gray-400 mt-4">
-            L'appel s'ouvrira dans un nouvel onglet
-          </p>
+          <button
+            onClick={onClose}
+            className="text-white hover:text-red-400 text-2xl font-bold transition-colors"
+            aria-label="Fermer l'appel vidéo"
+          >
+            ✕
+          </button>
+        </div>
+        
+        {/* Zone vidéo principale */}
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+          <div className="bg-black/80 border-4 border-red-700 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <div className="mb-6">
+              <div className="w-20 h-20 bg-red-700 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                <span className="text-3xl">📹</span>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2 font-mono">LiberChat Vidéo</h3>
+              <p className="text-red-400 font-mono text-sm mb-4">Salle: {roomName}</p>
+            </div>
+            
+            <div className="space-y-4">
+              <button
+                onClick={() => {
+                  window.location.href = `${jitsiUrl}/${roomName}`;
+                }}
+                className="w-full bg-gradient-to-r from-red-700 to-red-500 hover:from-red-600 hover:to-red-400 text-white px-6 py-4 rounded-xl font-bold text-lg font-mono transition-all duration-200 shadow-lg border-2 border-red-600 hover:border-red-400"
+              >
+                🚀 REJOINDRE L'APPEL
+              </button>
+              
+              <button
+                onClick={onClose}
+                className="w-full bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-xl font-bold font-mono transition-all duration-200 border-2 border-gray-600 hover:border-gray-500"
+              >
+                ← Retour au chat
+              </button>
+            </div>
+            
+            <div className="mt-6 p-4 bg-red-900/30 rounded-lg border border-red-700/50">
+              <p className="text-xs text-red-300 font-mono">
+                ⚠️ Interface sécurisée Jitsi Meet
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                Chiffrement de bout en bout activé
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     );
