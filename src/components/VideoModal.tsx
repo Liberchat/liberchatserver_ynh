@@ -16,23 +16,27 @@ const VideoModal: React.FC<VideoModalProps> = ({
   const [isMinimized, setIsMinimized] = useState(false);
   const videoWindow = useRef<Window | null>(null);
 
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
   const openVideoWindow = () => {
     const meetUrl = `${jitsiUrl}/${roomName}`;
     
-    // Ouvrir dans une nouvelle fenêtre popup
-    videoWindow.current = window.open(
-      meetUrl,
-      'jitsi-meet',
-      'width=1200,height=800,resizable=yes,scrollbars=no,status=no,location=no,toolbar=no,menubar=no'
-    );
-    
-    // Surveiller la fermeture de la fenêtre
-    const checkClosed = setInterval(() => {
-      if (videoWindow.current?.closed) {
-        clearInterval(checkClosed);
-        onClose();
-      }
-    }, 1000);
+    if (!isMobile) {
+      // Sur desktop, ouvrir dans une popup
+      videoWindow.current = window.open(
+        meetUrl,
+        'jitsi-meet',
+        'width=1200,height=800,resizable=yes,scrollbars=no,status=no,location=no,toolbar=no,menubar=no'
+      );
+      
+      // Surveiller la fermeture de la fenêtre
+      const checkClosed = setInterval(() => {
+        if (videoWindow.current?.closed) {
+          clearInterval(checkClosed);
+          onClose();
+        }
+      }, 1000);
+    }
   };
 
   useEffect(() => {
@@ -48,6 +52,36 @@ const VideoModal: React.FC<VideoModalProps> = ({
   }, [isOpen, roomName, jitsiUrl]);
 
   if (!isOpen) return null;
+
+  if (isMobile) {
+    // Sur mobile, afficher Jitsi dans un iframe plein écran
+    return (
+      <div className="fixed inset-0 bg-black z-50">
+        <div className="flex justify-between items-center p-2 bg-black border-b-2 border-red-700">
+          <h2 className="text-white font-mono text-sm">
+            📹 {roomName}
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-white hover:text-red-400 text-xl font-bold"
+            aria-label="Fermer l'appel vidéo"
+          >
+            ✕
+          </button>
+        </div>
+        
+        <div className="w-full h-[calc(100%-60px)]">
+          <iframe
+            src={`${jitsiUrl}/${roomName}`}
+            className="w-full h-full border-0"
+            allow="camera; microphone; fullscreen; display-capture; autoplay"
+            allowFullScreen
+            title="Jitsi Meet Video Call"
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
