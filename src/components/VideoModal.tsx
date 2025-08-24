@@ -18,6 +18,7 @@ const VideoModal: React.FC<VideoModalProps> = ({
   const videoWindow = useRef<Window | null>(null);
 
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isWebView = /wv|WebView|; wv\)|Version\/[\d\.]+.*Safari/i.test(navigator.userAgent) || window.navigator.standalone === false;
 
   const openVideoWindow = () => {
     const meetUrl = `${jitsiUrl}/${roomName}`;
@@ -91,11 +92,16 @@ const VideoModal: React.FC<VideoModalProps> = ({
                 <button
                   onClick={() => {
                     setHasJoined(true);
-                    window.open(`${jitsiUrl}/${roomName}`, '_blank');
+                    if (isWebView) {
+                      // Pour WebView, ouvrir directement dans la même vue
+                      window.location.href = `${jitsiUrl}/${roomName}`;
+                    } else {
+                      window.open(`${jitsiUrl}/${roomName}`, '_blank');
+                    }
                   }}
                   className="w-full bg-gradient-to-r from-red-700 to-red-500 hover:from-red-600 hover:to-red-400 text-white px-6 py-4 rounded-xl font-bold text-lg font-mono transition-all duration-200 shadow-lg border-2 border-red-600 hover:border-red-400"
                 >
-                  🚀 REJOINDRE L'APPEL
+                  {isWebView ? '🚀 REJOINDRE L\'APPEL' : '🚀 REJOINDRE L\'APPEL'}
                 </button>
               ) : (
                 <div className="space-y-3">
@@ -122,12 +128,25 @@ const VideoModal: React.FC<VideoModalProps> = ({
             </div>
             
             <div className="mt-6 p-4 bg-red-900/30 rounded-lg border border-red-700/50">
-              <p className="text-xs text-red-300 font-mono">
-                ⚠️ Interface sécurisée Jitsi Meet
-              </p>
-              <p className="text-xs text-gray-400 mt-1">
-                Chiffrement de bout en bout activé
-              </p>
+              {isWebView ? (
+                <>
+                  <p className="text-xs text-green-300 font-mono">
+                    📱 App mobile détectée
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Ouverture dans l'app intégrée
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-xs text-red-300 font-mono">
+                    ⚠️ Interface sécurisée Jitsi Meet
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Chiffrement de bout en bout activé
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
