@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import { createServer } from 'http'; // Remplacer par https avec certificat pour prod
 import { Server } from 'socket.io';
