@@ -77,6 +77,9 @@ const VideoModal: React.FC<VideoModalProps> = ({
             allow="camera; microphone; fullscreen; display-capture; autoplay"
             allowFullScreen
             title="Jitsi Meet Video Call"
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-presentation allow-camera allow-microphone"
+            referrerPolicy="no-referrer-when-downgrade"
+            loading="eager"
           />
         </div>
       </div>
