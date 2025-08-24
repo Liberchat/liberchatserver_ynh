@@ -30,8 +30,7 @@ get__allowed_domains() {
 }
 
 get__max_file_size() {
-    # Get the current max file size from .env file
-    if [ -f "$install_dir/.env" ]; then
+    if [ -f "$install_dir/.env" ] && grep -q "^MAX_FILE_SIZE=" "$install_dir/.env"; then
         grep "^MAX_FILE_SIZE=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
     else
         echo "50"
@@ -39,8 +38,7 @@ get__max_file_size() {
 }
 
 get__max_messages() {
-    # Get the current max messages from .env file
-    if [ -f "$install_dir/.env" ]; then
+    if [ -f "$install_dir/.env" ] && grep -q "^MAX_MESSAGES=" "$install_dir/.env"; then
         grep "^MAX_MESSAGES=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
     else
         echo "100"
@@ -48,8 +46,7 @@ get__max_messages() {
 }
 
 get__ping_timeout() {
-    # Get the current ping timeout from .env file
-    if [ -f "$install_dir/.env" ]; then
+    if [ -f "$install_dir/.env" ] && grep -q "^PING_TIMEOUT=" "$install_dir/.env"; then
         grep "^PING_TIMEOUT=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
     else
         echo "60000"
@@ -57,8 +54,7 @@ get__ping_timeout() {
 }
 
 get__ping_interval() {
-    # Get the current ping interval from .env file
-    if [ -f "$install_dir/.env" ]; then
+    if [ -f "$install_dir/.env" ] && grep -q "^PING_INTERVAL=" "$install_dir/.env"; then
         grep "^PING_INTERVAL=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
     else
         echo "25000"
