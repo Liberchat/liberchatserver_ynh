@@ -49,7 +49,7 @@ get__ping_timeout() {
     if [ -f "$install_dir/.env" ] && grep -q "^PING_TIMEOUT=" "$install_dir/.env"; then
         grep "^PING_TIMEOUT=" "$install_dir/.env" | cut -d'=' -f2-
     else
-        echo "60000"
+        echo "120000"
     fi
 }
 
@@ -57,7 +57,7 @@ get__ping_interval() {
     if [ -f "$install_dir/.env" ] && grep -q "^PING_INTERVAL=" "$install_dir/.env"; then
         grep "^PING_INTERVAL=" "$install_dir/.env" | cut -d'=' -f2-
     else
-        echo "25000"
+        echo "60000"
     fi
 }
 
@@ -114,7 +114,7 @@ set__max_messages() {
 }
 
 set__ping_timeout() {
-    local ping_timeout="${1:-60000}"
+    local ping_timeout="${1:-120000}"
     
     chmod 666 "$install_dir/.env" 2>/dev/null || true
     
@@ -131,7 +131,7 @@ set__ping_timeout() {
 }
 
 set__ping_interval() {
-    local ping_interval="${1:-25000}"
+    local ping_interval="${1:-60000}"
     
     chmod 666 "$install_dir/.env" 2>/dev/null || true
     
