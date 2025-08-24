@@ -25,10 +25,10 @@ ynh_script_progression --message="Updating configuration..." --weight=1
 
 # Backup custom variables from existing .env
 if [ -f "$install_dir/.env" ]; then
-    MAX_MESSAGES_OLD=$(grep "^MAX_MESSAGES=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- || echo "")
-    MAX_FILE_SIZE_OLD=$(grep "^MAX_FILE_SIZE=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- || echo "")
-    PING_TIMEOUT_OLD=$(grep "^PING_TIMEOUT=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- || echo "")
-    PING_INTERVAL_OLD=$(grep "^PING_INTERVAL=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- || echo "")
+    MAX_MESSAGES_OLD=$(grep "^MAX_MESSAGES=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- | tr -d '\n' || echo "")
+    MAX_FILE_SIZE_OLD=$(grep "^MAX_FILE_SIZE=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- | tr -d '\n' || echo "")
+    PING_TIMEOUT_OLD=$(grep "^PING_TIMEOUT=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- | tr -d '\n' || echo "")
+    PING_INTERVAL_OLD=$(grep "^PING_INTERVAL=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- | tr -d '\n' || echo "")
 fi
 
 ynh_add_config --template="env" --destination="$install_dir/.env"
