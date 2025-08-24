@@ -18,7 +18,7 @@
     "@emoji-mart/react": "^1.1.1",
     "@types/emoji-mart": "^3.0.14",
     "@types/simple-peer": "^9.11.8",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^5.0.1",
     "autoprefixer": "^10.4.18",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
