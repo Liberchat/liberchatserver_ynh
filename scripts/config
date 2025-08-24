@@ -85,6 +85,7 @@ set__max_file_size() {
     if [ -f "$install_dir/.env" ] && grep -q "^MAX_FILE_SIZE=" "$install_dir/.env"; then
         sed -i "s/^MAX_FILE_SIZE=.*/MAX_FILE_SIZE=$max_file_size/" "$install_dir/.env"
     else
+        echo "" >> "$install_dir/.env"
         echo "MAX_FILE_SIZE=$max_file_size" >> "$install_dir/.env"
     fi
     
@@ -97,6 +98,7 @@ set__max_messages() {
     if [ -f "$install_dir/.env" ] && grep -q "^MAX_MESSAGES=" "$install_dir/.env"; then
         sed -i "s/^MAX_MESSAGES=.*/MAX_MESSAGES=$max_messages/" "$install_dir/.env"
     else
+        echo "" >> "$install_dir/.env"
         echo "MAX_MESSAGES=$max_messages" >> "$install_dir/.env"
     fi
     
@@ -109,6 +111,7 @@ set__ping_timeout() {
     if [ -f "$install_dir/.env" ] && grep -q "^PING_TIMEOUT=" "$install_dir/.env"; then
         sed -i "s/^PING_TIMEOUT=.*/PING_TIMEOUT=$ping_timeout/" "$install_dir/.env"
     else
+        echo "" >> "$install_dir/.env"
         echo "PING_TIMEOUT=$ping_timeout" >> "$install_dir/.env"
     fi
     
@@ -121,6 +124,7 @@ set__ping_interval() {
     if [ -f "$install_dir/.env" ] && grep -q "^PING_INTERVAL=" "$install_dir/.env"; then
         sed -i "s/^PING_INTERVAL=.*/PING_INTERVAL=$ping_interval/" "$install_dir/.env"
     else
+        echo "" >> "$install_dir/.env"
         echo "PING_INTERVAL=$ping_interval" >> "$install_dir/.env"
     fi
     
