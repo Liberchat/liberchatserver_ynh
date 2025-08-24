@@ -13,12 +13,12 @@ const VideoModal: React.FC<VideoModalProps> = ({
   roomName, 
   jitsiUrl = 'https://meet.jit.si' 
 }) => {
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized] = useState(false);
   const [hasJoined, setHasJoined] = useState(false);
   const videoWindow = useRef<Window | null>(null);
 
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  const isWebView = /wv|WebView|; wv\)|Version\/[\d\.]+.*Safari/i.test(navigator.userAgent) || window.navigator.standalone === false;
+  const isWebView = /wv|WebView|; wv\)|Version\/[\d\.]+.*Safari/i.test(navigator.userAgent) || (window.navigator as any).standalone === false;
 
   const openVideoWindow = () => {
     const meetUrl = `${jitsiUrl}/${roomName}`;
@@ -41,6 +41,36 @@ const VideoModal: React.FC<VideoModalProps> = ({
     }
   };
 
+  // Gérer le retour depuis Jitsi en WebView
+  useEffect(() => {
+    const handleReturnFromJitsi = () => {
+      const returnUrl = sessionStorage.getItem('liberchat_return_url');
+      const savedRoomName = sessionStorage.getItem('liberchat_room_name');
+      
+      if (returnUrl && savedRoomName) {
+        // Nettoyer le sessionStorage
+        sessionStorage.removeItem('liberchat_return_url');
+        sessionStorage.removeItem('liberchat_room_name');
+        
+        // Marquer comme ayant rejoint l'appel
+        setHasJoined(true);
+        
+        // Afficher une notification de retour
+        console.log(`Retour de l'appel vidéo: ${savedRoomName}`);
+      }
+    };
+
+    // Vérifier au chargement de la page
+    handleReturnFromJitsi();
+    
+    // Écouter les changements de focus pour détecter le retour
+    window.addEventListener('focus', handleReturnFromJitsi);
+    
+    return () => {
+      window.removeEventListener('focus', handleReturnFromJitsi);
+    };
+  }, []);
+
   useEffect(() => {
     if (isOpen && !isMinimized) {
       openVideoWindow();
@@ -59,7 +89,7 @@ const VideoModal: React.FC<VideoModalProps> = ({
       <div className="fixed bottom-4 right-4 z-50">
         <button
           onClick={() => {
-            setShowVideoModal(true);
+            // Retour au chat depuis l'appel vidéo
             onClose();
           }}
           className="bg-red-700 hover:bg-red-600 text-white p-3 rounded-full shadow-lg border-2 border-red-600 font-mono text-sm font-bold transition-all"
@@ -111,38 +141,48 @@ const VideoModal: React.FC<VideoModalProps> = ({
                   onClick={() => {
                     setHasJoined(true);
                     if (isWebView) {
-                      // Pour WebView, afficher l'interface vidéo intégrée
-                      setHasJoined(true);
+                      // Pour WebView, redirection directe pour éviter les problèmes CSP
+                      const meetUrl = `${jitsiUrl}/${roomName}`;
+                      sessionStorage.setItem('liberchat_return_url', window.location.href);
+                      sessionStorage.setItem('liberchat_room_name', roomName);
+                      window.location.href = meetUrl;
                     } else {
+                      // Pour les navigateurs normaux, ouvrir dans un nouvel onglet
                       window.open(`${jitsiUrl}/${roomName}`, '_blank');
                     }
                   }}
                   className="w-full bg-gradient-to-r from-red-700 to-red-500 hover:from-red-600 hover:to-red-400 text-white px-6 py-4 rounded-xl font-bold text-lg font-mono transition-all duration-200 shadow-lg border-2 border-red-600 hover:border-red-400"
                 >
-                  {isWebView ? '🚀 REJOINDRE L\'APPEL' : '🚀 REJOINDRE L\'APPEL'}
+                  🚀 REJOINDRE L'APPEL
                 </button>
               ) : (
                 <div className="space-y-4">
                   {isWebView ? (
-                    // Jitsi Meet intégré dans l'app
-                    <>
-                      <div className="bg-black rounded-xl overflow-hidden border-2 border-red-700 flex-1">
-                        <iframe
-                          src={`${jitsiUrl}/${roomName}?config.startWithAudioMuted=false&config.startWithVideoMuted=false&config.prejoinPageEnabled=false`}
-                          className="w-full h-full border-0"
-                          allow="camera; microphone; fullscreen; display-capture; autoplay"
-                          allowFullScreen
-                          title="Jitsi Meet"
-                        />
+                    // Interface pour ouvrir Jitsi en plein écran
+                    <div className="text-center">
+                      <div className="mb-6">
+                        <div className="w-20 h-20 bg-red-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <span className="text-3xl">📹</span>
+                        </div>
+                        <p className="text-white font-mono text-lg mb-2">Jitsi Meet</p>
+                        <p className="text-gray-400 text-sm">Salle: {roomName}</p>
                       </div>
                       
                       <button
-                        onClick={onClose}
-                        className="w-full mt-4 bg-red-700 hover:bg-red-600 text-white py-3 rounded-xl font-bold font-mono transition-all"
+                        onClick={() => {
+                          // Redirection plein écran pour éviter les problèmes CSP avec iframe
+                          const meetUrl = `${jitsiUrl}/${roomName}`;
+                          // Sauvegarder l'état pour revenir au chat après
+                          sessionStorage.setItem('liberchat_return_url', window.location.href);
+                          sessionStorage.setItem('liberchat_room_name', roomName);
+                          // Redirection complète vers Jitsi
+                          window.location.href = meetUrl;
+                        }}
+                        className="w-full bg-gradient-to-r from-red-700 to-red-500 hover:from-red-600 hover:to-red-400 text-white px-6 py-4 rounded-xl font-bold text-lg font-mono mb-4"
                       >
-                        💬 Retour au chat
+                        🚀 OUVRIR JITSI
                       </button>
-                    </>
+                    </div>
                   ) : (
                     <div className="space-y-3">
                       <div className="text-green-400 font-mono text-sm">
@@ -173,10 +213,10 @@ const VideoModal: React.FC<VideoModalProps> = ({
               {isWebView ? (
                 <>
                   <p className="text-xs text-green-300 font-mono">
-                    📱 App mobile détectée
+                    📱 WebView détectée - Redirection plein écran
                   </p>
                   <p className="text-xs text-gray-400 mt-1">
-                    Ouverture dans l'app intégrée
+                    Évite les problèmes CSP avec iframe
                   </p>
                 </>
               ) : (

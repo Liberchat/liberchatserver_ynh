@@ -9,6 +9,7 @@ import CryptoJS from 'crypto-js';
 import { useAccessibility } from '../hooks/useAccessibility';
 import { useCustomThemes } from '../hooks/useCustomThemes';
 import VideoModal from './VideoModal';
+import JitsiReturn from './JitsiReturn';
 
 interface Message {
   id: number;
@@ -52,6 +53,7 @@ function App() {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [videoRoomName, setVideoRoomName] = useState('');
   const [jitsiUrl, setJitsiUrl] = useState('https://meet.jit.si');
+  const [showJitsiReturn, setShowJitsiReturn] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Hook d'accessibilité
@@ -647,6 +649,26 @@ function App() {
     };
   }, [socket]);
 
+  // Détecter le retour depuis Jitsi
+  useEffect(() => {
+    const checkJitsiReturn = () => {
+      const returnUrl = sessionStorage.getItem('liberchat_return_url');
+      const roomName = sessionStorage.getItem('liberchat_room_name');
+      
+      if (returnUrl && roomName && username) {
+        setShowJitsiReturn(true);
+      }
+    };
+
+    // Vérifier au chargement et lors du focus de la fenêtre
+    checkJitsiReturn();
+    window.addEventListener('focus', checkJitsiReturn);
+    
+    return () => {
+      window.removeEventListener('focus', checkJitsiReturn);
+    };
+  }, [username]);
+
   if (keyPrompt) {
     return (
       <div className="relative min-h-screen bg-gradient-to-br from-black via-red-950 to-black text-white font-sans flex flex-col">
@@ -827,6 +849,17 @@ function App() {
         <div className="fixed top-0 left-0 w-full bg-yellow-900 text-yellow-200 text-center py-2 z-50 font-mono text-xs shadow-lg">
           ⚠️ Chiffrement fallback JS (crypto-js) utilisé: sécurité réduite, changez de navigateur si possible.
         </div>
+      )}
+      
+      {/* Composant de retour depuis Jitsi */}
+      {showJitsiReturn && (
+        <JitsiReturn
+          onReturn={() => {
+            setShowJitsiReturn(false);
+            // Optionnel: afficher une notification de retour
+            announceToScreenReader("Retour de l'appel vidéo");
+          }}
+        />
       )}
       
       {/* Modal vidéo */}
