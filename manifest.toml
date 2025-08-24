@@ -13,7 +13,7 @@ maintainers = ["Liberchat Team"]
 license = "AGPL-3.0"
 website = "https://liberchat-3-0-1.onrender.com"
 code = "https://github.com/AnARCHIS12/Liberchat"
-logo = "icon.png"
+
 
 [integration]
 yunohost = ">= 11.2"
