@@ -33,18 +33,18 @@ fi
 
 ynh_add_config --template="env" --destination="$install_dir/.env"
 
-# Restore custom variables if they existed
-if [ -n "$MAX_MESSAGES_OLD" ]; then
-    echo "MAX_MESSAGES=$MAX_MESSAGES_OLD" >> "$install_dir/.env"
+# Restore custom variables if they existed and are different from defaults
+if [ -n "$MAX_MESSAGES_OLD" ] && [ "$MAX_MESSAGES_OLD" != "100" ]; then
+    sed -i "s/^MAX_MESSAGES=.*/MAX_MESSAGES=$MAX_MESSAGES_OLD/" "$install_dir/.env"
 fi
-if [ -n "$MAX_FILE_SIZE_OLD" ]; then
-    echo "MAX_FILE_SIZE=$MAX_FILE_SIZE_OLD" >> "$install_dir/.env"
+if [ -n "$MAX_FILE_SIZE_OLD" ] && [ "$MAX_FILE_SIZE_OLD" != "50" ]; then
+    sed -i "s/^MAX_FILE_SIZE=.*/MAX_FILE_SIZE=$MAX_FILE_SIZE_OLD/" "$install_dir/.env"
 fi
-if [ -n "$PING_TIMEOUT_OLD" ]; then
-    echo "PING_TIMEOUT=$PING_TIMEOUT_OLD" >> "$install_dir/.env"
+if [ -n "$PING_TIMEOUT_OLD" ] && [ "$PING_TIMEOUT_OLD" != "60000" ]; then
+    sed -i "s/^PING_TIMEOUT=.*/PING_TIMEOUT=$PING_TIMEOUT_OLD/" "$install_dir/.env"
 fi
-if [ -n "$PING_INTERVAL_OLD" ]; then
-    echo "PING_INTERVAL=$PING_INTERVAL_OLD" >> "$install_dir/.env"
+if [ -n "$PING_INTERVAL_OLD" ] && [ "$PING_INTERVAL_OLD" != "25000" ]; then
+    sed -i "s/^PING_INTERVAL=.*/PING_INTERVAL=$PING_INTERVAL_OLD/" "$install_dir/.env"
 fi
 
 #=================================================
