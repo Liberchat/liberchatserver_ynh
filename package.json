@@ -43,7 +43,7 @@
     "xss": "^1.0.15"
   },
   "devDependencies": {
-    "@capacitor/cli": "^7.0.1",
+    "@capacitor/cli": "^7.4.3",
     "@eslint/js": "^8.56.0",
     "@types/crypto-js": "^4.2.2",
     "@types/lodash": "^4.17.17",
