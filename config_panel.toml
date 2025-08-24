@@ -33,11 +33,11 @@ name = "Configuration avancée"
         [advanced.performance.ping_timeout]
         ask = "Timeout de ping Socket.IO (ms)"
         type = "number"
-        default = 120000
-        help = "Délai d'attente pour les pings Socket.IO en millisecondes (2 minutes)"
+        default = 300000
+        help = "Délai d'attente pour les pings Socket.IO en millisecondes (5 minutes)"
         
         [advanced.performance.ping_interval]
         ask = "Intervalle de ping Socket.IO (ms)"
         type = "number"
-        default = 60000
-        help = "Intervalle entre les pings Socket.IO en millisecondes (1 minute)"
+        default = 120000
+        help = "Intervalle entre les pings Socket.IO en millisecondes (2 minutes)"
