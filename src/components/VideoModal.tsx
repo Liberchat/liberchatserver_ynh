@@ -108,8 +108,8 @@ const VideoModal: React.FC<VideoModalProps> = ({
                   onClick={() => {
                     setHasJoined(true);
                     if (isWebView) {
-                      // Pour WebView, ouvrir directement dans la même vue
-                      window.location.href = `${jitsiUrl}/${roomName}`;
+                      // Pour WebView, afficher l'interface vidéo intégrée
+                      setHasJoined(true);
                     } else {
                       window.open(`${jitsiUrl}/${roomName}`, '_blank');
                     }
@@ -119,22 +119,56 @@ const VideoModal: React.FC<VideoModalProps> = ({
                   {isWebView ? '🚀 REJOINDRE L\'APPEL' : '🚀 REJOINDRE L\'APPEL'}
                 </button>
               ) : (
-                <div className="space-y-3">
-                  <div className="text-green-400 font-mono text-sm">
-                    ✓ Appel en cours
-                  </div>
-                  <button
-                    onClick={() => {
-                      if (isWebView) {
-                        window.location.href = `${jitsiUrl}/${roomName}`;
-                      } else {
-                        window.open(`${jitsiUrl}/${roomName}`, '_blank');
-                      }
-                    }}
-                    className="w-full bg-green-700 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold font-mono transition-all duration-200 border-2 border-green-600"
-                  >
-                    🔄 Retourner à l'appel
-                  </button>
+                <div className="space-y-4">
+                  {isWebView ? (
+                    // Interface vidéo intégrée pour WebView
+                    <div className="bg-gray-900 rounded-xl p-4 border-2 border-green-600">
+                      <div className="flex items-center justify-center h-48 bg-black rounded-lg mb-4 relative">
+                        <div className="absolute top-2 left-2 bg-red-600 text-white px-2 py-1 rounded text-xs font-mono">
+                          • REC
+                        </div>
+                        <div className="text-center">
+                          <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-2 animate-pulse">
+                            <span className="text-2xl">📹</span>
+                          </div>
+                          <p className="text-green-400 font-mono text-sm">Appel vidéo actif</p>
+                          <p className="text-gray-400 text-xs">{roomName}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <button className="flex-1 bg-green-700 hover:bg-green-600 text-white py-2 rounded font-mono text-sm">
+                          🎤 Micro
+                        </button>
+                        <button className="flex-1 bg-blue-700 hover:bg-blue-600 text-white py-2 rounded font-mono text-sm">
+                          📹 Caméra
+                        </button>
+                        <button 
+                          onClick={() => {
+                            // Essayer d'ouvrir dans le navigateur externe
+                            window.open(`${jitsiUrl}/${roomName}`, '_system');
+                          }}
+                          className="flex-1 bg-orange-700 hover:bg-orange-600 text-white py-2 rounded font-mono text-sm"
+                        >
+                          🌐 Navigateur
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="text-green-400 font-mono text-sm">
+                        ✓ Appel en cours
+                      </div>
+                      <button
+                        onClick={() => {
+                          window.open(`${jitsiUrl}/${roomName}`, '_blank');
+                        }}
+                        className="w-full bg-green-700 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold font-mono transition-all duration-200 border-2 border-green-600"
+                      >
+                        🔄 Retourner à l'appel
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
               
