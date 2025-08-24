@@ -11,7 +11,7 @@ interface HeaderProps {
   onAccessibilityChange?: (settings: AccessibilitySettings) => void;
   // Thèmes personnalisables
   customThemes?: CustomTheme[];
-  activeCustomTheme?: string | null;
+  activeCustomTheme?: string | null | undefined;
   onApplyCustomTheme?: (themeId: string | null) => void;
   onAddCustomTheme?: (theme: Omit<CustomTheme, 'id' | 'isActive'>) => string;
   onUpdateCustomTheme?: (id: string, updates: Partial<CustomTheme>) => void;
