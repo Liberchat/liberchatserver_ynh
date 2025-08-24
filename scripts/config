@@ -30,17 +30,32 @@ get__allowed_domains() {
 }
 
 get__max_file_size() {
-    if [ -f "$install_dir/.env" ] && grep -q "^MAX_FILE_SIZE=" "$install_dir/.env"; then
-        grep "^MAX_FILE_SIZE=" "$install_dir/.env" | cut -d'=' -f2-
+    echo "DEBUG: install_dir=$install_dir" >&2
+    echo "DEBUG: .env exists=$([ -f "$install_dir/.env" ] && echo yes || echo no)" >&2
+    if [ -f "$install_dir/.env" ]; then
+        echo "DEBUG: .env content:" >&2
+        cat "$install_dir/.env" >&2
+        if grep -q "^MAX_FILE_SIZE=" "$install_dir/.env"; then
+            VALUE=$(grep "^MAX_FILE_SIZE=" "$install_dir/.env" | cut -d'=' -f2-)
+            echo "DEBUG: Found MAX_FILE_SIZE=$VALUE" >&2
+            echo "$VALUE"
+        else
+            echo "DEBUG: MAX_FILE_SIZE not found, using default" >&2
+            echo "50"
+        fi
     else
+        echo "DEBUG: .env file not found" >&2
         echo "50"
     fi
 }
 
 get__max_messages() {
     if [ -f "$install_dir/.env" ] && grep -q "^MAX_MESSAGES=" "$install_dir/.env"; then
-        grep "^MAX_MESSAGES=" "$install_dir/.env" | cut -d'=' -f2-
+        VALUE=$(grep "^MAX_MESSAGES=" "$install_dir/.env" | cut -d'=' -f2-)
+        echo "DEBUG: Found MAX_MESSAGES=$VALUE" >&2
+        echo "$VALUE"
     else
+        echo "DEBUG: MAX_MESSAGES not found, using default" >&2
         echo "100"
     fi
 }
