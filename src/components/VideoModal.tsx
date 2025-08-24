@@ -121,37 +121,16 @@ const VideoModal: React.FC<VideoModalProps> = ({
               ) : (
                 <div className="space-y-4">
                   {isWebView ? (
-                    // Interface vidéo intégrée pour WebView
-                    <div className="bg-gray-900 rounded-xl p-4 border-2 border-green-600">
-                      <div className="flex items-center justify-center h-48 bg-black rounded-lg mb-4 relative">
-                        <div className="absolute top-2 left-2 bg-red-600 text-white px-2 py-1 rounded text-xs font-mono">
-                          • REC
-                        </div>
-                        <div className="text-center">
-                          <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-2 animate-pulse">
-                            <span className="text-2xl">📹</span>
-                          </div>
-                          <p className="text-green-400 font-mono text-sm">Appel vidéo actif</p>
-                          <p className="text-gray-400 text-xs">{roomName}</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex gap-2">
-                        <button className="flex-1 bg-green-700 hover:bg-green-600 text-white py-2 rounded font-mono text-sm">
-                          🎤 Micro
-                        </button>
-                        <button className="flex-1 bg-blue-700 hover:bg-blue-600 text-white py-2 rounded font-mono text-sm">
-                          📹 Caméra
-                        </button>
-                        <button 
-                          onClick={() => {
-                            // Essayer d'ouvrir dans le navigateur externe
-                            window.open(`${jitsiUrl}/${roomName}`, '_system');
-                          }}
-                          className="flex-1 bg-orange-700 hover:bg-orange-600 text-white py-2 rounded font-mono text-sm"
-                        >
-                          🌐 Navigateur
-                        </button>
+                    // Jitsi Meet intégré dans l'app
+                    <div className="bg-black rounded-xl overflow-hidden border-2 border-red-700">
+                      <div className="h-96">
+                        <iframe
+                          src={`${jitsiUrl}/${roomName}?config.startWithAudioMuted=false&config.startWithVideoMuted=false&config.prejoinPageEnabled=false`}
+                          className="w-full h-full border-0"
+                          allow="camera; microphone; fullscreen; display-capture; autoplay"
+                          allowFullScreen
+                          title="Jitsi Meet"
+                        />
                       </div>
                     </div>
                   ) : (
