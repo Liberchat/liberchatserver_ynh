@@ -135,7 +135,4 @@ set__ping_interval() {
 # GENERIC FINALIZATION
 #=================================================
 
-# Force YunoHost to reload config values
-ynh_app_config_validate
-
 ynh_app_config_run $1
