@@ -82,11 +82,16 @@ set__allowed_domains() {
 set__max_file_size() {
     local max_file_size="${1:-50}"
     
+    chmod 666 "$install_dir/.env" 2>/dev/null || true
+    
     if [ -f "$install_dir/.env" ] && grep -q "^MAX_FILE_SIZE=" "$install_dir/.env"; then
         sed -i "s/^MAX_FILE_SIZE=.*/MAX_FILE_SIZE=$max_file_size/" "$install_dir/.env"
     else
         echo "MAX_FILE_SIZE=$max_file_size" >> "$install_dir/.env"
     fi
+    
+    chmod 644 "$install_dir/.env" 2>/dev/null || true
+    chown $app:$app "$install_dir/.env" 2>/dev/null || true
     
     ynh_systemd_action --service_name=$app --action=restart
 }
@@ -94,11 +99,16 @@ set__max_file_size() {
 set__max_messages() {
     local max_messages="${1:-100}"
     
+    chmod 666 "$install_dir/.env" 2>/dev/null || true
+    
     if [ -f "$install_dir/.env" ] && grep -q "^MAX_MESSAGES=" "$install_dir/.env"; then
         sed -i "s/^MAX_MESSAGES=.*/MAX_MESSAGES=$max_messages/" "$install_dir/.env"
     else
         echo "MAX_MESSAGES=$max_messages" >> "$install_dir/.env"
     fi
+    
+    chmod 644 "$install_dir/.env" 2>/dev/null || true
+    chown $app:$app "$install_dir/.env" 2>/dev/null || true
     
     ynh_systemd_action --service_name=$app --action=restart
 }
@@ -123,11 +133,16 @@ set__ping_timeout() {
 set__ping_interval() {
     local ping_interval="${1:-25000}"
     
+    chmod 666 "$install_dir/.env" 2>/dev/null || true
+    
     if [ -f "$install_dir/.env" ] && grep -q "^PING_INTERVAL=" "$install_dir/.env"; then
         sed -i "s/^PING_INTERVAL=.*/PING_INTERVAL=$ping_interval/" "$install_dir/.env"
     else
         echo "PING_INTERVAL=$ping_interval" >> "$install_dir/.env"
     fi
+    
+    chmod 644 "$install_dir/.env" 2>/dev/null || true
+    chown $app:$app "$install_dir/.env" 2>/dev/null || true
     
     ynh_systemd_action --service_name=$app --action=restart
 }
