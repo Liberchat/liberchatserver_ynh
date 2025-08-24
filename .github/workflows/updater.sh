@@ -16,7 +16,7 @@ pip install --quiet toml
 current_version=$(python3 - <<'EOF'
 import toml
 manifest = toml.load("manifest.toml")
-print(manifest['python']['version'].split('~')[0])
+print(manifest['version'].split('~')[0])
 EOF
 )
 
@@ -24,7 +24,7 @@ EOF
 repo=$(python3 - <<'EOF'
 import toml
 manifest = toml.load("manifest.toml")
-print(manifest['python']['upstream']['code'])
+print(manifest['upstream']['code'])
 EOF
 )
 
@@ -82,7 +82,7 @@ echo "... conf/app.src updated"
 python3 - <<EOF
 import toml
 manifest = toml.load("manifest.toml")
-manifest['python']['version'] = f"{version}~ynh1"
+manifest['version'] = f"{version}~ynh1"
 with open("manifest.toml", "w") as f:
     toml.dump(manifest, f)
 EOF
