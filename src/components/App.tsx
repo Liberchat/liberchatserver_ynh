@@ -8,6 +8,7 @@ import Header from './Header';
 import CryptoJS from 'crypto-js';
 import { useAccessibility } from '../hooks/useAccessibility';
 import { useCustomThemes } from '../hooks/useCustomThemes';
+import VideoModal from './VideoModal';
 
 interface Message {
   id: number;
@@ -48,6 +49,9 @@ function App() {
     window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   );
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [videoRoomName, setVideoRoomName] = useState('');
+  const [jitsiUrl, setJitsiUrl] = useState('https://meet.jit.si');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Hook d'accessibilité
@@ -562,6 +566,20 @@ function App() {
     setReplyTo(msg);
   };
 
+  const handleStartVideo = async () => {
+    try {
+      const response = await fetch('/api/jitsi-url');
+      const { jitsiUrl: fetchedUrl } = await response.json();
+      setJitsiUrl(fetchedUrl);
+    } catch (error) {
+      console.error('Erreur lors de la récupération de l\'URL Jitsi:', error);
+    }
+    
+    const roomName = `liberchat-${Date.now()}`;
+    setVideoRoomName(roomName);
+    setShowVideoModal(true);
+  };
+
   // Fonction utilitaire pour redimensionner/comprimer une image sans perte visible
   async function processImageFile(file: File, maxWidth = 1280): Promise<File> {
     return new Promise((resolve) => {
@@ -718,7 +736,9 @@ function App() {
     <div className="h-screen flex flex-col bg-gray-900 text-white">
       <Header 
         onLogout={handleLogout} 
-        isLoggedIn={!!username} 
+        isLoggedIn={!!username}
+        isDecrypted={!!symmetricKey}
+        onStartVideo={handleStartVideo}
         theme={theme} 
         onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
         accessibilitySettings={accessibilitySettings}
@@ -806,6 +826,14 @@ function App() {
           ⚠️ Chiffrement fallback JS (crypto-js) utilisé: sécurité réduite, changez de navigateur si possible.
         </div>
       )}
+      
+      {/* Modal vidéo */}
+      <VideoModal
+        isOpen={showVideoModal}
+        onClose={() => setShowVideoModal(false)}
+        roomName={videoRoomName}
+        jitsiUrl={jitsiUrl}
+      />
     </div>
   );
 }
