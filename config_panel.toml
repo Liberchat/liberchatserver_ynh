@@ -41,3 +41,12 @@ name = "Configuration avancée"
         type = "number"
         default = 120000
         help = "Intervalle entre les pings Socket.IO en millisecondes (2 minutes)"
+        
+    [advanced.video]
+    name = "Configuration vidéo"
+    
+        [advanced.video.jitsi_url]
+        ask = "URL du serveur Jitsi Meet"
+        type = "string"
+        default = "https://meet.jit.si"
+        help = "URL de votre instance Jitsi Meet auto-hébergée (ex: https://jitsi.mondomaine.com)"

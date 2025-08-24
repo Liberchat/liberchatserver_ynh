@@ -86,6 +86,27 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
           </button>
         )}
 
+        {/* Bouton Vidéo */}
+        <button
+          onClick={async () => {
+            try {
+              const response = await fetch('/api/jitsi-url');
+              const { jitsiUrl } = await response.json();
+              const roomName = `liberchat-${Date.now()}`;
+              window.open(`${jitsiUrl}/${roomName}`, '_blank');
+            } catch (error) {
+              console.error('Erreur lors de la récupération de l\'URL Jitsi:', error);
+              const roomName = `liberchat-${Date.now()}`;
+              window.open(`https://meet.jit.si/${roomName}`, '_blank');
+            }
+          }}
+          className={`flex items-center gap-1 sm:gap-2 px-1 sm:px-3 py-1 rounded-full shadow border-2 border-red-700 font-bold font-mono transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-700 text-xs sm:text-base ${theme === 'dark' ? 'bg-black/80 text-white hover:bg-white hover:text-red-700' : 'bg-white/90 text-black hover:bg-red-700 hover:text-white'}`}
+          title="Démarrer un appel vidéo"
+          aria-label="Démarrer un appel vidéo"
+        >
+          <span className="inline-flex items-center">📹 <span className="ml-1 hidden sm:inline">Vidéo</span></span>
+        </button>
+
         {/* Bouton Accessibilité */}
         {accessibilitySettings && onAccessibilityChange && (
           <button

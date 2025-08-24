@@ -61,6 +61,14 @@ get__ping_interval() {
     fi
 }
 
+get__jitsi_url() {
+    if [ -f "$install_dir/.env" ] && grep -q "^JITSI_URL=" "$install_dir/.env"; then
+        grep "^JITSI_URL=" "$install_dir/.env" | cut -d'=' -f2-
+    else
+        echo "https://meet.jit.si"
+    fi
+}
+
 #=================================================
 # SPECIFIC SETTERS FOR TOML SHORT KEY
 #=================================================
@@ -150,5 +158,22 @@ set__ping_interval() {
 #=================================================
 # GENERIC FINALIZATION
 #=================================================
+
+set__jitsi_url() {
+    local jitsi_url="${1:-https://meet.jit.si}"
+    
+    chmod 666 "$install_dir/.env" 2>/dev/null || true
+    
+    if [ -f "$install_dir/.env" ] && grep -q "^JITSI_URL=" "$install_dir/.env"; then
+        sed -i "s|^JITSI_URL=.*|JITSI_URL=$jitsi_url|" "$install_dir/.env"
+    else
+        echo "JITSI_URL=$jitsi_url" >> "$install_dir/.env"
+    fi
+    
+    chmod 644 "$install_dir/.env" 2>/dev/null || true
+    chown $app:$app "$install_dir/.env" 2>/dev/null || true
+    
+    ynh_systemd_action --service_name=$app --action=restart
+}
 
 ynh_app_config_run $1

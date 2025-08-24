@@ -81,7 +81,8 @@ console.log('Variables d\'environnement:', {
   MAX_MESSAGES: process.env.MAX_MESSAGES,
   MAX_FILE_SIZE: process.env.MAX_FILE_SIZE,
   PING_TIMEOUT: process.env.PING_TIMEOUT,
-  PING_INTERVAL: process.env.PING_INTERVAL
+  PING_INTERVAL: process.env.PING_INTERVAL,
+  JITSI_URL: process.env.JITSI_URL
 });
 
 // Limiteur de requêtes désactivé pour YunoHost (Nginx gère déjà)
@@ -178,6 +179,11 @@ if (basePath) {
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Route pour récupérer l'URL Jitsi configurée
+app.get(`${basePath}/api/jitsi-url`, (req, res) => {
+  res.json({ jitsiUrl: process.env.JITSI_URL || 'https://meet.jit.si' });
+});
 
 // Route pour récupérer les métadonnées d'un lien (titre, description, image)
 app.get(`${basePath}/api/link-preview`, async (req, res) => {
