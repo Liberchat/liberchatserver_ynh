@@ -31,7 +31,7 @@ get__allowed_domains() {
 
 get__max_file_size() {
     if [ -f "$install_dir/.env" ] && grep -q "^MAX_FILE_SIZE=" "$install_dir/.env"; then
-        grep "^MAX_FILE_SIZE=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
+        grep "^MAX_FILE_SIZE=" "$install_dir/.env" | cut -d'=' -f2-
     else
         echo "50"
     fi
@@ -39,7 +39,7 @@ get__max_file_size() {
 
 get__max_messages() {
     if [ -f "$install_dir/.env" ] && grep -q "^MAX_MESSAGES=" "$install_dir/.env"; then
-        grep "^MAX_MESSAGES=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
+        grep "^MAX_MESSAGES=" "$install_dir/.env" | cut -d'=' -f2-
     else
         echo "100"
     fi
@@ -47,7 +47,7 @@ get__max_messages() {
 
 get__ping_timeout() {
     if [ -f "$install_dir/.env" ] && grep -q "^PING_TIMEOUT=" "$install_dir/.env"; then
-        grep "^PING_TIMEOUT=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
+        grep "^PING_TIMEOUT=" "$install_dir/.env" | cut -d'=' -f2-
     else
         echo "60000"
     fi
@@ -55,7 +55,7 @@ get__ping_timeout() {
 
 get__ping_interval() {
     if [ -f "$install_dir/.env" ] && grep -q "^PING_INTERVAL=" "$install_dir/.env"; then
-        grep "^PING_INTERVAL=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
+        grep "^PING_INTERVAL=" "$install_dir/.env" | cut -d'=' -f2-
     else
         echo "25000"
     fi
@@ -80,58 +80,50 @@ set__allowed_domains() {
 }
 
 set__max_file_size() {
-    local max_file_size="${1:-120}"
+    local max_file_size="${1:-50}"
     
-    # Update .env file
-    if [ -f "$install_dir/.env" ]; then
-        ynh_replace_string "^MAX_FILE_SIZE=.*" "MAX_FILE_SIZE=\"$max_file_size\"" "$install_dir/.env"
+    if [ -f "$install_dir/.env" ] && grep -q "^MAX_FILE_SIZE=" "$install_dir/.env"; then
+        ynh_replace_string "^MAX_FILE_SIZE=.*" "MAX_FILE_SIZE=$max_file_size" "$install_dir/.env"
     else
-        echo "MAX_FILE_SIZE=\"$max_file_size\"" >> "$install_dir/.env"
+        echo "MAX_FILE_SIZE=$max_file_size" >> "$install_dir/.env"
     fi
     
-    # Restart the service
     ynh_systemd_action --service_name=$app --action=restart
 }
 
 set__max_messages() {
-    local max_messages="${1:-50}"
+    local max_messages="${1:-100}"
     
-    # Update .env file
-    if [ -f "$install_dir/.env" ]; then
-        ynh_replace_string "^MAX_MESSAGES=.*" "MAX_MESSAGES=\"$max_messages\"" "$install_dir/.env"
+    if [ -f "$install_dir/.env" ] && grep -q "^MAX_MESSAGES=" "$install_dir/.env"; then
+        ynh_replace_string "^MAX_MESSAGES=.*" "MAX_MESSAGES=$max_messages" "$install_dir/.env"
     else
-        echo "MAX_MESSAGES=\"$max_messages\"" >> "$install_dir/.env"
+        echo "MAX_MESSAGES=$max_messages" >> "$install_dir/.env"
     fi
     
-    # Restart the service
     ynh_systemd_action --service_name=$app --action=restart
 }
 
 set__ping_timeout() {
     local ping_timeout="${1:-60000}"
     
-    # Update .env file
-    if [ -f "$install_dir/.env" ]; then
-        ynh_replace_string "^PING_TIMEOUT=.*" "PING_TIMEOUT=\"$ping_timeout\"" "$install_dir/.env"
+    if [ -f "$install_dir/.env" ] && grep -q "^PING_TIMEOUT=" "$install_dir/.env"; then
+        ynh_replace_string "^PING_TIMEOUT=.*" "PING_TIMEOUT=$ping_timeout" "$install_dir/.env"
     else
-        echo "PING_TIMEOUT=\"$ping_timeout\"" >> "$install_dir/.env"
+        echo "PING_TIMEOUT=$ping_timeout" >> "$install_dir/.env"
     fi
     
-    # Restart the service
     ynh_systemd_action --service_name=$app --action=restart
 }
 
 set__ping_interval() {
     local ping_interval="${1:-25000}"
     
-    # Update .env file
-    if [ -f "$install_dir/.env" ]; then
-        ynh_replace_string "^PING_INTERVAL=.*" "PING_INTERVAL=\"$ping_interval\"" "$install_dir/.env"
+    if [ -f "$install_dir/.env" ] && grep -q "^PING_INTERVAL=" "$install_dir/.env"; then
+        ynh_replace_string "^PING_INTERVAL=.*" "PING_INTERVAL=$ping_interval" "$install_dir/.env"
     else
-        echo "PING_INTERVAL=\"$ping_interval\"" >> "$install_dir/.env"
+        echo "PING_INTERVAL=$ping_interval" >> "$install_dir/.env"
     fi
     
-    # Restart the service
     ynh_systemd_action --service_name=$app --action=restart
 }
 
