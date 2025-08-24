@@ -32,6 +32,8 @@ if [ -f "$install_dir/.env" ]; then
 fi
 
 ynh_add_config --template="env" --destination="$install_dir/.env"
+chmod 644 "$install_dir/.env"
+chown $app:$app "$install_dir/.env"
 
 # Restore custom variables if they existed and are different from defaults
 if [ -n "$MAX_MESSAGES_OLD" ] && [ "$MAX_MESSAGES_OLD" != "100" ]; then

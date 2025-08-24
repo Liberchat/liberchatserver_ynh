@@ -33,6 +33,8 @@ yunohost service add $app --description="Liberchat chat application"
 ynh_script_progression --message="Adding app's configuration..." --weight=1
 
 ynh_add_config --template="env" --destination="$install_dir/.env"
+chmod 644 "$install_dir/.env"
+chown $app:$app "$install_dir/.env"
 
 #=================================================
 # INSTALL APP
