@@ -58,7 +58,10 @@ const VideoModal: React.FC<VideoModalProps> = ({
     return (
       <div className="fixed bottom-4 right-4 z-50">
         <button
-          onClick={() => setShowVideoModal(true)}
+          onClick={() => {
+            setShowVideoModal(true);
+            onClose();
+          }}
           className="bg-red-700 hover:bg-red-600 text-white p-3 rounded-full shadow-lg border-2 border-red-600 font-mono text-sm font-bold transition-all"
           title="Retour au chat"
         >
@@ -92,8 +95,8 @@ const VideoModal: React.FC<VideoModalProps> = ({
         </div>
         
         {/* Zone vidéo principale */}
-        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-          <div className="bg-black/80 border-4 border-red-700 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+        <div className="flex-1 flex flex-col p-4">
+          <div className="bg-black/80 border-4 border-red-700 rounded-2xl p-4 w-full h-full shadow-2xl flex flex-col">
             <div className="mb-6">
               <div className="w-20 h-20 bg-red-700 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
                 <span className="text-3xl">📹</span>
@@ -122,8 +125,8 @@ const VideoModal: React.FC<VideoModalProps> = ({
                 <div className="space-y-4">
                   {isWebView ? (
                     // Jitsi Meet intégré dans l'app
-                    <div className="bg-black rounded-xl overflow-hidden border-2 border-red-700">
-                      <div className="h-96">
+                    <>
+                      <div className="bg-black rounded-xl overflow-hidden border-2 border-red-700 flex-1">
                         <iframe
                           src={`${jitsiUrl}/${roomName}?config.startWithAudioMuted=false&config.startWithVideoMuted=false&config.prejoinPageEnabled=false`}
                           className="w-full h-full border-0"
@@ -132,7 +135,14 @@ const VideoModal: React.FC<VideoModalProps> = ({
                           title="Jitsi Meet"
                         />
                       </div>
-                    </div>
+                      
+                      <button
+                        onClick={onClose}
+                        className="w-full mt-4 bg-red-700 hover:bg-red-600 text-white py-3 rounded-xl font-bold font-mono transition-all"
+                      >
+                        💬 Retour au chat
+                      </button>
+                    </>
                   ) : (
                     <div className="space-y-3">
                       <div className="text-green-400 font-mono text-sm">
