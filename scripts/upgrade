@@ -23,7 +23,29 @@ chown -R $app:www-data "$install_dir"
 #=================================================
 ynh_script_progression --message="Updating configuration..." --weight=1
 
+# Backup custom variables from existing .env
+if [ -f "$install_dir/.env" ]; then
+    MAX_MESSAGES_OLD=$(grep "^MAX_MESSAGES=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- || echo "")
+    MAX_FILE_SIZE_OLD=$(grep "^MAX_FILE_SIZE=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- || echo "")
+    PING_TIMEOUT_OLD=$(grep "^PING_TIMEOUT=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- || echo "")
+    PING_INTERVAL_OLD=$(grep "^PING_INTERVAL=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- || echo "")
+fi
+
 ynh_add_config --template="env" --destination="$install_dir/.env"
+
+# Restore custom variables if they existed
+if [ -n "$MAX_MESSAGES_OLD" ]; then
+    echo "MAX_MESSAGES=$MAX_MESSAGES_OLD" >> "$install_dir/.env"
+fi
+if [ -n "$MAX_FILE_SIZE_OLD" ]; then
+    echo "MAX_FILE_SIZE=$MAX_FILE_SIZE_OLD" >> "$install_dir/.env"
+fi
+if [ -n "$PING_TIMEOUT_OLD" ]; then
+    echo "PING_TIMEOUT=$PING_TIMEOUT_OLD" >> "$install_dir/.env"
+fi
+if [ -n "$PING_INTERVAL_OLD" ]; then
+    echo "PING_INTERVAL=$PING_INTERVAL_OLD" >> "$install_dir/.env"
+fi
 
 #=================================================
 # UPGRADE APP
