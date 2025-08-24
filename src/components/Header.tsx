@@ -155,7 +155,7 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
           isOpen={showThemeCustomizer}
           onClose={() => setShowThemeCustomizer(false)}
           themes={customThemes}
-          activeTheme={activeCustomTheme}
+          activeTheme={activeCustomTheme || null}
           onApplyTheme={onApplyCustomTheme}
           onAddTheme={onAddCustomTheme}
           onUpdateTheme={onUpdateCustomTheme}

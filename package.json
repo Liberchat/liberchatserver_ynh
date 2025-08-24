@@ -1,7 +1,7 @@
 {
   "name": "video-chat-app",
   "private": true,
-  "version": "6.1.21",
+  "version": "7.0.0",
   "type": "module",
   "scripts": {
     "dev": "concurrently -n \"frontend,backend\" -c \"blue,green\" \"vite\" \"node server.js\"",

@@ -16,31 +16,35 @@
 
 Liberchat est une application de chat libre et décentralisée qui privilégie la confidentialité et la sécurité.
 
-**Version livrée :** 6.1.21~ynh1
+**Version livrée :** 7.0.0~ynh1
 
 **Démo :** https://liberchat-3-0-1.onrender.com
 
-## 🆕 Nouveautés version 6.1.21 (24 août 2025)
+## 🆕 Nouveautés version 7.0.0 (25 août 2025)
 
-### 🔧 Corrections importantes
-- **Panneau de configuration** : Correction des erreurs "unbound variable" dans les scripts de configuration
-- **Variables d'environnement** : Toutes les fonctionnalités du panneau de config sont maintenant réellement implémentées
+### 🎥 Intégration vidéo majeure
+- **Appels vidéo Jitsi Meet** : Bouton vidéo intégré dans l'interface
+- **URL Jitsi configurable** : Possibilité d'utiliser votre propre instance Jitsi auto-hébergée
+- **Génération automatique** de salles de conférence uniques
+- **Configuration via panneau YunoHost** : Section "Configuration vidéo" dans les paramètres avancés
 
-### ✨ Nouvelles fonctionnalités opérationnelles
-- **MAX_MESSAGES** : Contrôle réel du nombre de messages gardés en mémoire (défaut: 100)
-- **MAX_FILE_SIZE** : Limitation effective de la taille des fichiers uploadés (défaut: 50MB)
-- **PING_TIMEOUT** : Configuration du timeout Socket.IO (défaut: 60000ms)
-- **PING_INTERVAL** : Configuration de l'intervalle de ping Socket.IO (défaut: 25000ms)
+### 🔧 Améliorations de stabilité
+- **Timeouts Socket.IO optimisés** : PING_TIMEOUT augmenté à 5 minutes (300000ms)
+- **Intervalles de ping ajustés** : PING_INTERVAL porté à 2 minutes (120000ms)
+- **Réduction drastique des déconnexions** lors de la mise en veille des appareils
+- **Logs de confidentialité** : Désactivation des logs de contenu des messages
+
+### ✨ Fonctionnalités héritées (v6.1.21)
+- **Panneau de configuration** entièrement fonctionnel
+- **MAX_MESSAGES** : Contrôle du nombre de messages en mémoire (défaut: 100)
+- **MAX_FILE_SIZE** : Limitation de la taille des fichiers (défaut: 50MB)
 - **ALLOWED_DOMAINS** : Gestion des domaines CORS autorisés
-
-### 🐛 Corrections de bugs
-- Variables de configuration avec valeurs par défaut pour éviter les erreurs
-- Affichage des variables d'environnement dans les logs de démarrage
-- Messages d'erreur dynamiques pour la taille des fichiers
+- **Variables d'environnement** : Toutes les configurations sont opérationnelles
 
 ## Fonctionnalités
 
 - **Chat en temps réel** avec WebSockets
+- **Appels vidéo intégrés** avec Jitsi Meet (configurable)
 - **Partage de fichiers** (images, documents)
 - **Réactions emoji** sur les messages
 - **Chiffrement côté client** pour la confidentialité
@@ -48,6 +52,7 @@ Liberchat est une application de chat libre et décentralisée qui privilégie l
 - **Support multi-domaines** (IP locales, domaines classiques)
 - **Aucun enregistrement** pour une confidentialité totale
 - **Messages vocaux** et réponses aux messages
+- **Timeouts optimisés** pour éviter les déconnexions
 
 ## Installation
 
@@ -93,6 +98,17 @@ L'application fonctionne automatiquement avec :
 - **Taille maximale des fichiers** : Configurable via le panneau d'administration
 - **Nombre de messages en mémoire** : Ajustable selon vos besoins
 - **Timeouts Socket.IO** : Personnalisables pour optimiser les performances
+- **URL Jitsi Meet** : Configurez votre propre instance vidéo auto-hébergée
+
+### Configuration vidéo
+
+Par défaut, Liberchat utilise l'instance publique Jitsi Meet (`https://meet.jit.si`). Vous pouvez configurer votre propre instance :
+
+1. **Accédez au panneau d'administration** YunoHost
+2. **Sélectionnez votre instance** Liberchat
+3. **Allez dans "Configuration avancée"** > "Configuration vidéo"
+4. **Modifiez l'URL Jitsi Meet** (ex: `https://jitsi.mondomaine.com`)
+5. **Appliquez les changements**
 
 ## Utilisation
 
