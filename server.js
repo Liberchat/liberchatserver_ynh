@@ -431,16 +431,17 @@ io.on('connection', (socket) => {
     const user = users.get(socket.id);
     if (!user) return;
 
-    console.log('Message reçu:', { type: typeof message, content: message });
+    // Logs désactivés pour confidentialité
+    // console.log('Message reçu:', { type: typeof message, content: message });
 
     // Si le message est une chaîne JSON, on le parse
     if (typeof message === 'string') {
       try {
         message = JSON.parse(message);
-        console.log('Message parsé:', message);
+        // console.log('Message parsé:', message);
       } catch (e) {
         logger.error('Erreur de parsing JSON:', e);
-        console.error('Erreur de parsing JSON:', e, 'Message reçu:', message);
+        console.error('Erreur de parsing JSON:', e);
         return;
       }
     }
@@ -469,7 +470,7 @@ io.on('connection', (socket) => {
 
     messages.push(message);
     io.emit('chat message', message);
-    console.log('Message envoyé à tous les clients:', message);
+    // console.log('Message envoyé à tous les clients:', message);
     logger.info(`Message ${message.type} reçu de ${encodeURIComponent(user.username)}`);
   });
 
