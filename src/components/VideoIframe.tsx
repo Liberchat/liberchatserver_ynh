@@ -103,35 +103,7 @@ export const VideoIframe = ({
             }}
           />
         </div>
-        {isMobile && (
-          <div className="mt-2 text-center p-2">
-            <button
-              onTouchStart={(e) => {
-                e.currentTarget.style.transform = 'scale(0.95)';
-                e.currentTarget.style.backgroundColor = '#7f1d1d';
-              }}
-              onTouchEnd={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.backgroundColor = '#b91c1c';
-                setTimeout(() => openInNewWindow(), 100);
-              }}
-              onTouchCancel={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.backgroundColor = '#b91c1c';
-              }}
-              className="bg-red-700 text-white font-mono px-6 py-3 rounded-lg text-base font-bold shadow-lg border-2 border-red-600 min-h-[48px] min-w-[200px]"
-              style={{ 
-                touchAction: 'manipulation',
-                WebkitTapHighlightColor: 'transparent',
-                userSelect: 'none'
-              }}
-            >
-              🎞️ Ouvrir Vidéo
-            </button>
-          </div>
-        )}
+
       </div>
     </div>
   );
