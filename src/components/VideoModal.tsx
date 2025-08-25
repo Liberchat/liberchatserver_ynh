@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { detectWebView, openUrl, saveReturnState } from '../utils/webview';
+import { buildJitsiUrl } from '../config/jitsi';
 
 interface VideoModalProps {
   isOpen: boolean;
@@ -17,8 +19,8 @@ const VideoModal: React.FC<VideoModalProps> = ({
   const [hasJoined, setHasJoined] = useState(false);
   const videoWindow = useRef<Window | null>(null);
 
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  const isWebView = /wv|WebView|; wv\)|Version\/[\d\.]+.*Safari/i.test(navigator.userAgent) || (window.navigator as any).standalone === false;
+  const webViewInfo = detectWebView();
+  const { isMobile, isWebView } = webViewInfo;
 
   const openVideoWindow = () => {
     const meetUrl = `${jitsiUrl}/${roomName}`;
@@ -140,15 +142,21 @@ const VideoModal: React.FC<VideoModalProps> = ({
                 <button
                   onClick={() => {
                     setHasJoined(true);
+                    // Toujours ouvrir dans un nouvel onglet/fenêtre pour éviter les redirections
+                    const meetUrl = `${jitsiUrl}/${roomName}`;
+                    
                     if (isWebView) {
-                      // Pour WebView, redirection directe pour éviter les problèmes CSP
-                      const meetUrl = `${jitsiUrl}/${roomName}`;
-                      sessionStorage.setItem('liberchat_return_url', window.location.href);
-                      sessionStorage.setItem('liberchat_room_name', roomName);
-                      window.location.href = meetUrl;
+                      // Pour WebView, essayer d'ouvrir dans l'app système ou navigateur externe
+                      try {
+                        // Essayer d'ouvrir avec l'app système
+                        window.open(meetUrl, '_system');
+                      } catch (e) {
+                        // Fallback: ouvrir dans un nouvel onglet
+                        window.open(meetUrl, '_blank');
+                      }
                     } else {
                       // Pour les navigateurs normaux, ouvrir dans un nouvel onglet
-                      window.open(`${jitsiUrl}/${roomName}`, '_blank');
+                      window.open(meetUrl, '_blank');
                     }
                   }}
                   className="w-full bg-gradient-to-r from-red-700 to-red-500 hover:from-red-600 hover:to-red-400 text-white px-6 py-4 rounded-xl font-bold text-lg font-mono transition-all duration-200 shadow-lg border-2 border-red-600 hover:border-red-400"
@@ -170,13 +178,30 @@ const VideoModal: React.FC<VideoModalProps> = ({
                       
                       <button
                         onClick={() => {
-                          // Redirection plein écran pour éviter les problèmes CSP avec iframe
-                          const meetUrl = `${jitsiUrl}/${roomName}`;
-                          // Sauvegarder l'état pour revenir au chat après
-                          sessionStorage.setItem('liberchat_return_url', window.location.href);
-                          sessionStorage.setItem('liberchat_room_name', roomName);
-                          // Redirection complète vers Jitsi
-                          window.location.href = meetUrl;
+                          // Sauvegarder l'état pour le retour
+                          saveReturnState(roomName, { 
+                            jitsiUrl,
+                            webViewInfo: webViewInfo.platform 
+                          });
+                          
+                          // Construire l'URL Jitsi optimisée selon l'environnement
+                          const fullMeetUrl = buildJitsiUrl(
+                            jitsiUrl,
+                            roomName,
+                            {}, // Configuration par défaut
+                            isWebView,
+                            isMobile
+                          );
+                          
+                          // Redirection optimisée selon l'environnement
+                          if (isWebView) {
+                            // Dans une WebView, redirection complète
+                            window.location.href = fullMeetUrl;
+                          } else {
+                            // Dans un navigateur normal, ouvrir dans un nouvel onglet
+                            openUrl(fullMeetUrl, '_blank');
+                            onClose(); // Fermer le modal
+                          }
                         }}
                         className="w-full bg-gradient-to-r from-red-700 to-red-500 hover:from-red-600 hover:to-red-400 text-white px-6 py-4 rounded-xl font-bold text-lg font-mono mb-4"
                       >

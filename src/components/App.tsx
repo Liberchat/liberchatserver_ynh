@@ -74,7 +74,7 @@ function App() {
     let socketUrl = '';
     let socketPath = '/socket.io/';
     
-    if (import.meta.env.DEV) {
+    if ((import.meta as any).env?.DEV) {
       socketUrl = 'http://localhost:3000';
     } else {
       // Utilise l'origine de la page (supporte HTTPS, Tor, reverse proxy, etc.)

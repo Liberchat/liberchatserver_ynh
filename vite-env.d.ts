@@ -1,0 +1,16 @@
+/// <reference types="vite/client" />
+
+// Déclarations spécifiques pour Vite
+interface ImportMetaEnv {
+  readonly DEV: boolean;
+  readonly PROD: boolean;
+  readonly MODE: string;
+  readonly BASE_URL: string;
+  readonly VITE_APP_TITLE?: string;
+  // Ajoutez d'autres variables d'environnement Vite si nécessaire
+  [key: string]: any;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
