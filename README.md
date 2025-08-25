@@ -1,4 +1,5 @@
-# Liberchat pour YunoHost
+# Liberchat pour YunoHost. (Version En développement ne marche pas pour l'instant sur l'app android)
+Lien de la beta https://betaprewiewliberchat.cnt-ait-contact.noho.st/liberchat/
 
 [![GitHub release](https://img.shields.io/github/v/release/Liberchat/liberchatserver_ynh?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh/releases)
 [![GitHub license](https://img.shields.io/github/license/Liberchat/liberchatserver_ynh?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh/blob/main/LICENSE)
