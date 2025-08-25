@@ -35,14 +35,15 @@ export const VideoIframe = ({
   };
 
   return (
-    <div className={`video-iframe-container ${className}`}>
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-lg font-bold text-red-400 font-mono">
-          📹 Vidéo Chat
+    <div className={`video-iframe-container ${className}`} style={{ display: 'block !important', visibility: 'visible !important' }}>
+      <div className="flex items-center justify-between mb-1 p-1 sm:p-2 bg-black/80 rounded border sm:border-2 border-red-700 max-w-xs sm:max-w-md mx-auto" style={{ display: 'flex !important', visibility: 'visible !important', minHeight: '36px' }}>
+        <h3 className="text-sm sm:text-lg font-bold text-red-400 font-mono flex-shrink-0">
+          📹 Vidéo
         </h3>
         <button
           onClick={() => setIsVisible(!isVisible)}
-          className="bg-red-700 hover:bg-red-800 text-white font-mono px-3 py-1 rounded text-sm transition-colors"
+          className="bg-red-700 hover:bg-red-800 active:bg-red-900 text-white font-mono px-2 py-1 sm:px-4 sm:py-2 rounded text-xs sm:text-sm transition-colors flex-shrink-0 min-w-[60px] sm:min-w-[80px] touch-manipulation"
+          style={{ display: 'block !important', visibility: 'visible !important', touchAction: 'manipulation' }}
           aria-label={isVisible ? "Masquer la vidéo" : "Afficher la vidéo"}
         >
           {isVisible ? "Masquer" : "Afficher"}
@@ -53,7 +54,7 @@ export const VideoIframe = ({
         className={`relative w-full bg-black rounded-lg border-2 border-red-700 overflow-hidden shadow-lg transition-all duration-300 ${isVisible ? 'block' : 'hidden'
           }`}
       >
-        <div className="w-full h-[calc(100vh-16rem)] sm:h-[36rem] lg:h-[42rem] touch-manipulation">
+        <div className="w-full h-[calc(100vh-20rem)] sm:h-[32rem] lg:h-[42rem] touch-manipulation">
           <iframe
             src={src}
             title={title}
