@@ -67,39 +67,49 @@ export const VideoIframe = ({
               pointerEvents: 'auto'
             }}
             frameBorder="0"
-            allow="camera; microphone; autoplay; encrypted-media; fullscreen; display-capture; geolocation; screen-wake-lock"
+            allow="camera; microphone; autoplay; encrypted-media; fullscreen; display-capture; geolocation; screen-wake-lock; picture-in-picture"
             allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
-            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-presentation"
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-presentation allow-modals"
+            loading="lazy"
             onLoad={(e) => {
-              if (isMobile) {
-                try {
-                  const iframe = e.target as HTMLIFrameElement;
-                  const doc = iframe.contentDocument || iframe.contentWindow?.document;
-                  if (doc) {
-                    // Force desktop viewport
-                    const viewport = doc.createElement('meta');
-                    viewport.name = 'viewport';
-                    viewport.content = 'width=1024, initial-scale=1.0';
-                    doc.head?.appendChild(viewport);
+              try {
+                const iframe = e.target as HTMLIFrameElement;
+                const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                if (doc) {
+                  // Add mobile-friendly viewport
+                  const viewport = doc.createElement('meta');
+                  viewport.name = 'viewport';
+                  viewport.content = isMobile ? 'width=device-width, initial-scale=1.0, user-scalable=yes' : 'width=1024, initial-scale=1.0';
+                  doc.head?.appendChild(viewport);
+                  
+                  // Add WebRTC configuration script
+                  const script = doc.createElement('script');
+                  script.textContent = `
+                    // WebRTC mobile optimizations
+                    if (typeof navigator !== 'undefined' && navigator.mediaDevices) {
+                      const originalGetUserMedia = navigator.mediaDevices.getUserMedia;
+                      navigator.mediaDevices.getUserMedia = function(constraints) {
+                        // Force video constraints for mobile
+                        if (constraints && constraints.video && typeof constraints.video === 'object') {
+                          constraints.video.width = constraints.video.width || { ideal: 640 };
+                          constraints.video.height = constraints.video.height || { ideal: 480 };
+                          constraints.video.frameRate = constraints.video.frameRate || { ideal: 15 };
+                        }
+                        return originalGetUserMedia.call(this, constraints);
+                      };
+                    }
                     
-                    // Override user agent detection
-                    const script = doc.createElement('script');
-                    script.textContent = `
-                      Object.defineProperty(navigator, 'userAgent', {
-                        get: () => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-                      });
-                      Object.defineProperty(navigator, 'platform', {
-                        get: () => 'Win32'
-                      });
-                      window.innerWidth = 1024;
-                      window.innerHeight = 768;
-                    `;
-                    doc.head?.appendChild(script);
-                  }
-                } catch (e) {
-                  console.log('Cannot modify iframe content due to CORS');
+                    // Mobile WebView settings
+                    if (window.webkit && window.webkit.messageHandlers) {
+                      document.body.style.webkitTouchCallout = 'none';
+                      document.body.style.webkitUserSelect = 'none';
+                    }
+                  `;
+                  doc.head?.appendChild(script);
                 }
+              } catch (e) {
+                console.log('Cannot modify iframe content due to CORS');
               }
             }}
           />
