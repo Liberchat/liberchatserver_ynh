@@ -20,7 +20,7 @@ Liberchat est une application de chat libre et décentralisée qui privilégie l
 
 **Démo :** https://liberchat-3-0-1.onrender.com
 
-## 🆕 Nouveautés version 7.0.0 (janvier 2025)
+## 🆕 Nouveautés version 7.0.0 (Septembre 2025)
 
 ### 🔧 Corrections importantes
 - **Panneau de configuration** : Correction des erreurs "unbound variable" dans les scripts de configuration
