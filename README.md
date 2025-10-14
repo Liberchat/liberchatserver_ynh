@@ -1,11 +1,234 @@
-# Liberchat pour YunoHost
+<div align="center">
 
-[![GitHub release](https://img.shields.io/github/v/release/Liberchat/liberchatserver_ynh?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh/releases)
-[![GitHub license](https://img.shields.io/github/license/Liberchat/liberchatserver_ynh?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh/blob/main/LICENSE)
-[![GitHub issues](https://img.shields.io/github/issues/Liberchat/liberchatserver_ynh?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh/issues)
-[![YunoHost](https://img.shields.io/badge/YunoHost-11.2%2B-blue?style=flat-square)](https://yunohost.org)
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green?style=flat-square)](https://nodejs.org)
-[![Multi-instance](https://img.shields.io/badge/Multi--instance-✓-success?style=flat-square)](https://github.com/Liberchat/liberchatserver_ynh)
+> 🚀 **Branche de développement active : `Liberchat-6.1.20
+
+# 🚩✊ Liberchat — La Commune Numérique
+
+<p align="center" style="font-size:1.2em; color:#ff2800; font-weight:bold;">
+« Pour l’autogestion, la solidarité et la liberté numérique. Un chat libre, par et pour le peuple. »
+</p>
+
+[![Anticapitaliste](https://img.shields.io/badge/Anticapitaliste-✊-red?style=for-the-badge)](#)
+[![Logiciel Libre](https://img.shields.io/badge/Logiciel_Libre-100%25-black?style=for-the-badge)](#)
+[![Anarcho-syndicaliste](https://img.shields.io/badge/Anarcho--syndicaliste-Noir_&_Rouge-black?style=for-the-badge&labelColor=ff2800)](#)
+
+[![Version](https://img.shields.io/badge/Version-6.1.20-red?style=for-the-badge)](#)
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white)](https://socket.io/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+
+**Un chat en temps réel, autogéré, horizontal, pour la Commune numérique.**
+
+[📝 Documentation](#-documentation) | [🤝 Contribuer](#-contribution) | [📧 Contact](#-contact)
+
+---
+
+</div>
+
+## 🏴 Pourquoi un chat anarcho-syndicaliste ?
+
+> « La communication libre est une arme. Organisons-nous, partageons, résistons ! »
+
+- **Aucune hiérarchie, pas de chef** : tout le monde a le même pouvoir.
+- **Respect de la vie privée** : pas de tracking, pas de pub, pas de collecte de données.
+- **Code ouvert, transparent, modifiable** : fork, partage, autogestion.
+- **Solidarité et entraide** : entraide technique et humaine, support communautaire.
+- **Hébergement décentralisé possible** : pour ne dépendre d’aucun géant du web.
+
+## ✨ Caractéristiques Principales
+
+<div align="center">
+<table>
+<tr>
+<td align="center">
+    <img src="https://img.icons8.com/fluency/48/000000/comments.png" width="30"/>
+    <br />Chat en Temps Réel
+</td>
+<td align="center">
+    <img src="https://img.icons8.com/fluency/48/000000/user-group-man-woman.png" width="30"/>
+    <br />Liste des Utilisateurs
+</td>
+<td align="center">
+    <img src="https://img.icons8.com/fluency/48/000000/security-checked.png" width="30"/>
+    <br />Sécurisé
+</td>
+<td align="center">
+    <span style="font-size:2em;">🌙</span>
+    <br />Thème Sombre
+</td>
+<td align="center">
+    <span style="font-size:2em;">🎨</span>
+    <br />Style Moderne
+</td>
+</tr>
+</table>
+</div>
+
+### 🎯 Fonctionnalités Détaillées
+
+- 💬 **Chat en Temps Réel**
+  - Messages instantanés
+  - Indicateur de frappe
+  - Historique des messages
+  - Support complet des emojis
+  - Interface responsive mobile
+  - **Support des liens enrichis (embed)** : les liens partagés dans le chat affichent un aperçu (titre, image, description)     s’ouvrent dans un nouvel onglet sans déconnexion de session.
+
+- 👥 **Gestion des Utilisateurs**
+  - Liste des utilisateurs en ligne
+  - Statuts de connexion
+  - Notifications en temps réel
+  - Noms d'utilisateur uniques
+
+- 🛡️ **Sécurité**
+  - Connexions sécurisées
+  - Authentification utilisateur
+  - Protection contre le spam
+  - Variables d'environnement sécurisées
+
+- 🎨 **Interface**
+  - Thème sombre élégant
+  - Animations fluides
+  - Interface intuitive et responsive
+  - Style moderne
+  - Sélecteur d'emojis intégré
+  - Optimisations mobile/desktop
+  - **🖍️ Thèmes personnalisables CSS** : créez vos propres thèmes avec du CSS personnalisé
+
+- 🎤 **Messages vocaux universels**
+  - Enregistrement vocal intégré (bouton micro)
+  - Lecture et envoi de vocaux chiffrés de bout en bout
+  - Compatibilité maximale : Chrome, Firefox (ESR inclus), Edge, Safari, Electron, Android, iOS, WebView…
+  - Sélection automatique du format audio optimal (ogg/opus, webm/opus, mp4)
+  - Lecture sans téléchargement, sans fuite de la clé
+  - Impossible de télécharger les vocaux (confidentialité renforcée)
+
+- 🖼️ **Images chiffrées de bout en bout (E2EE)**
+  - Toutes les images envoyées dans le chat sont chiffrées avant d’être transmises au serveur
+  - Seuls les utilisateurs ayant la clé peuvent les voir
+  - Le serveur ne voit jamais le contenu des images
+
+- 🎤 **Messages vocaux chiffrés de bout en bout (E2EE)**
+  - Les messages audio sont chiffrés comme les messages texte et images
+  - Confidentialité totale : seuls les utilisateurs avec la clé peuvent écouter les vocaux
+  - Le serveur ne fait que relayer les données chiffrées
+
+- 📲 **Progressive Web App (PWA)**
+  - Installation sur l'écran d'accueil (iOS, Android, desktop)
+  - Support du mode hors-ligne (service worker)
+  - Manifest et icônes adaptés pour mobile
+
+- ✊ **Réactions Emoji Chiffrées (E2EE)**
+  - Ajoutez des réactions emoji à chaque message
+  - Les réactions sont chiffrées de bout en bout : seuls les utilisateurs ayant la clé voient qui a réagi et avec quel emoji
+  - Synchronisation en temps réel entre tous les clients
+  - Respect total de la vie privée : le serveur ne connaît jamais le contenu des réactions
+
+## Nouveautés
+
+### ♿ Mode Accessibilité
+
+LiberChat intègre désormais un **mode accessibilité complet** pour les personnes en situation de handicap !
+
+**Fonctionnalités :**
+- Contraste élevé (noir/blanc/jaune)
+- Taille de police ajustable (4 niveaux)
+- Police dyslexie (Comic Sans MS)
+- Réduction des animations
+- Support lecteurs d'écran avec annonces vocales
+- Navigation clavier complète (Alt+A, Alt+T, Alt+Q)
+- Étiquettes ARIA et conformité WCAG 2.1 niveau AA
+
+**Accès :** Bouton ♿ dans l'en-tête ou raccourci **Alt+A**
+
+### 🎨 Mode Light
+
+Vous pouvez désormais profiter d'une interface en **mode clair** !  
+Pour activer le mode light :
+1. Ouvrez les **Paramètres** de l'application.
+2. Sélectionnez l'option **Mode clair**.
+
+> 💡 Astuce : Vous pouvez basculer à tout moment entre le mode sombre et le mode clair selon vos préférences.
+
+## 🆕 Nouveautés de la version 6.1.16
+
+- Voir section "Corrections et changements récents (6.1.16)" ci-dessus.
+
+## 🆕 Corrections et changements récents (6.1.16)
+
+- Nouveau sélecteur d’emojis intégré : remplacement de emoji-mart par emoji-picker-react, plus compact et adapté à l’encadré, sans débordement sur mobile ou desktop.
+- Correction du bug d’affichage du menu emojis (ne déborde plus de l’encadré stylisé, responsive sur tous les écrans).
+- Correction de l’ajout d’emoji dans les réactions (plus de undefined, compatibilité assurée avec le nouveau picker).
+- Amélioration CSS pour garantir la compatibilité mobile et l’accessibilité du champ de saisie.
+- README mis à jour pour refléter ces changements.
+
+## 🆕 Nouveautés de la version 6.1.20
+
+- **🎨 Correction des thèmes personnalisés en mode clair** : les thèmes CSS personnalisés fonctionnent maintenant parfaitement avec le mode light.
+- **⚡ Optimisation des performances** : correction de la boucle infinie dans le hook useCustomThemes pour une meilleure stabilité.
+- **🔧 Amélioration de l'application des thèmes** : logique d'application des thèmes repensée pour une compatibilité maximale.
+- **🖍️ Thèmes prédéfinis améliorés** : thèmes Rouge Anarchiste, Cyberpunk et Bleu Clair optimisés pour tous les modes.
+
+## 🆕 Nouveautés de la version 6.1.18
+
+- Indicateur « en train d’écrire » amélioré : affichage dynamique au-dessus de la zone de saisie, visible en temps réel pour tous les utilisateurs.
+- Prévisualisation audio avant envoi : possibilité d’écouter, d’envoyer ou d’annuler un message vocal avant qu’il ne soit transmis.
+- Correction des erreurs de typage TypeScript liées à Socket.IO côté client (meilleure compatibilité et stabilité du chat).
+- Documentation de la gestion des branches git : conseils pour créer, basculer et pousser correctement les branches de développement.
+- Amélioration de la robustesse de la connexion WebSocket/Socket.IO côté client (meilleure gestion des ports et de l’URL de connexion).
+
+## 🆕 Corrections et changements récents (6.1.20)
+
+- **🎨 Correction majeure des thèmes personnalisés** : résolution du problème d'incompatibilité avec le mode clair, les thèmes CSS s'appliquent maintenant correctement sur tous les modes.
+- **⚡ Optimisation du hook useCustomThemes** : suppression de la boucle infinie causée par les dépendances problématiques dans useEffect.
+- **🔧 Amélioration de la logique d'application des thèmes** : refactorisation complète pour une meilleure gestion des priorités CSS.
+- **🖍️ Thèmes prédéfinis stabilisés** : tous les thèmes (Rouge Anarchiste, Cyberpunk, Bleu Clair) fonctionnent parfaitement en mode sombre et clair.
+
+## 🆕 Corrections et changements récents (6.1.19)
+
+- **♿ Implémentation complète de l'accessibilité** : bouton dédié dans l'en-tête, paramètres sauvegardés localement, conformité WCAG 2.1 niveau AA, étiquettes ARIA complètes.
+- Support des lecteurs d'écran (NVDA, JAWS, VoiceOver, TalkBack, Orca) avec annonces vocales automatiques.
+- Navigation clavier complète avec raccourcis globaux et focus visible renforcé.
+- **🖍️ Thèmes personnalisables** : interface pour créer, modifier et appliquer des thèmes CSS personnalisés avec thèmes prédéfinis (Rouge Anarchiste, Cyberpunk).
+
+
+## 🆕 Corrections et changements récents (6.1.18)
+
+- Ajout de la prévisualisation audio dans la zone de saisie : l’utilisateur peut écouter son message vocal avant de l’envoyer ou de l’annuler.
+- Affichage de l’indicateur « en train d’écrire » au-dessus de la zone de saisie, visible par tous les participants.
+- Correction temporaire du typage du socket côté client pour éviter les erreurs TypeScript bloquantes.
+- Conseils et corrections sur la gestion des branches git (création, push, résolution d’erreurs de référence).
+- Correction de la configuration de l’URL Socket.IO côté client pour garantir la connexion au bon serveur backend.
+
+## 🗑️✏️ Fonctionnalités de gestion des messages
+
+- **Modification** : Seuls les messages texte peuvent être modifiés après envoi.
+- **Suppression** : Tous les types de messages peuvent être supprimés par leur auteur.
+- **Menu contextuel** : Accessible par clic droit ou appui long, il permet de répondre, modifier (texte uniquement) ou supprimer un message.
+- **Expérience mobile** : Le menu contextuel est adapté au mobile (taille réduite, pas de scroll inutile).
+- **Messages non modifiables** : Les messages audio et images ne peuvent pas être modifiés pour garantir l'intégrité des fichiers partagés.
+
+### 🖼️ Médias et Expressions
+
+- 😀 **Support Complet des Emojis**
+  - Sélecteur d'emojis intuitif
+  - Catégories organisées
+  - Recherche rapide
+  - Thème sombre intégré
+
+- 📎 **Partage de Fichiers**
+  - Support des images
+  - Vérification de taille
+  - Prévisualisation intégrée
+  - **Aperçu en grand des images envoyées** : cliquez sur une image pour l'afficher en plein écran (zoom)
+
+  ## 🛡️ Mentions spéciales sécurité & architecture
+
+- **Chiffrement de bout en bout (E2EE)** sur tous les navigateurs et appareils : vos messages ne sont jamais envoyés en clair, même sur navigateurs anciens (fallback JS crypto-js si besoin).
+- **Aucune donnée en clair** n’est jamais transmise au serveur.
+- **Un seul projet, un seul dépôt** : frontend (React) et backend (Node.js/Express/Socket.io) sont réunis dans ce même dépôt pour une autogestion et une simplicité maximale.
+
 
 *[Read this README in English.](./README_en.md)*
 
