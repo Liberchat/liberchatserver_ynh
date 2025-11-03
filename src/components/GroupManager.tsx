@@ -21,9 +21,7 @@ interface GroupManagerProps {
 
 export function GroupManager({ socket, username, onJoinGroup, currentGroup, getGroupSecurityStatus }: GroupManagerProps) {
   const [groups, setGroups] = useState<Group[]>([]);
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [newGroupName, setNewGroupName] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
     loadGroups();
@@ -60,41 +58,7 @@ export function GroupManager({ socket, username, onJoinGroup, currentGroup, getG
     }
   };
 
-  const createGroup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newGroupName.trim() || isLoading) return;
 
-    setIsLoading(true);
-    try {
-      // Utiliser socket.io au lieu de fetch pour la création de groupe
-      if (socket) {
-        socket.emit('create group', {
-          name: newGroupName.trim(),
-          creatorUsername: username
-        });
-        
-        // Écouter la réponse
-        socket.once('group created', (newGroup: Group) => {
-          setNewGroupName('');
-          setShowCreateForm(false);
-          loadGroups();
-          onJoinGroup(newGroup.id);
-          setIsLoading(false);
-        });
-        
-        socket.once('group creation error', (error: { message: string }) => {
-          alert(error.message || 'Erreur lors de la création de la cellule');
-          setIsLoading(false);
-        });
-      } else {
-        throw new Error('Connexion socket non disponible');
-      }
-    } catch (error) {
-      console.error('Erreur lors de la création de la cellule:', error);
-      alert('Erreur lors de la création de la cellule');
-      setIsLoading(false);
-    }
-  };
 
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString('fr-FR', {
@@ -126,46 +90,24 @@ export function GroupManager({ socket, username, onJoinGroup, currentGroup, getG
             <span className="truncate">Cellules Révolutionnaires</span>
           </h2>
           <button
-            onClick={() => setShowCreateForm(!showCreateForm)}
-            className="p-2 bg-red-800 hover:bg-red-700 rounded-lg transition-colors text-white flex-shrink-0 ml-2"
-            title="Créer une cellule"
+            disabled={true}
+            className="p-2 bg-gray-700 cursor-not-allowed rounded-lg transition-colors text-gray-400 flex-shrink-0 ml-2"
+            title="Création temporairement désactivée - En cours de développement"
           >
-            {showCreateForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            <Plus className="w-4 h-4" />
           </button>
         </div>
 
-        {showCreateForm && (
-          <form onSubmit={createGroup} className="space-y-3">
-            <input
-              type="text"
-              value={newGroupName}
-              onChange={(e) => setNewGroupName(e.target.value)}
-              placeholder="Nom de la cellule"
-              className="w-full px-3 py-2 bg-gray-900 border border-red-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-white placeholder-gray-400 text-sm"
-              maxLength={50}
-              required
-            />
-            <div className="flex flex-col sm:flex-row gap-2">
-              <button
-                type="submit"
-                disabled={isLoading || !newGroupName.trim()}
-                className="flex-1 px-3 py-2 bg-red-800 hover:bg-red-700 disabled:bg-gray-800 disabled:text-gray-500 rounded-lg transition-colors text-sm text-white"
-              >
-                {isLoading ? 'Formation...' : 'Former'}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowCreateForm(false);
-                  setNewGroupName('');
-                }}
-                className="px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors text-sm text-white border border-red-800"
-              >
-                Annuler
-              </button>
-            </div>
-          </form>
-        )}
+        {/* Message explicatif pour la création désactivée */}
+        <div className="p-3 bg-gray-900/50 border border-gray-700 rounded-lg">
+          <div className="flex items-center gap-2 text-gray-400">
+            <Plus className="w-4 h-4" />
+            <span className="text-sm">Création de cellules temporairement désactivée</span>
+          </div>
+          <p className="text-xs text-gray-500 mt-1 ml-6">
+            Cette fonctionnalité sera disponible dans une prochaine version.
+          </p>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -173,8 +115,8 @@ export function GroupManager({ socket, username, onJoinGroup, currentGroup, getG
           {groups.length === 0 ? (
             <div className="text-center text-red-400 py-6 sm:py-8">
               <Users className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 opacity-50 text-red-500" />
-              <p className="text-sm sm:text-base">Aucune cellule active</p>
-              <p className="text-xs sm:text-sm">Formez la première cellule !</p>
+              <p className="text-sm sm:text-base">Aucune cellule disponible</p>
+              <p className="text-xs sm:text-sm text-gray-500">Les groupes seront bientôt disponibles</p>
             </div>
           ) : (
             groups.map((group) => (
