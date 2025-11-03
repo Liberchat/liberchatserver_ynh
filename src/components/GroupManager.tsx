@@ -108,6 +108,17 @@ export function GroupManager({ socket, username, onJoinGroup, currentGroup, getG
 
   return (
     <div className="bg-black border-r border-red-800 w-full sm:w-80 md:w-80 lg:w-80 flex flex-col">
+      {/* Avertissement développement */}
+      <div className="p-2 sm:p-3 bg-yellow-900/30 border-b border-yellow-700/50">
+        <div className="flex items-start gap-2">
+          <span className="text-yellow-500 text-sm flex-shrink-0">⚠️</span>
+          <div className="text-xs sm:text-sm text-yellow-300">
+            <p className="font-medium mb-1">Fonctionnalités en cours de développement</p>
+            <p className="text-yellow-400/80">Les groupes ne sont pas encore complètement implémentés.</p>
+          </div>
+        </div>
+      </div>
+      
       <div className="p-3 sm:p-4 border-b border-red-800">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base sm:text-lg font-semibold flex items-center gap-1 sm:gap-2 text-red-400 min-w-0 flex-1">

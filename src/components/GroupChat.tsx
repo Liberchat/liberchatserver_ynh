@@ -332,6 +332,17 @@ export function GroupChat({
 
   return (
     <div className="flex-1 flex flex-col">
+      {/* Avertissement développement */}
+      <div className="bg-yellow-900/30 border-b border-yellow-700/50 p-3">
+        <div className="flex items-center gap-2">
+          <span className="text-yellow-500 text-sm">⚠️</span>
+          <p className="text-xs sm:text-sm text-yellow-300">
+            <span className="font-medium">Fonctionnalités en cours de développement</span> - 
+            Les groupes ne sont pas encore complètement implémentés.
+          </p>
+        </div>
+      </div>
+      
       {/* Header du groupe */}
       <div className="bg-black border-b border-red-800 p-4">
         <div className="flex items-center justify-between">
