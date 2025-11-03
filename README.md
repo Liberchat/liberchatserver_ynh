@@ -1,6 +1,6 @@
 <div align="center">
 
-> 🚀 **Branche de développement active : `Liberchat-6.1.21
+> 🚀 **Branche de développement active : `Liberchat-6.5
 
 # 🚩✊ Liberchat — La Commune Numérique
 
@@ -28,7 +28,7 @@
 
 </div>
 
-## 🏴 Pourquoi un chat anarcho-syndicaliste ?
+##  Pourquoi un chat anarcho-syndicaliste ?
 
 > « La communication libre est une arme. Organisons-nous, partageons, résistons ! »
 
