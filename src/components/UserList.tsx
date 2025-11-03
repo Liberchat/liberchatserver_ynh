@@ -29,7 +29,7 @@ export const UserList = ({ users, currentUser, isMobile = false, inChatInput = f
         {isExpanded && (
           <div className="absolute bottom-full left-0 mb-2 w-48 bg-black/95 backdrop-blur-sm border-2 border-red-700 rounded-lg shadow-lg overflow-hidden">
             <div className="p-2 bg-red-700/20 border-b border-red-700">
-              <h3 className="text-sm font-bold text-white font-mono">Camarades présent·e·s</h3>
+              <h3 className="text-sm font-bold text-white font-mono">Compagnon·e·s présent·e·s</h3>
             </div>
             <div className="max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-red-700 scrollbar-track-black">
               {users.map(user => (
@@ -53,7 +53,7 @@ export const UserList = ({ users, currentUser, isMobile = false, inChatInput = f
                 </div>
               ))}
               {users.length <= 1 && (
-                <p className="p-2 text-sm text-gray-400 italic font-mono">En attente d'autres camarades...</p>
+                <p className="p-2 text-sm text-gray-400 italic font-mono">En attente d'autres compagnon·e·s...</p>
               )}
             </div>
           </div>
@@ -66,7 +66,7 @@ export const UserList = ({ users, currentUser, isMobile = false, inChatInput = f
   return (
     <div className="p-4">
       <h2 className="text-lg font-bold mb-4">
-        <span className="text-red-600">Camarades présent·e·s</span>
+        <span className="text-red-600">Compagnon·e·s présent·e·s</span>
         <div className="h-0.5 w-full bg-gradient-to-r from-red-700 via-red-600 to-transparent mt-2"></div>
       </h2>
       <div className="space-y-2">
@@ -108,7 +108,7 @@ export const UserList = ({ users, currentUser, isMobile = false, inChatInput = f
                 className="w-full h-full"
               />
             </div>
-            <p className="text-gray-400 relative z-10">En attente d'autres camarades...</p>
+            <p className="text-gray-400 relative z-10">En attente d'autres compagnon·e·s...</p>
           </div>
         )}
       </div>

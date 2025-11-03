@@ -128,7 +128,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onJoin, showLogout
               htmlFor="username" 
               className="block text-xs sm:text-sm font-bold text-red-200 mb-2 uppercase tracking-wider"
             >
-              Nom de camarade
+              Nom de compagnon·e
             </label>
             <div className="relative">
               <input

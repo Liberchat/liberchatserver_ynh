@@ -30,11 +30,11 @@ interface GroupChatProps {
   // Plus besoin de symmetricKey - CryptoManager gère automatiquement les clés
 }
 
-export function GroupChat({ 
-  socket, 
-  username, 
-  groupId, 
-  groupName, 
+export function GroupChat({
+  socket,
+  username,
+  groupId,
+  groupName,
   onLeaveGroup
 }: GroupChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -46,7 +46,7 @@ export function GroupChat({
   const getGroupSecurityStatus = (): SecurityStatus => {
     const encrypted = keyExchangeStatus === 'secured';
     const keyExchanged = keyExchangeStatus === 'secured' || keyExchangeStatus === 'exchanging';
-    
+
     return {
       encrypted,
       keyExchanged,
@@ -65,7 +65,7 @@ export function GroupChat({
         setKeyExchangeStatus('exchanging');
         await keyExchanger.joinGroup(groupId.toString(), username);
         console.log(`Échange de clés initié pour le groupe ${groupId}`);
-        
+
         // Vérifier si nous avons déjà une clé pour ce groupe
         const hasKey = await cryptoManager.hasKey(`group_${groupId}`);
         if (hasKey) {
@@ -94,7 +94,7 @@ export function GroupChat({
             degradedMode: (msg as any).degradedMode,
             groupId
           });
-          
+
           // Vérifier si c'est un message en mode dégradé
           if ((msg as any).degradedMode) {
             console.log('Message de groupe en mode dégradé, pas de déchiffrement');
@@ -103,9 +103,9 @@ export function GroupChat({
           } else {
             try {
               // Vérifier si le contenu est du JSON chiffré
-              if (typeof msg.content === 'string' && 
-                  msg.content.trim().startsWith('{') && 
-                  msg.content.trim().endsWith('}')) {
+              if (typeof msg.content === 'string' &&
+                msg.content.trim().startsWith('{') &&
+                msg.content.trim().endsWith('}')) {
                 console.log('Tentative de déchiffrement du message de groupe...');
                 const encrypted = JSON.parse(msg.content);
                 console.log('Message de groupe parsé:', encrypted);
@@ -140,7 +140,7 @@ export function GroupChat({
             }
           }
         }
-        
+
         setMessages(prev => [...prev, msg]);
       } catch (error) {
         console.error('Erreur lors du traitement du message de groupe:', error);
@@ -164,7 +164,7 @@ export function GroupChat({
     const handleUserLeftGroup = async (data: { groupId: number; username: string }) => {
       if (data.groupId === groupId) {
         setGroupMembers(prev => prev.filter(u => u !== data.username));
-        
+
         // Gérer la sortie d'un utilisateur du groupe pour l'échange de clés
         try {
           await keyExchanger.leaveGroup(groupId.toString(), data.username);
@@ -240,12 +240,12 @@ export function GroupChat({
       socket.off('key-exchange-response', handleKeyExchangeResponse);
       socket.off('key-distribution', handleKeyDistribution);
       socket.off('key-exchange-error', handleKeyExchangeError);
-      
+
       // Gérer la sortie du groupe pour l'échange de clés
       keyExchanger.leaveGroup(groupId.toString(), username).catch(error => {
         console.error('Erreur lors de la sortie du groupe:', error);
       });
-      
+
       socket.emit('leave group', groupId);
     };
   }, [socket, groupId]); // Plus de dépendance sur symmetricKey
@@ -261,15 +261,15 @@ export function GroupChat({
         console.error('Socket non disponible');
         return;
       }
-      
+
       if (!message.trim()) {
         return;
       }
-      
+
       // Utiliser le contexte de groupe pour le chiffrement
       const context = `group_${groupId}`;
       const encrypted = await cryptoManager.encryptMessage(message, context);
-      
+
       socket.emit('group message', {
         groupId,
         type: 'text',
@@ -278,7 +278,7 @@ export function GroupChat({
       });
     } catch (error) {
       console.error('Erreur lors de l\'envoi du message de groupe:', error);
-      
+
       // Essayer d'envoyer en mode dégradé si le chiffrement échoue
       try {
         if (socket) {
@@ -337,12 +337,12 @@ export function GroupChat({
         <div className="flex items-center gap-2">
           <span className="text-yellow-500 text-sm">⚠️</span>
           <p className="text-xs sm:text-sm text-yellow-300">
-            <span className="font-medium">Fonctionnalités en cours de développement</span> - 
+            <span className="font-medium">Fonctionnalités en cours de développement</span> -
             Les groupes ne sont pas encore complètement implémentés.
           </p>
         </div>
       </div>
-      
+
       {/* Header du groupe */}
       <div className="bg-black border-b border-red-800 p-4">
         <div className="flex items-center justify-between">
@@ -358,7 +358,7 @@ export function GroupChat({
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-semibold">{groupName}</h2>
                 {/* Indicateur de sécurité détaillé */}
-                <GroupSecurityIndicator 
+                <GroupSecurityIndicator
                   status={getGroupSecurityStatus()}
                   groupName={groupName}
                   memberCount={groupMembers.length}
@@ -367,7 +367,7 @@ export function GroupChat({
                 />
               </div>
               <p className="text-sm text-red-400">
-                {groupMembers.length} camarade{groupMembers.length > 1 ? 's' : ''} connecté{groupMembers.length > 1 ? 's' : ''}
+                {groupMembers.length} compagnon·e{groupMembers.length > 1 ? '·s' : ''} connecté·e{groupMembers.length > 1 ? '·s' : ''}
                 {keyExchangeStatus === 'secured' && ' • Communications sécurisées'}
                 {keyExchangeStatus === 'exchanging' && ' • Sécurisation en cours...'}
                 {keyExchangeStatus === 'error' && ' • Connexion non sécurisée'}
@@ -388,9 +388,9 @@ export function GroupChat({
           </div>
         ) : (
           messages.map((msg: Message, index: number) => (
-            <ChatMessage 
-              key={msg.id || index} 
-              message={msg} 
+            <ChatMessage
+              key={msg.id || index}
+              message={msg}
               isOwnMessage={msg.username === username}
               onDeleteMessage={handleDeleteMessage}
             />
@@ -400,8 +400,8 @@ export function GroupChat({
       </main>
 
       {/* Input */}
-      <ChatInput 
-        onSendMessage={handleSendMessage} 
+      <ChatInput
+        onSendMessage={handleSendMessage}
         onSendFile={handleSendFile}
         onSendAudio={handleSendAudio}
         isConnected={!!socket}

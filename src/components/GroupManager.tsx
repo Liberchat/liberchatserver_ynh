@@ -147,7 +147,7 @@ export function GroupManager({ socket, username, onJoinGroup, currentGroup, getG
                 </div>
                 <div className="text-xs sm:text-sm text-gray-300 space-y-1">
                   <div className="flex items-center justify-between flex-wrap gap-1">
-                    <span className="text-red-400">{group.memberCount} camarade{group.memberCount > 1 ? 's' : ''}</span>
+                    <span className="text-red-400">{group.memberCount} compagnon·e{group.memberCount > 1 ? '·s' : ''}</span>
                     <span className="text-xs text-gray-500 whitespace-nowrap">
                       {formatDate(group.createdAt)}
                     </span>
