@@ -579,23 +579,43 @@ function App() {
     // Gestion des réactions
     const handleReactMessage = async (data: { messageId: number, reactions: any[] }) => {
       if (!symmetricKey || !decryptMessageE2EE) return;
-      const decryptedReactions: { emoji: string, username: string }[] = [];
+
+      const decryptedReactions: { emoji: string, username: string, action?: string }[] = [];
       for (const encrypted of data.reactions) {
         try {
           const decrypted = await decryptMessageE2EE(encrypted, symmetricKey);
           const obj = JSON.parse(decrypted);
           decryptedReactions.push(obj);
-        } catch (e) { }
+        } catch (e) {
+          console.warn('Erreur de déchiffrement de réaction:', e);
+        }
       }
-      // Regroupe par emoji
+
+      // Regroupe par emoji en tenant compte des actions add/remove
       const reactionsMap: { [emoji: string]: string[] } = {};
       for (const r of decryptedReactions) {
         if (!reactionsMap[r.emoji]) reactionsMap[r.emoji] = [];
-        reactionsMap[r.emoji].push(r.username);
+
+        if (r.action === 'remove') {
+          // Retirer l'utilisateur de la réaction
+          reactionsMap[r.emoji] = reactionsMap[r.emoji].filter(u => u !== r.username);
+        } else {
+          // Ajouter l'utilisateur (action 'add' ou pas d'action spécifiée)
+          if (!reactionsMap[r.emoji].includes(r.username)) {
+            reactionsMap[r.emoji].push(r.username);
+          }
+        }
+
+        // Supprimer les emojis sans utilisateurs
+        if (reactionsMap[r.emoji].length === 0) {
+          delete reactionsMap[r.emoji];
+        }
       }
+
       setMessages(prevMsgs => prevMsgs.map(m => {
         if (m.id !== data.messageId) return m;
-        return { ...m, reactions: reactionsMap };
+        // Remplacer complètement les réactions au lieu de fusionner
+        return { ...m, reactions: Object.keys(reactionsMap).length > 0 ? reactionsMap : undefined };
       }));
     };
     socket.on('react message', handleReactMessage);
@@ -932,7 +952,9 @@ function App() {
                     onReply={handleReply}
                     socket={socket}
                     symmetricKey={symmetricKey}
-
+                    encryptMessageE2EE={encryptMessageE2EE}
+                    encryptMessageFallback={encryptMessageFallback}
+                    currentUser={username}
                   />
                 ))}
                 {/* Indicateur de saisie façon bulle Facebook */}

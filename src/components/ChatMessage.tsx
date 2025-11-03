@@ -43,9 +43,10 @@ interface ChatMessageProps {
   encryptMessageE2EE?: (msg: string, key: CryptoKey | string) => Promise<any>;
   encryptMessageFallback?: (msg: string, key: string) => any;
   onRetryDecryption?: (messageId: number) => void; // Callback pour réessayer le déchiffrement
+  currentUser?: string; // Nom d'utilisateur actuel pour les réactions
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ message, isOwnMessage, onDeleteMessage, onReply, socket, symmetricKey, encryptMessageE2EE, encryptMessageFallback, onRetryDecryption }) => {
+const ChatMessage: React.FC<ChatMessageProps> = ({ message, isOwnMessage, onDeleteMessage, onReply, socket, symmetricKey, encryptMessageE2EE, encryptMessageFallback, onRetryDecryption, currentUser }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -438,25 +439,51 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, isOwnMessage, onDele
 
   // Gestion de la réaction emoji
   const handleReact = async (emoji: string) => {
-    if (!socket || !symmetricKey || !encryptMessageE2EE) return;
-    // On chiffre l'objet {emoji, username: message.username}
-    const payload = JSON.stringify({ emoji, username: message.username });
-    const encrypted = await encryptMessageE2EE(payload, symmetricKey);
-    socket.emit('react message', { messageId: message.id, encrypted });
-    setShowEmojiPicker(false);
+    if (!socket || !symmetricKey || !encryptMessageE2EE || !currentUser) return;
+    
+    try {
+      // Vérifier si l'utilisateur a déjà réagi avec cet emoji
+      const currentReactions = message.reactions || {};
+      const usersForEmoji = currentReactions[emoji] || [];
+      const hasReacted = usersForEmoji.includes(currentUser);
+      
+      // Créer la nouvelle réaction ou la retirer
+      const payload = JSON.stringify({ 
+        emoji, 
+        username: currentUser,
+        action: hasReacted ? 'remove' : 'add'
+      });
+      
+      const encrypted = await encryptMessageE2EE(payload, symmetricKey);
+      
+      // Si c'est un message de groupe, inclure le groupId
+      const reactData: any = { messageId: message.id, encrypted };
+      if (message.groupId) {
+        reactData.groupId = message.groupId;
+      }
+      
+      socket.emit('react message', reactData);
+      setShowEmojiPicker(false);
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout de réaction:', error);
+    }
   };
 
   // Affichage des réactions (juste la liste, sans bouton ➕)
   const renderReactions = () => {
-    if (!symmetricKey) return null; // Masquer si pas de clé
-    if (!message.reactions) return null;
+    // Toujours afficher les réactions si elles existent, même sans clé
+    if (!message.reactions || Object.keys(message.reactions).length === 0) return null;
     return (
       <div className="flex gap-1 mt-1 flex-wrap">
         {Object.entries(message.reactions).map(([emoji, users]) => (
           <button 
             key={emoji} 
-            className="bg-black/60 border border-red-700 rounded-full px-2 py-0.5 text-sm cursor-pointer select-none flex items-center gap-1 hover:bg-red-700/40 focus:ring-2 focus:ring-red-700"
-            onClick={() => handleReact(emoji)}
+            className={`bg-black/60 border border-red-700 rounded-full px-2 py-0.5 text-sm select-none flex items-center gap-1 focus:ring-2 focus:ring-red-700 ${
+              symmetricKey 
+                ? 'cursor-pointer hover:bg-red-700/40' 
+                : 'cursor-default opacity-70'
+            }`}
+            onClick={() => symmetricKey ? handleReact(emoji) : undefined}
             title={users.join(', ')}
             aria-label={`Réaction ${emoji} par ${users.join(', ')}. Cliquez pour réagir`}
             tabIndex={0}

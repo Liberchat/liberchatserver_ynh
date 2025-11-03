@@ -225,6 +225,39 @@ export function GroupChat({
       }
     });
 
+    // Gestion des réactions de groupe
+    const handleGroupReactMessage = async (data: { messageId: number, reactions: any[] }) => {
+      try {
+        const decryptedReactions: { emoji: string, username: string }[] = [];
+        for (const encrypted of data.reactions) {
+          try {
+            const context = `group_${groupId}`;
+            const decrypted = await cryptoManager.decryptMessage(encrypted, context);
+            const obj = JSON.parse(decrypted);
+            decryptedReactions.push(obj);
+          } catch (e) {
+            console.warn('Erreur de déchiffrement de réaction:', e);
+          }
+        }
+        
+        // Regroupe par emoji
+        const reactionsMap: { [emoji: string]: string[] } = {};
+        for (const r of decryptedReactions) {
+          if (!reactionsMap[r.emoji]) reactionsMap[r.emoji] = [];
+          if (!reactionsMap[r.emoji].includes(r.username)) {
+            reactionsMap[r.emoji].push(r.username);
+          }
+        }
+        
+        setMessages(prevMsgs => prevMsgs.map(m => {
+          if (m.id !== data.messageId) return m;
+          return { ...m, reactions: reactionsMap };
+        }));
+      } catch (error) {
+        console.error('Erreur lors du traitement des réactions de groupe:', error);
+      }
+    };
+
     socket.on('group message', handleGroupMessage);
     socket.on('group messages', handleGroupMessages);
     socket.on('user joined group', handleUserJoinedGroup);
@@ -233,6 +266,7 @@ export function GroupChat({
     socket.on('key-exchange-response', handleKeyExchangeResponse);
     socket.on('key-distribution', handleKeyDistribution);
     socket.on('key-exchange-error', handleKeyExchangeError);
+    socket.on('group react message', handleGroupReactMessage);
 
     return () => {
       socket.off('group message', handleGroupMessage);
@@ -243,6 +277,7 @@ export function GroupChat({
       socket.off('key-exchange-response', handleKeyExchangeResponse);
       socket.off('key-distribution', handleKeyDistribution);
       socket.off('key-exchange-error', handleKeyExchangeError);
+      socket.off('group react message', handleGroupReactMessage);
 
       // Gérer la sortie du groupe pour l'échange de clés
       keyExchanger.leaveGroup(groupId.toString(), username).catch(error => {
@@ -396,6 +431,18 @@ export function GroupChat({
               message={msg}
               isOwnMessage={msg.username === username}
               onDeleteMessage={handleDeleteMessage}
+              socket={socket}
+              symmetricKey={keyExchangeStatus === 'secured' ? `group_${groupId}` : null}
+              encryptMessageE2EE={async (msg: string, key: any) => {
+                try {
+                  const context = `group_${groupId}`;
+                  return await cryptoManager.encryptMessage(msg, context);
+                } catch (error) {
+                  console.error('Erreur de chiffrement:', error);
+                  throw error;
+                }
+              }}
+              currentUser={username}
             />
           ))
         )}

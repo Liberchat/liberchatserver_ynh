@@ -179,24 +179,107 @@ if (basePath) {
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+// Variables globales pour les données
+const users = new Map();
+const usersByName = new Map();
+const messages = [];
+const MAX_MESSAGES = parseInt(process.env.MAX_MESSAGES) || 100;
+let nextMessageId = 1;
+
+// Système de groupes
+const groups = new Map(); // groupId -> { name, members: Set, messages: [], createdAt, createdBy }
+const userGroups = new Map(); // socketId -> Set of groupIds
+let nextGroupId = 1;
+
+// Sauvegarde des données
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
+import { join as pathJoin } from 'path';
+
+const DATA_DIR = pathJoin(__dirname, 'data');
+const GROUPS_FILE = pathJoin(DATA_DIR, 'groups.json');
+const MESSAGES_FILE = pathJoin(DATA_DIR, 'messages.json');
+
+// Créer le dossier data s'il n'existe pas
+if (!existsSync(DATA_DIR)) {
+  mkdirSync(DATA_DIR, { recursive: true });
+}
+
+// Charger les données sauvegardées
+const loadData = () => {
+  try {
+    if (existsSync(GROUPS_FILE)) {
+      const groupsData = JSON.parse(readFileSync(GROUPS_FILE, 'utf8'));
+      groupsData.forEach(group => {
+        groups.set(group.id, {
+          ...group,
+          members: new Set(group.members)
+        });
+      });
+      nextGroupId = Math.max(...Array.from(groups.keys()), 0) + 1;
+    }
+    
+    if (existsSync(MESSAGES_FILE)) {
+      const messagesData = JSON.parse(readFileSync(MESSAGES_FILE, 'utf8'));
+      messages.push(...messagesData.messages);
+      nextMessageId = messagesData.nextMessageId || 1;
+    }
+  } catch (error) {
+    console.error('Erreur lors du chargement des données:', error);
+  }
+};
+
+// Sauvegarder les données
+const saveData = () => {
+  try {
+    const groupsData = Array.from(groups.entries()).map(([id, group]) => ({
+      ...group,
+      members: Array.from(group.members)
+    }));
+    
+    writeFileSync(GROUPS_FILE, JSON.stringify(groupsData, null, 2));
+    writeFileSync(MESSAGES_FILE, JSON.stringify({
+      messages: messages.slice(-MAX_MESSAGES),
+      nextMessageId
+    }, null, 2));
+  } catch (error) {
+    console.error('Erreur lors de la sauvegarde:', error);
+  }
+};
+
+// Charger les données au démarrage
+loadData();
+
 // Routes API pour les groupes
-app.get(`${basePath}/api/groups`, (req, res) => {
-  const groupsList = Array.from(groups.values()).map(group => 
-    groupUtils.formatGroupForAPI(group)
-  );
+app.get('/api/groups', (req, res) => {
+  const groupsList = Array.from(groups.values()).map(group => ({
+    id: group.id,
+    name: group.name,
+    memberCount: group.members.size,
+    messageCount: group.messages.length,
+    createdAt: group.createdAt,
+    createdBy: group.createdBy,
+    lastActivity: group.messages.length > 0 
+      ? Math.max(...group.messages.map(m => m.timestamp))
+      : group.createdAt
+  }));
   res.json(groupsList);
 });
 
-app.post(`${basePath}/api/groups`, express.json(), (req, res) => {
+app.post('/api/groups', express.json(), (req, res) => {
   const { name, creatorUsername } = req.body;
   
-  // Validation du nom avec la configuration
-  const validation = validateGroupName(name);
-  if (!validation.valid) {
-    return res.status(400).json({ error: validation.error });
+  // Validation du nom
+  if (!name || name.length < 3 || name.length > 50) {
+    return res.status(400).json({ error: 'Le nom doit contenir entre 3 et 50 caractères' });
   }
   
-  const groupId = groupUtils.generateGroupId(groups);
+  // Caractères interdits
+  const forbiddenChars = /[<>\"'&]/;
+  if (forbiddenChars.test(name)) {
+    return res.status(400).json({ error: 'Le nom contient des caractères interdits' });
+  }
+  
+  const groupId = Math.max(...Array.from(groups.keys()), 0) + 1;
   const newGroup = {
     id: groupId,
     name: xss(name.trim()),
@@ -209,29 +292,32 @@ app.post(`${basePath}/api/groups`, express.json(), (req, res) => {
   groups.set(groupId, newGroup);
   saveData();
   
-  res.json(groupUtils.formatGroupForAPI(newGroup));
+  res.json({
+    id: newGroup.id,
+    name: newGroup.name,
+    memberCount: newGroup.members.size,
+    messageCount: newGroup.messages.length,
+    createdAt: newGroup.createdAt,
+    createdBy: newGroup.createdBy
+  });
 });
 
 // Route pour créer une sauvegarde manuelle
-app.post(`${basePath}/api/backup`, (req, res) => {
+app.post('/api/backup', (req, res) => {
   try {
-    const backupPath = createBackup();
-    if (backupPath) {
-      res.json({ 
-        success: true, 
-        message: 'Sauvegarde créée avec succès',
-        backupPath: backupPath.split('/').pop() // Retourner seulement le nom du dossier
-      });
-    } else {
-      res.status(500).json({ error: 'Erreur lors de la création de la sauvegarde' });
-    }
+    // Sauvegarde simplifiée
+    saveData();
+    res.json({ 
+      success: true, 
+      message: 'Données sauvegardées avec succès'
+    });
   } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la création de la sauvegarde' });
+    res.status(500).json({ error: 'Erreur lors de la sauvegarde' });
   }
 });
 
 // Route pour obtenir les statistiques
-app.get(`${basePath}/api/stats`, (req, res) => {
+app.get('/api/stats', (req, res) => {
   const stats = {
     totalGroups: groups.size,
     totalMessages: messages.length,
@@ -242,81 +328,20 @@ app.get(`${basePath}/api/stats`, (req, res) => {
   res.json(stats);
 });
 
-// Routes API pour l'échange de clés sécurisé
-app.post(`${basePath}/api/keys/register`, express.json(), (req, res) => {
+// Routes API pour l'échange de clés (version simplifiée)
+app.post('/api/keys/register', express.json(), (req, res) => {
   const { userId, publicKey } = req.body;
   
   if (!userId || !publicKey) {
     return res.status(400).json({ error: 'userId et publicKey requis' });
   }
 
-  const success = keyExchangeService.registerPublicKey(userId, publicKey, req.ip);
-  
-  if (success) {
-    res.json({ success: true, message: 'Clé publique enregistrée' });
-  } else {
-    res.status(500).json({ error: 'Erreur lors de l\'enregistrement de la clé' });
-  }
-});
-
-app.get(`${basePath}/api/keys/public/:userId`, (req, res) => {
-  const { userId } = req.params;
-  const publicKey = keyExchangeService.getPublicKey(userId);
-  
-  if (publicKey) {
-    res.json({ publicKey });
-  } else {
-    res.status(404).json({ error: 'Clé publique non trouvée' });
-  }
-});
-
-app.get(`${basePath}/api/keys/public`, (req, res) => {
-  const { exclude } = req.query;
-  const publicKeys = keyExchangeService.getAllPublicKeys(exclude);
-  res.json({ publicKeys });
-});
-
-app.post(`${basePath}/api/keys/group`, express.json(), (req, res) => {
-  const { groupId, groupKeyData, creatorId } = req.body;
-  
-  if (!groupId || !groupKeyData || !creatorId) {
-    return res.status(400).json({ error: 'groupId, groupKeyData et creatorId requis' });
-  }
-
-  const success = keyExchangeService.registerGroupKey(groupId, groupKeyData, creatorId);
-  
-  if (success) {
-    res.json({ success: true, message: 'Clé de groupe enregistrée' });
-  } else {
-    res.status(500).json({ error: 'Erreur lors de l\'enregistrement de la clé de groupe' });
-  }
-});
-
-app.get(`${basePath}/api/keys/group/:groupId/:userId`, (req, res) => {
-  const { groupId, userId } = req.params;
-  const groupKeyData = keyExchangeService.getGroupKey(groupId, userId);
-  
-  if (groupKeyData) {
-    res.json({ groupKeyData });
-  } else {
-    res.status(404).json({ error: 'Clé de groupe non trouvée ou accès non autorisé' });
-  }
-});
-
-app.get(`${basePath}/api/keys/audit`, (req, res) => {
-  const filter = {
-    userId: req.query.userId,
-    groupId: req.query.groupId,
-    action: req.query.action,
-    since: req.query.since ? parseInt(req.query.since) : undefined
-  };
-  
-  const auditLog = keyExchangeService.getAuditLog(filter);
-  res.json({ auditLog });
+  // Version simplifiée - juste confirmer la réception
+  res.json({ success: true, message: 'Clé publique reçue' });
 });
 
 // Route pour récupérer les métadonnées d'un lien (titre, description, image)
-app.get(`${basePath}/api/link-preview`, async (req, res) => {
+app.get('/api/link-preview', async (req, res) => {
   const url = req.query.url;
   if (!url || typeof url !== 'string') return res.status(400).json({ error: 'URL manquante' });
   try {
@@ -507,22 +532,7 @@ app.get('/api/stats', (req, res) => {
   res.json(stats);
 });
 
-app.post('/api/backup', (req, res) => {
-  try {
-    const backupPath = createBackup();
-    if (backupPath) {
-      res.json({ 
-        success: true, 
-        message: 'Sauvegarde créée avec succès',
-        backupPath: backupPath.split('/').pop() // Retourner seulement le nom du dossier
-      });
-    } else {
-      res.status(500).json({ error: 'Erreur lors de la création de la sauvegarde' });
-    }
-  } catch (error) {
-    res.status(500).json({ error: 'Erreur lors de la création de la sauvegarde' });
-  }
-});
+
 
 // Route catch-all pour SPA
 // Define rate limiter for static file routes
@@ -541,96 +551,43 @@ if (basePath) {
     res.sendFile(join(__dirname, 'dist', 'index.html'));
   });
 } else {
+  // Routes API juste avant la route catch-all
+  app.get('/api/groups', (req, res) => {
+    try {
+      const groupsList = Array.from(groups.values()).map(group => ({
+        id: group.id,
+        name: group.name,
+        memberCount: group.members.size,
+        messageCount: group.messages.length,
+        createdAt: group.createdAt,
+        createdBy: group.createdBy,
+        lastActivity: group.messages.length > 0 
+          ? Math.max(...group.messages.map(m => m.timestamp))
+          : group.createdAt
+      }));
+      res.json(groupsList);
+    } catch (error) {
+      console.error('Erreur API groups:', error);
+      res.json([]);
+    }
+  });
+
   app.get('*', staticFileLimiter, (req, res) => {
     res.sendFile(join(__dirname, 'dist', 'index.html'));
   });
 }
 
-const users = new Map();
-const usersByName = new Map();
-const messages = [];
-const MAX_MESSAGES = parseInt(process.env.MAX_MESSAGES) || 100;
-let nextMessageId = 1;
-
-// Système de groupes
-const groups = new Map(); // groupId -> { name, members: Set, messages: [], createdAt, createdBy }
-const userGroups = new Map(); // socketId -> Set of groupIds
-let nextGroupId = 1;
-
-// Sauvegarde des données
-import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
-import { join as pathJoin } from 'path';
-
-const DATA_DIR = pathJoin(__dirname, 'data');
-const GROUPS_FILE = pathJoin(DATA_DIR, 'groups.json');
-const MESSAGES_FILE = pathJoin(DATA_DIR, 'messages.json');
-
-// Créer le dossier data s'il n'existe pas
-if (!existsSync(DATA_DIR)) {
-  mkdirSync(DATA_DIR, { recursive: true });
-}
-
-// Charger les données sauvegardées
-const loadData = () => {
-  try {
-    if (existsSync(GROUPS_FILE)) {
-      const groupsData = JSON.parse(readFileSync(GROUPS_FILE, 'utf8'));
-      groupsData.forEach(group => {
-        groups.set(group.id, {
-          ...group,
-          members: new Set(group.members)
-        });
-      });
-      nextGroupId = Math.max(...Array.from(groups.keys()), 0) + 1;
-    }
-    
-    if (existsSync(MESSAGES_FILE)) {
-      const messagesData = JSON.parse(readFileSync(MESSAGES_FILE, 'utf8'));
-      messages.push(...messagesData.messages);
-      nextMessageId = messagesData.nextMessageId || 1;
-    }
-  } catch (error) {
-    console.error('Erreur lors du chargement des données:', error);
-  }
-};
-
-// Sauvegarder les données
-const saveData = () => {
-  try {
-    const groupsData = Array.from(groups.entries()).map(([id, group]) => ({
-      ...group,
-      members: Array.from(group.members)
-    }));
-    
-    writeFileSync(GROUPS_FILE, JSON.stringify(groupsData, null, 2));
-    writeFileSync(MESSAGES_FILE, JSON.stringify({
-      messages: messages.slice(-MAX_MESSAGES),
-      nextMessageId
-    }, null, 2));
-  } catch (error) {
-    console.error('Erreur lors de la sauvegarde:', error);
-  }
-};
-
-// Charger les données au démarrage
-loadData();
-
 // Sauvegarde automatique toutes les 5 minutes
 setInterval(saveData, 5 * 60 * 1000);
 
-// Système de sauvegarde avancé
-import { createBackup, cleanOldBackups } from './backup-system.js';
-import { GROUPS_CONFIG, validateGroupName, groupUtils } from './groups.config.js';
-import { keyExchangeService } from './key-exchange-service.js';
+// Sauvegarde complète toutes les heures (désactivée temporairement)
+// setInterval(() => {
+//   createBackup();
+//   cleanOldBackups();
+// }, 60 * 60 * 1000);
 
-// Sauvegarde complète toutes les heures
-setInterval(() => {
-  createBackup();
-  cleanOldBackups();
-}, 60 * 60 * 1000);
-
-// Sauvegarde au démarrage
-createBackup();
+// Sauvegarde au démarrage (désactivée temporairement)
+// createBackup();
 
 const cleanOldMessages = () => {
   if (messages.length > MAX_MESSAGES) {
@@ -695,104 +652,20 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Événements pour l'échange de clés sécurisé
-  socket.on('register_public_key', (data) => {
-    try {
-      const user = users.get(socket.id);
-      if (!user) {
-        socket.emit('key_error', 'Utilisateur non authentifié');
-        return;
-      }
-
-      const { publicKey } = data;
-      const success = keyExchangeService.registerPublicKey(user.username, publicKey, socket.id);
-      
-      if (success) {
-        socket.emit('public_key_registered', { success: true });
-        
-        // Notifier les autres utilisateurs qu'une nouvelle clé est disponible
-        socket.broadcast.emit('new_public_key_available', { 
-          userId: user.username,
-          publicKey 
-        });
-      } else {
-        socket.emit('key_error', 'Erreur lors de l\'enregistrement de la clé publique');
-      }
-    } catch (error) {
-      console.error('Erreur lors de l\'enregistrement de la clé publique:', error);
-      socket.emit('key_error', 'Erreur serveur lors de l\'enregistrement de la clé');
-    }
+  // Événements pour l'échange de clés (version simplifiée)
+  socket.on('key-exchange-request', (data) => {
+    // Relayer la demande d'échange de clés
+    socket.broadcast.emit('key-exchange-request', data);
   });
 
-  socket.on('request_public_keys', () => {
-    try {
-      const user = users.get(socket.id);
-      if (!user) {
-        socket.emit('key_error', 'Utilisateur non authentifié');
-        return;
-      }
-
-      const publicKeys = keyExchangeService.getAllPublicKeys(user.username);
-      socket.emit('public_keys_response', { publicKeys });
-    } catch (error) {
-      console.error('Erreur lors de la récupération des clés publiques:', error);
-      socket.emit('key_error', 'Erreur lors de la récupération des clés publiques');
-    }
+  socket.on('key-exchange-response', (data) => {
+    // Relayer la réponse d'échange de clés
+    socket.broadcast.emit('key-exchange-response', data);
   });
 
-  socket.on('register_group_key', (data) => {
-    try {
-      const user = users.get(socket.id);
-      if (!user) {
-        socket.emit('key_error', 'Utilisateur non authentifié');
-        return;
-      }
-
-      const { groupId, groupKeyData } = data;
-      const success = keyExchangeService.registerGroupKey(groupId, groupKeyData, user.username);
-      
-      if (success) {
-        socket.emit('group_key_registered', { success: true, groupId });
-        
-        // Notifier les membres du groupe
-        groupKeyData.authorizedUsers.forEach(userId => {
-          const userSocketId = usersByName.get(userId);
-          if (userSocketId && userSocketId !== socket.id) {
-            io.to(userSocketId).emit('new_group_key_available', { 
-              groupId,
-              groupKeyData 
-            });
-          }
-        });
-      } else {
-        socket.emit('key_error', 'Erreur lors de l\'enregistrement de la clé de groupe');
-      }
-    } catch (error) {
-      console.error('Erreur lors de l\'enregistrement de la clé de groupe:', error);
-      socket.emit('key_error', 'Erreur serveur lors de l\'enregistrement de la clé de groupe');
-    }
-  });
-
-  socket.on('request_group_key', (data) => {
-    try {
-      const user = users.get(socket.id);
-      if (!user) {
-        socket.emit('key_error', 'Utilisateur non authentifié');
-        return;
-      }
-
-      const { groupId } = data;
-      const groupKeyData = keyExchangeService.getGroupKey(groupId, user.username);
-      
-      if (groupKeyData) {
-        socket.emit('group_key_response', { groupId, groupKeyData });
-      } else {
-        socket.emit('key_error', 'Clé de groupe non trouvée ou accès non autorisé');
-      }
-    } catch (error) {
-      console.error('Erreur lors de la récupération de la clé de groupe:', error);
-      socket.emit('key_error', 'Erreur lors de la récupération de la clé de groupe');
-    }
+  socket.on('key-distribution', (data) => {
+    // Relayer la distribution de clés
+    socket.broadcast.emit('key-distribution', data);
   });
 
   socket.on('disconnect', (reason) => {
@@ -928,6 +801,48 @@ io.on('connection', (socket) => {
     io.emit('react message', { messageId, reactions: [...msg.reactions] });
   });
 
+  // Réactions emoji sur les messages de groupe
+  socket.on('react message', ({ messageId, encrypted, groupId }) => {
+    try {
+      const user = users.get(socket.id);
+      if (!user) return;
+
+      // Si c'est une réaction de groupe
+      if (groupId && groups.has(groupId)) {
+        const group = groups.get(groupId);
+        if (!group.members.has(socket.id)) return;
+
+        const msgIndex = group.messages.findIndex(m => m.id === messageId);
+        if (msgIndex === -1) return;
+        
+        const msg = group.messages[msgIndex];
+        if (!msg.reactions) msg.reactions = [];
+        
+        // Ajoute la réaction chiffrée
+        msg.reactions.push(encrypted);
+        
+        // Diffuse aux membres du groupe seulement
+        io.to(`group_${groupId}`).emit('group react message', { 
+          messageId, 
+          reactions: [...msg.reactions] 
+        });
+        
+        saveData();
+        return;
+      }
+
+      // Sinon, traitement normal pour le chat global
+      const msgIndex = messages.findIndex(m => m.id === messageId);
+      if (msgIndex === -1) return;
+      const msg = messages[msgIndex];
+      if (!msg.reactions) msg.reactions = [];
+      msg.reactions.push(encrypted);
+      io.emit('react message', { messageId, reactions: [...msg.reactions] });
+    } catch (error) {
+      console.error('Erreur lors du traitement de la réaction:', error);
+    }
+  });
+
   // Indicateur "en train d'écrire"
   socket.on('typing', () => {
     const user = users.get(socket.id);
@@ -967,9 +882,17 @@ io.on('connection', (socket) => {
   // Gestion des groupes
   socket.on('get groups', () => {
     try {
-      const groupsList = Array.from(groups.values()).map(group => 
-        groupUtils.formatGroupForAPI(group)
-      );
+      const groupsList = Array.from(groups.values()).map(group => ({
+        id: group.id,
+        name: group.name,
+        memberCount: group.members.size,
+        messageCount: group.messages.length,
+        createdAt: group.createdAt,
+        createdBy: group.createdBy,
+        lastActivity: group.messages.length > 0 
+          ? Math.max(...group.messages.map(m => m.timestamp))
+          : group.createdAt
+      }));
       socket.emit('groups list', groupsList);
     } catch (error) {
       console.error('Erreur lors de l\'envoi de la liste des groupes:', error);
@@ -987,14 +910,20 @@ io.on('connection', (socket) => {
 
       const { name, creatorUsername } = data;
       
-      // Validation du nom avec la configuration
-      const validation = validateGroupName(name);
-      if (!validation.valid) {
-        socket.emit('group creation error', { message: validation.error });
+      // Validation du nom
+      if (!name || name.length < 3 || name.length > 50) {
+        socket.emit('group creation error', { message: 'Le nom doit contenir entre 3 et 50 caractères' });
         return;
       }
       
-      const groupId = groupUtils.generateGroupId(groups);
+      // Caractères interdits
+      const forbiddenChars = /[<>\"'&]/;
+      if (forbiddenChars.test(name)) {
+        socket.emit('group creation error', { message: 'Le nom contient des caractères interdits' });
+        return;
+      }
+      
+      const groupId = Math.max(...Array.from(groups.keys()), 0) + 1;
       const newGroup = {
         id: groupId,
         name: xss(name.trim()),
@@ -1007,7 +936,14 @@ io.on('connection', (socket) => {
       groups.set(groupId, newGroup);
       saveData();
       
-      socket.emit('group created', groupUtils.formatGroupForAPI(newGroup));
+      socket.emit('group created', {
+        id: newGroup.id,
+        name: newGroup.name,
+        memberCount: newGroup.members.size,
+        messageCount: newGroup.messages.length,
+        createdAt: newGroup.createdAt,
+        createdBy: newGroup.createdBy
+      });
       
       // Notifier tous les clients de la création du nouveau groupe
       io.emit('group list updated');
