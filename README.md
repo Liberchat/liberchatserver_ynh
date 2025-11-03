@@ -12,13 +12,15 @@
 [![Logiciel Libre](https://img.shields.io/badge/Logiciel_Libre-100%25-black?style=for-the-badge)](#)
 [![Anarcho-syndicaliste](https://img.shields.io/badge/Anarcho--syndicaliste-Noir_&_Rouge-black?style=for-the-badge&labelColor=ff2800)](#)
 
-[![Version](https://img.shields.io/badge/Version-6.1.21-red?style=for-the-badge)](#)
+[![Version](https://img.shields.io/badge/Version-6.5.0-red?style=for-the-badge)](#)
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white)](https://socket.io/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
 **Un chat en temps réel, autogéré, horizontal, pour la Commune numérique.**
+
+> ⚠️ **IMPORTANT** : Le système de **groupes n'est pas encore fonctionnel**. Utilisez le **chat principal** qui fonctionne parfaitement !
 
 [📝 Documentation](#-documentation) | [🤝 Contribuer](#-contribution) | [📧 Contact](#-contact)
 
@@ -82,9 +84,10 @@
   - Noms d'utilisateur uniques
 
 - 🛡️ **Sécurité**
-  - Connexions sécurisées
-  - Authentification utilisateur
-  - Protection contre le spam
+  - **🔐 Chiffrement automatique E2EE** : Plus besoin de clé partagée, le chiffrement se fait automatiquement
+  - **🔑 Gestion transparente des clés** : Échange de clés automatique entre utilisateurs
+  - **🏗️ Groupes sécurisés** : Chaque groupe a ses propres clés de chiffrement (en développement)
+  - Connexions sécurisées et protection contre le spam
   - Variables d'environnement sécurisées
 
 - 🎨 **Interface**
@@ -151,9 +154,51 @@ Pour activer le mode light :
 
 > 💡 Astuce : Vous pouvez basculer à tout moment entre le mode sombre et le mode clair selon vos préférences.
 
+## 🆕 NOUVEAUTÉS MAJEURES VERSION 6.5.0 🎉
+
+### 🎯 **Réactions Emoji Complètement Fonctionnelles**
+- ✅ **Réactions bidirectionnelles** : Les réactions emoji fonctionnent maintenant parfaitement dans les deux sens
+- ✅ **Synchronisation temps réel** : Toutes les réactions se synchronisent instantanément entre tous les clients
+- ✅ **Logique add/remove** : Cliquer sur une réaction existante la retire, cliquer sur un nouvel emoji l'ajoute
+- ✅ **Affichage universel** : Les réactions s'affichent pour tous les utilisateurs, même sans clé de chiffrement
+- ✅ **Chiffrement E2EE** : Les réactions restent chiffrées de bout en bout pour la confidentialité
+- ✅ **Interface améliorée** : Compteur d'utilisateurs par réaction et tooltips informatifs
+
+### 🔧 **Corrections Techniques Majeures**
+- 🐛 **Fix des re-renders infinis** : Suppression des boucles de logs qui causaient des problèmes de performance
+- 🐛 **Gestion des clés améliorée** : Les réactions ne dépendent plus de `symmetricKey` pour l'affichage
+- 🐛 **Fusion des réactions optimisée** : Remplacement complet au lieu de fusion pour éviter les conflits
+- 🐛 **Émission/réception stabilisée** : Correction des problèmes de communication WebSocket pour les réactions
+
+### 🎨 **Améliorations UX/UI**
+- 💫 **Animations fluides** : Les réactions apparaissent avec des animations subtiles
+- 🎯 **Feedback visuel** : Indication claire des réactions cliquables vs lecture seule
+- 📱 **Compatibilité mobile** : Réactions parfaitement fonctionnelles sur tous les appareils
+- ♿ **Accessibilité** : Support complet des lecteurs d'écran pour les réactions
+
+### 🔐 **Révolution du Chiffrement Automatique**
+- 🚀 **Abandon de la clé partagée** : Fini la saisie manuelle d'une clé de chiffrement !
+- 🤖 **Chiffrement automatique** : Le système génère et gère automatiquement les clés de chiffrement
+- 🔄 **Échange de clés transparent** : Les utilisateurs se connectent directement sans configuration
+- 🛡️ **Sécurité renforcée** : Chiffrement E2EE automatique avec Web Crypto API et fallback crypto-js
+- ⚡ **Expérience simplifiée** : Plus besoin de partager une clé, la sécurité est transparente
+
+### 👥 **Système de Groupes (NON FONCTIONNEL)**
+- 🚧 **Code implémenté** : L'interface des groupes est présente mais non opérationnelle
+- ❌ **Pas encore fonctionnel** : Les groupes ne marchent pas correctement actuellement
+- 🔧 **En développement actif** : Fonctionnalité en cours de finalisation
+- 🔮 **Prochaine version** : Sera opérationnel dans une future mise à jour
+- 💬 **Utilisez le chat principal** : Le chat principal fonctionne parfaitement
+
+### 🛡️ **Sécurité Renforcée**
+- 🔐 **Chiffrement préservé** : Toutes les fonctionnalités de chiffrement E2EE restent intactes
+- 🔒 **Réactions sécurisées** : Les réactions sont chiffrées avant envoi avec la même sécurité que les messages
+- 🚫 **Pas de dégradation** : Aucune compromission de sécurité dans les corrections apportées
+- 🔑 **Gestion automatique des clés** : Plus de risque d'erreur humaine dans la gestion des clés
+
 ## 🆕 Nouveautés de la version 6.1.16
 
-- Voir section "Corrections et changements récents (6.1.16)" ci-dessus.
+- Voir section "Corrections et changements récents (6.1.16)" ci-dessous.
 
 ## 🆕 Corrections et changements récents (6.1.16)
 
@@ -230,6 +275,29 @@ Pour activer le mode light :
 - **Un seul projet, un seul dépôt** : frontend (React) et backend (Node.js/Express/Socket.io) sont réunis dans ce même dépôt pour une autogestion et une simplicité maximale.
 
 
+## 🔐 **RÉVOLUTION : Chiffrement Automatique & Groupes**
+
+### 🚀 **Abandon de la Clé Partagée**
+
+**FINI** le système de clé de chiffrement à saisir manuellement ! Liberchat 6.5.0 introduit un **chiffrement 100% automatique** :
+
+- **🤖 Connexion directe** : Plus besoin de saisir une clé, connectez-vous directement avec votre nom d'utilisateur
+- **🔄 Échange automatique** : Les clés sont générées et échangées automatiquement entre utilisateurs
+- **🛡️ Sécurité renforcée** : Web Crypto API + fallback crypto-js pour une compatibilité maximale
+- **⚡ Simplicité totale** : Sécurité maximale avec une expérience utilisateur fluide
+
+### 👥 **Système de Groupes (NON FONCTIONNEL)**
+
+**⚠️ ATTENTION** : Le système de groupes est en cours de développement et **N'EST PAS ENCORE FONCTIONNEL** !
+
+- **🚧 Code présent** : L'interface et le code des groupes sont implémentés mais non opérationnels
+- **🔧 En développement** : Fonctionnalité en cours de finalisation
+- **❌ Ne pas utiliser** : Les groupes ne fonctionnent pas correctement pour le moment
+- **🔮 Futur** : Sera fonctionnel dans une prochaine version
+- **💬 Chat principal** : Utilisez le chat principal qui fonctionne parfaitement
+
+---
+
 *[Read this README in English.](./README_en.md)*
 
 > *Ce paquet vous permet d'installer Liberchat rapidement et simplement sur un serveur YunoHost.*
@@ -239,9 +307,23 @@ Pour activer le mode light :
 
 Liberchat est une application de chat libre et décentralisée qui privilégie la confidentialité et la sécurité.
 
-**Version livrée :** 6.1.21~ynh1
+**Version livrée :** 6.5.0~ynh1
 
 **Démo :** https://liberchat-3-0-1.onrender.com
+
+## 🆕 Nouveautés version 6.5.0 (3 novembre 2025)
+
+### 🎯 **Réactions Emoji Complètement Réparées**
+- **Fonctionnement bidirectionnel** : Les réactions emoji marchent maintenant parfaitement dans les deux sens
+- **Synchronisation temps réel** : Toutes les réactions se synchronisent instantanément entre tous les clients
+- **Interface améliorée** : Affichage universel des réactions même sans clé de chiffrement (lecture seule)
+- **Sécurité préservée** : Les réactions restent chiffrées E2EE lors de l'envoi
+
+### 🔧 **Corrections Techniques**
+- Suppression de la dépendance `symmetricKey` pour l'affichage des réactions
+- Correction des boucles de re-render infinies causées par les logs de debug
+- Amélioration de la logique add/remove pour les réactions existantes
+- Optimisation de la gestion des événements WebSocket pour les réactions
 
 ## 🆕 Nouveautés version 6.1.21 (24 août 2025)
 
