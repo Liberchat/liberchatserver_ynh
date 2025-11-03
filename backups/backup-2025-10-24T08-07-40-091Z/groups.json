@@ -1,0 +1,33 @@
+[
+  {
+    "id": 1,
+    "name": "Groupe Test 1",
+    "members": [
+      "user1",
+      "user2"
+    ],
+    "messages": [
+      {
+        "id": 1,
+        "type": "text",
+        "username": "user1",
+        "content": "Message de test chiffré",
+        "timestamp": 1761215094082,
+        "groupId": 1
+      }
+    ],
+    "createdAt": 1761215094083,
+    "createdBy": "user1"
+  },
+  {
+    "id": 2,
+    "name": "Groupe Test 2",
+    "members": [
+      "user2",
+      "user3"
+    ],
+    "messages": [],
+    "createdAt": 1761215094083,
+    "createdBy": "user2"
+  }
+]

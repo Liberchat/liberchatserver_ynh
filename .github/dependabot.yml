@@ -1,0 +1,6 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"  # ← correction ici
+    directory: "/"            # dossier contenant package.json
+    schedule:
+      interval: "weekly"

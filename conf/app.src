@@ -1,0 +1,6 @@
+SOURCE_URL=https://github.com/AnARCHIS12/Liberchat/archive/refs/tags/v6.1.20.tar.gz
+SOURCE_SUM=auto
+SOURCE_SUM_PRG=sha256sum
+SOURCE_FORMAT=tar.gz
+SOURCE_IN_SUBDIR=true
+SOURCE_FILENAME=

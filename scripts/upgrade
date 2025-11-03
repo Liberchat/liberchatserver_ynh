@@ -1,0 +1,82 @@
+#!/bin/bash
+
+source /usr/share/yunohost/helpers
+source _common.sh
+
+#=================================================
+# STOP SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Stopping a systemd service..." --weight=1
+
+ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app/$app.log"
+
+#=================================================
+# COPY SOURCE FILES
+#=================================================
+ynh_script_progression --message="Upgrading source files..." --weight=1
+
+cp -r ../. "$install_dir"
+chown -R $app:www-data "$install_dir"
+
+#=================================================
+# UPDATE CONFIGURATION
+#=================================================
+ynh_script_progression --message="Updating configuration..." --weight=1
+
+# Backup custom variables from existing .env
+if [ -f "$install_dir/.env" ]; then
+    MAX_MESSAGES_OLD=$(grep "^MAX_MESSAGES=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- | tr -d '\n' || echo "")
+    MAX_FILE_SIZE_OLD=$(grep "^MAX_FILE_SIZE=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- | tr -d '\n' || echo "")
+    PING_TIMEOUT_OLD=$(grep "^PING_TIMEOUT=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- | tr -d '\n' || echo "")
+    PING_INTERVAL_OLD=$(grep "^PING_INTERVAL=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- | tr -d '\n' || echo "")
+fi
+
+ynh_add_config --template="env" --destination="$install_dir/.env"
+chmod 644 "$install_dir/.env"
+chown $app:$app "$install_dir/.env"
+
+# Restore custom variables if they existed and are different from defaults
+if [ -n "$MAX_MESSAGES_OLD" ] && [ "$MAX_MESSAGES_OLD" != "100" ]; then
+    sed -i "s/^MAX_MESSAGES=.*/MAX_MESSAGES=$MAX_MESSAGES_OLD/" "$install_dir/.env"
+fi
+if [ -n "$MAX_FILE_SIZE_OLD" ] && [ "$MAX_FILE_SIZE_OLD" != "50" ]; then
+    sed -i "s/^MAX_FILE_SIZE=.*/MAX_FILE_SIZE=$MAX_FILE_SIZE_OLD/" "$install_dir/.env"
+fi
+if [ -n "$PING_TIMEOUT_OLD" ] && [ "$PING_TIMEOUT_OLD" != "60000" ]; then
+    sed -i "s/^PING_TIMEOUT=.*/PING_TIMEOUT=$PING_TIMEOUT_OLD/" "$install_dir/.env"
+fi
+if [ -n "$PING_INTERVAL_OLD" ] && [ "$PING_INTERVAL_OLD" != "25000" ]; then
+    sed -i "s/^PING_INTERVAL=.*/PING_INTERVAL=$PING_INTERVAL_OLD/" "$install_dir/.env"
+fi
+
+#=================================================
+# UPGRADE APP
+#=================================================
+ynh_script_progression --message="Upgrading app..." --weight=10
+
+pushd "$install_dir"
+	rm -rf node_modules package-lock.json
+	ynh_exec_warn_less ynh_exec_as $app npm install --production=false
+	ynh_exec_warn_less ynh_exec_as $app env YNH_APP_ARG_PATH="$path" npm run build
+popd
+
+#=================================================
+# UPDATE SYSTEM CONFIGURATION
+#=================================================
+ynh_script_progression --message="Updating system configurations..." --weight=1
+
+ynh_add_nginx_config
+
+ynh_add_systemd_config
+
+#=================================================
+# START SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Starting a systemd service..." --weight=1
+
+ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+ynh_script_progression --message="Upgrade of $app completed" --last
