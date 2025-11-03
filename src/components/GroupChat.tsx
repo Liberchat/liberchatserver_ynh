@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
-import { ArrowLeft, Users, Lock, AlertTriangle, Loader } from 'lucide-react';
+import { ArrowLeft, Users } from 'lucide-react';
 import { cryptoManager } from '../utils/CryptoManager';
 import { keyExchanger } from '../utils/KeyExchanger';
 import { GroupSecurityIndicator, type SecurityStatus } from './EncryptionIndicator';
@@ -17,8 +17,11 @@ interface Message {
   gifUrl?: string;
   timestamp: number;
   groupId?: number;
-  reactions?: any[];
+  reactions?: { [emoji: string]: string[] };
   edited?: boolean;
+  replyTo?: Message;
+  encryptionStatus?: any;
+  decryptionError?: string;
 }
 
 interface GroupChatProps {
