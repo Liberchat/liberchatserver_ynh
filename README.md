@@ -284,7 +284,7 @@ Pour activer le mode light :
 - **🤖 Connexion directe** : Plus besoin de saisir une clé, connectez-vous directement avec votre nom d'utilisateur
 - **🔄 Échange automatique** : Les clés sont générées et échangées automatiquement entre utilisateurs
 - **🛡️ Sécurité renforcée** : Web Crypto API + fallback crypto-js pour une compatibilité maximale
-- **⚡ Simplicité totale** : Sécurité maximale avec une expérience utilisateur fluide
+- ** Simplicité totale** : Sécurité maximale avec une expérience utilisateur fluide
 
 ### 👥 **Système de Groupes (NON FONCTIONNEL)**
 
