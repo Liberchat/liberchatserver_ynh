@@ -27,6 +27,31 @@ interface UserInfo {
 }
 
 function App() {
+  // Theme handling (light / dark)
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    try {
+      const saved = localStorage.getItem('liberchat_theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+      // default to system preference
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    } catch (e) {
+      return 'dark';
+    }
+  });
+
+  // Apply theme class to body
+  useEffect(() => {
+    try {
+      document.body.classList.remove('theme-dark', 'theme-light');
+      document.body.classList.add(theme === 'dark' ? 'theme-dark' : 'theme-light');
+      localStorage.setItem('liberchat_theme', theme);
+    } catch (e) {
+      console.warn('Impossible d\'appliquer le thème:', e);
+    }
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+
   const [socket, setSocket] = useState<any>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [username, setUsername] = useState('');
@@ -427,6 +452,8 @@ function App() {
         onViewChange={setCurrentView}
         currentGroupName={currentGroupName}
         currentUsername={username}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
       
       {/* Notification de connexion rapide */}
