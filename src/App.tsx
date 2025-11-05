@@ -138,7 +138,8 @@ function App() {
     
     const newSocket = io(socketUrl, {
       path: socketPath,
-      transports: ['websocket', 'polling'], // Permettre WebSocket et polling
+      // démarrer par polling puis upgrader vers websocket (meilleur comportement derrière certains reverse-proxy)
+      transports: ['polling', 'websocket'],
       forceNew: true,
       reconnection: true,
       reconnectionAttempts: 5,
@@ -191,7 +192,7 @@ function App() {
     return () => {
       newSocket.close();
     };
-  }, [callingUser]);
+  }, []); // Créer la socket une seule fois au montage
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
