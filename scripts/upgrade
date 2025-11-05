@@ -1,0 +1,143 @@
+#!/bin/bash
+
+source /usr/share/yunohost/helpers
+source _common.sh
+
+#=================================================
+# LOAD SETTINGS
+#=================================================
+ynh_script_progression --message="Loading installation settings..." --weight=1
+
+app=$YNH_APP_INSTANCE_NAME
+
+domain=$(ynh_app_setting_get --app=$app --key=domain)
+path=$(ynh_app_setting_get --app=$app --key=path)
+admin=$(ynh_app_setting_get --app=$app --key=admin)
+port=$(ynh_app_setting_get --app=$app --key=port)
+install_dir=$(ynh_app_setting_get --app=$app --key=install_dir)
+
+#=================================================
+# CHECK VERSION
+#=================================================
+ynh_script_progression --message="Checking version..." --weight=1
+
+upgrade_type=$(ynh_check_app_version_changed)
+
+#=================================================
+# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
+#=================================================
+ynh_script_progression --message="Backing up the app before upgrading (may take a while)..." --weight=1
+
+# Backup the current version of the app
+ynh_backup_before_upgrade
+ynh_clean_setup () {
+	# Restore it if the upgrade fails
+	ynh_restore_upgradebackup
+}
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
+
+#=================================================
+# STOP SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Stopping a systemd service..." --weight=1
+
+ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app/$app.log"
+
+#=================================================
+# COPY SOURCE FILES
+#=================================================
+ynh_script_progression --message="Upgrading source files..." --weight=1
+
+cp -r ../. "$install_dir"
+chown -R $app:www-data "$install_dir"
+
+#=================================================
+# UPDATE CONFIGURATION
+#=================================================
+ynh_script_progression --message="Updating configuration..." --weight=1
+
+# Backup custom variables from existing .env
+if [ -f "$install_dir/.env" ]; then
+    cp "$install_dir/.env" "$install_dir/.env.backup"
+    MAX_MESSAGES_OLD=$(grep "^MAX_MESSAGES=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- | tr -d '\n' || echo "")
+    MAX_FILE_SIZE_OLD=$(grep "^MAX_FILE_SIZE=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- | tr -d '\n' || echo "")
+    PING_TIMEOUT_OLD=$(grep "^PING_TIMEOUT=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- | tr -d '\n' || echo "")
+    PING_INTERVAL_OLD=$(grep "^PING_INTERVAL=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- | tr -d '\n' || echo "")
+    ALLOWED_DOMAINS_OLD=$(grep "^ALLOWED_DOMAINS=" "$install_dir/.env" 2>/dev/null | cut -d'=' -f2- | tr -d '\n' || echo "")
+fi
+
+ynh_add_config --template="env" --destination="$install_dir/.env"
+chmod 644 "$install_dir/.env"
+chown $app:$app "$install_dir/.env"
+
+# Restore custom variables if they existed and are different from defaults
+if [ -n "$MAX_MESSAGES_OLD" ] && [ "$MAX_MESSAGES_OLD" != "100" ]; then
+    sed -i "s/^MAX_MESSAGES=.*/MAX_MESSAGES=$MAX_MESSAGES_OLD/" "$install_dir/.env"
+fi
+if [ -n "$MAX_FILE_SIZE_OLD" ] && [ "$MAX_FILE_SIZE_OLD" != "50" ]; then
+    sed -i "s/^MAX_FILE_SIZE=.*/MAX_FILE_SIZE=$MAX_FILE_SIZE_OLD/" "$install_dir/.env"
+fi
+if [ -n "$PING_TIMEOUT_OLD" ] && [ "$PING_TIMEOUT_OLD" != "60000" ]; then
+    sed -i "s/^PING_TIMEOUT=.*/PING_TIMEOUT=$PING_TIMEOUT_OLD/" "$install_dir/.env"
+fi
+if [ -n "$PING_INTERVAL_OLD" ] && [ "$PING_INTERVAL_OLD" != "25000" ]; then
+    sed -i "s/^PING_INTERVAL=.*/PING_INTERVAL=$PING_INTERVAL_OLD/" "$install_dir/.env"
+fi
+if [ -n "$ALLOWED_DOMAINS_OLD" ] && [ "$ALLOWED_DOMAINS_OLD" != "https://$domain$path" ]; then
+    sed -i "s|^ALLOWED_DOMAINS=.*|ALLOWED_DOMAINS=$ALLOWED_DOMAINS_OLD|" "$install_dir/.env"
+fi
+
+#=================================================
+# UPGRADE APP
+#=================================================
+ynh_script_progression --message="Upgrading app..." --weight=10
+
+pushd "$install_dir"
+	# Nettoyer les anciens modules
+	rm -rf node_modules package-lock.json
+	
+	# Installer les dépendances avec la version Node.js correcte
+	ynh_use_nodejs
+	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH npm install --production=false
+	
+	# Build l'application avec les variables d'environnement
+	ynh_exec_warn_less ynh_exec_as $app env NODE_ENV=production YNH_APP_ARG_PATH="$path" $ynh_node_load_PATH npm run build
+popd
+
+# Créer les dossiers nécessaires s'ils n'existent pas
+mkdir -p "$install_dir/data"
+mkdir -p "$install_dir/backups"
+chown -R $app:$app "$install_dir/data" "$install_dir/backups"
+
+#=================================================
+# UPDATE SYSTEM CONFIGURATION
+#=================================================
+ynh_script_progression --message="Updating system configurations..." --weight=1
+
+ynh_add_nginx_config
+
+# Configure SSO to skip API routes (only create if doesn't exist)
+if ! ynh_permission_exists --permission="api"; then
+    ynh_permission_create --permission="api" --url="$domain$path/api" --allowed="visitors" --show_tile="false" --protected="false"
+fi
+if ! ynh_permission_exists --permission="socket"; then
+    ynh_permission_create --permission="socket" --url="$domain$path/socket.io" --allowed="visitors" --show_tile="false" --protected="false"
+fi
+
+# Add skipped URIs for SSO bypass (chemins avec le path de l'app)
+ynh_app_setting_set --app=$app --key=skipped_uris --value="$path/api,$path/socket.io"
+
+ynh_add_systemd_config
+
+#=================================================
+# START SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Starting a systemd service..." --weight=1
+
+ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+ynh_script_progression --message="Upgrade of $app completed" --last

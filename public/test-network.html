@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test Réseau LiberChat</title>
+</head>
+
+<body>
+    <h1>Test de Connectivité LiberChat</h1>
+    <div id="results"></div>
+
+    <script>
+        const results = document.getElementById('results');
+
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.style.color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'black';
+            div.textContent = new Date().toLocaleTimeString() + ': ' + message;
+            results.appendChild(div);
+        }
+
+        // Test 1: Connectivité de base
+        log('🔍 Test 1a: Connectivité de base...');
+        fetch('https://liberchat.cnt-ait-contact.noho.st/liberchat/')
+            .then(response => {
+                if (response.ok) {
+                    log('✅ Serveur web accessible', 'success');
+                } else {
+                    log('❌ Erreur serveur web: ' + response.status, 'error');
+                }
+            })
+            .catch(error => {
+                log('❌ Impossible d\'accéder au serveur: ' + error.message, 'error');
+            });
+
+        // Test 1b: API Stats
+        log('🔍 Test 1b: API Stats...');
+        fetch('https://liberchat.cnt-ait-contact.noho.st/liberchat/api/stats')
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('HTTP ' + response.status);
+                }
+            })
+            .then(data => {
+                log('✅ API Stats: ' + JSON.stringify(data), 'success');
+            })
+            .catch(error => {
+                log('❌ API Stats: ' + error.message, 'error');
+            });
+
+        // Test 2: Route de test Socket.IO
+        log('🔍 Test 2a: Route de test Socket.IO...');
+        fetch('https://liberchat.cnt-ait-contact.noho.st/liberchat/api/socketio-test')
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('HTTP ' + response.status);
+                }
+            })
+            .then(data => {
+                log('✅ Route de test Socket.IO: ' + JSON.stringify(data), 'success');
+            })
+            .catch(error => {
+                log('❌ Route de test Socket.IO: ' + error.message, 'error');
+            });
+
+        // Test 2b: Socket.IO endpoint
+        log('🔍 Test 2b: Endpoint Socket.IO...');
+        fetch('https://liberchat.cnt-ait-contact.noho.st/liberchat/socket.io/?EIO=4&transport=polling')
+            .then(response => {
+                log('Status HTTP: ' + response.status);
+                if (response.ok) {
+                    log('✅ Socket.IO endpoint accessible', 'success');
+                    return response.text();
+                } else {
+                    log('❌ Erreur Socket.IO endpoint: ' + response.status, 'error');
+                    return response.text().then(text => {
+                        log('Réponse d\'erreur: ' + text.substring(0, 200), 'error');
+                        throw new Error('HTTP ' + response.status);
+                    });
+                }
+            })
+            .then(data => {
+                log('Réponse Socket.IO: ' + data.substring(0, 100));
+                if (data && (data.includes('sid') || data.includes('0{'))) {
+                    log('✅ Socket.IO répond correctement', 'success');
+                } else {
+                    log('❌ Réponse Socket.IO invalide', 'error');
+                }
+            })
+            .catch(error => {
+                log('❌ Erreur Socket.IO: ' + error.message, 'error');
+            });
+
+        // Test 3: Stabilité réseau
+        log('🔍 Test 3: Stabilité réseau (10 requêtes)...');
+        let successCount = 0;
+        const totalTests = 10;
+
+        for (let i = 0; i < totalTests; i++) {
+            setTimeout(() => {
+                fetch('https://liberchat.cnt-ait-contact.noho.st/liberchat/', {
+                    cache: 'no-cache',
+                    headers: { 'Cache-Control': 'no-cache' }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            successCount++;
+                        }
+                        if (i === totalTests - 1) {
+                            const percentage = (successCount / totalTests) * 100;
+                            if (percentage >= 90) {
+                                log(`✅ Stabilité réseau: ${percentage}% (${successCount}/${totalTests})`, 'success');
+                            } else {
+                                log(`⚠️ Réseau instable: ${percentage}% (${successCount}/${totalTests})`, 'error');
+                            }
+                        }
+                    })
+                    .catch(() => {
+                        if (i === totalTests - 1) {
+                            const percentage = (successCount / totalTests) * 100;
+                            log(`❌ Réseau très instable: ${percentage}% (${successCount}/${totalTests})`, 'error');
+                        }
+                    });
+            }, i * 500);
+        }
+
+        // Test 4: Test Socket.IO complet
+        log('🔍 Test 4: Test Socket.IO complet...');
+
+        // Charger Socket.IO depuis CDN
+        const script = document.createElement('script');
+        script.src = 'https://cdn.socket.io/4.7.2/socket.io.min.js';
+        script.onload = () => {
+            log('Socket.IO library chargée');
+
+            const socket = io('https://liberchat.cnt-ait-contact.noho.st', {
+                path: '/liberchat/socket.io/',
+                transports: ['polling'],
+                forceNew: true,
+                timeout: 10000
+            });
+
+            socket.on('connect', () => {
+                log('✅ Socket.IO connecté avec succès!', 'success');
+                log('Socket ID: ' + socket.id, 'success');
+                socket.disconnect();
+            });
+
+            socket.on('connect_error', (error) => {
+                log('❌ Erreur Socket.IO: ' + error.message, 'error');
+                log('Type: ' + error.type, 'error');
+            });
+
+            socket.on('disconnect', () => {
+                log('Socket.IO déconnecté');
+            });
+        };
+        script.onerror = () => {
+            log('❌ Impossible de charger Socket.IO library', 'error');
+        };
+        document.head.appendChild(script);
+
+        // Test 5: Informations navigateur
+        log('🔍 Test 5: Informations navigateur...');
+        log('Navigateur: ' + navigator.userAgent);
+        log('Connexion: ' + (navigator.onLine ? 'En ligne' : 'Hors ligne'));
+        log('WebSocket supporté: ' + (window.WebSocket ? 'Oui' : 'Non'));
+        log('Contexte sécurisé: ' + (window.isSecureContext ? 'Oui' : 'Non'));
+    </script>
+</body>
+
+</html>

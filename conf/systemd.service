@@ -1,0 +1,28 @@
+[Unit]
+Description=Liberchat chat application
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=__APP__
+Group=__APP__
+WorkingDirectory=__INSTALL_DIR__
+EnvironmentFile=__INSTALL_DIR__/.env
+Environment=NODE_ENV=production
+Environment=YNH_APP_ARG_PATH=__PATH__
+Environment=PORT=__PORT__
+ExecStart=/usr/bin/node __INSTALL_DIR__/server.js
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Security settings
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=__INSTALL_DIR__/data __INSTALL_DIR__/backups
+
+[Install]
+WantedBy=multi-user.target

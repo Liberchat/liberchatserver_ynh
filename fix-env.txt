@@ -1,0 +1,11 @@
+# Variables d'environnement à ajouter au fichier .env
+# Copier ces lignes dans /var/www/liberchat/.env
+
+PING_TIMEOUT=60000
+PING_INTERVAL=25000
+YNH_APP_ARG_PATH=/liberchat
+
+# Pour corriger manuellement :
+# sudo nano /var/www/liberchat/.env
+# Ajouter les lignes ci-dessus
+# sudo systemctl restart liberchat

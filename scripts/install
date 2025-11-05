@@ -1,0 +1,203 @@
+#!/bin/bash
+
+source /usr/share/yunohost/helpers
+source _common.sh
+
+#=================================================
+# RETRIEVE ARGUMENTS FROM THE MANIFEST
+#=================================================
+domain=$YNH_APP_ARG_DOMAIN
+path=$YNH_APP_ARG_PATH
+admin=$YNH_APP_ARG_ADMIN
+init_main_permission=$YNH_APP_ARG_INIT_MAIN_PERMISSION
+
+app=$YNH_APP_INSTANCE_NAME
+
+#=================================================
+# CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
+#=================================================
+ynh_script_progression --message="Validating installation parameters..." --weight=1
+
+install_dir=/var/www/$app
+test ! -e "$install_dir" || ynh_die --message="This path already contains a folder"
+
+# Register (book) web path
+ynh_webpath_register --app=$app --domain=$domain --path=$path
+
+#=================================================
+# STORE SETTINGS FROM MANIFEST
+#=================================================
+ynh_script_progression --message="Storing installation settings..." --weight=1
+
+ynh_app_setting_set --app=$app --key=domain --value=$domain
+ynh_app_setting_set --app=$app --key=path --value=$path
+ynh_app_setting_set --app=$app --key=admin --value=$admin
+
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Configuring system user..." --weight=1
+
+# Create a system user
+ynh_system_user_create --username=$app --home_dir="$install_dir"
+
+#=================================================
+# CREATE A MYSQL DATABASE
+#=================================================
+# Pas de base de données nécessaire pour cette app
+
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+ynh_script_progression --message="Setting up source files..." --weight=1
+
+ynh_app_setting_set --app=$app --key=install_dir --value=$install_dir
+# Download, check integrity, uncompress and patch the source from app.src
+mkdir -p "$install_dir"
+
+#=================================================
+# INSTALL DEPENDENCIES
+#=================================================
+ynh_script_progression --message="Installing dependencies..." --weight=7
+
+# Install Node.js
+ynh_exec_warn_less ynh_install_nodejs --nodejs_version=18
+
+#=================================================
+# COPY SOURCE FILES
+#=================================================
+ynh_script_progression --message="Copying source files..." --weight=1
+
+cp -r ../. "$install_dir"
+# Nettoyer les fichiers de développement
+rm -rf "$install_dir/.git" "$install_dir/node_modules" "$install_dir/.vscode"
+chown -R $app:www-data "$install_dir"
+
+#=================================================
+# FIND AND OPEN A PORT
+#=================================================
+ynh_script_progression --message="Finding an available port..." --weight=1
+
+# Find an available port
+port=$(ynh_find_port --port=3000)
+ynh_app_setting_set --app=$app --key=port --value=$port
+
+#=================================================
+# SYSTEM CONFIGURATION
+#=================================================
+ynh_script_progression --message="Adding system configurations..." --weight=1
+
+ynh_add_nginx_config
+
+# Configure permissions
+ynh_permission_update --permission="main" --add=$admin
+
+# Configure SSO to skip API routes and Socket.IO
+ynh_permission_create --permission="api" --url="$domain$path/api" --allowed="visitors" --show_tile="false" --protected="false"
+ynh_permission_create --permission="socket" --url="$domain$path/socket.io" --allowed="visitors" --show_tile="false" --protected="false"
+
+# Add skipped URIs for SSO bypass (chemins relatifs)
+ynh_app_setting_set --app=$app --key=skipped_uris --value="/api,/socket.io"
+
+ynh_add_systemd_config
+
+yunohost service add $app --description="Liberchat chat application"
+
+#=================================================
+# APP INITIAL CONFIGURATION
+#=================================================
+ynh_script_progression --message="Adding app's configuration..." --weight=1
+
+ynh_add_config --template="env" --destination="$install_dir/.env"
+chmod 644 "$install_dir/.env"
+chown $app:$app "$install_dir/.env"
+
+#=================================================
+# INSTALL APP
+#=================================================
+ynh_script_progression --message="Installing app..." --weight=10
+
+pushd "$install_dir"
+	# Nettoyer les anciens modules
+	rm -rf node_modules package-lock.json
+	
+	# Installer les dépendances avec la version Node.js correcte
+	ynh_use_nodejs
+	ynh_exec_warn_less ynh_exec_as $app $ynh_node_load_PATH npm install --production=false
+	
+	# Build l'application avec les variables d'environnement
+	ynh_exec_warn_less ynh_exec_as $app env NODE_ENV=production YNH_APP_ARG_PATH="$path" $ynh_node_load_PATH npm run build
+popd
+
+# Créer les dossiers nécessaires
+mkdir -p "$install_dir/data"
+mkdir -p "$install_dir/backups"
+chown -R $app:$app "$install_dir/data" "$install_dir/backups"
+
+#=================================================
+# SETUP LOGROTATE
+#=================================================
+ynh_script_progression --message="Configuring log rotation..." --weight=1
+
+# Create log directory
+mkdir -p /var/log/$app
+chown -R $app:$app /var/log/$app
+chmod 755 /var/log/$app
+
+# Use logrotate to manage application logfile(s)
+ynh_use_logrotate
+
+#=================================================
+# INTEGRATE SERVICE IN YUNOHOST
+#=================================================
+ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
+
+yunohost service add $app --description="Liberchat chat application" --log="/var/log/$app/$app.log"
+
+#=================================================
+# START SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Starting a systemd service..." --weight=1
+
+# Start a systemd service
+ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log" --line_match="Server running on" --timeout=30
+
+# Vérifier que le service est bien démarré
+sleep 5
+if ! ynh_systemd_action --service_name=$app --action="is-active" --quiet; then
+    ynh_print_err "Le service $app n'a pas pu démarrer correctement"
+    ynh_systemd_action --service_name=$app --action="status" --log_path="/var/log/$app/$app.log"
+    ynh_die --message="Échec du démarrage du service"
+fi
+
+
+
+#=================================================
+# POST-INSTALLATION CHECKS
+#=================================================
+ynh_script_progression --message="Running post-installation checks..." --weight=1
+
+# Vérifier que le port est bien en écoute
+sleep 10
+if ! netstat -tlnp | grep ":$port " > /dev/null; then
+    ynh_print_warn "Le port $port ne semble pas être en écoute"
+fi
+
+# Vérifier que l'application répond
+if curl -f -s "http://127.0.0.1:$port" > /dev/null; then
+    ynh_print_info "✅ Application accessible localement"
+else
+    ynh_print_warn "⚠️ Application non accessible localement"
+fi
+
+# Vérifier Socket.IO
+if curl -f -s "http://127.0.0.1:$port/socket.io/?EIO=4&transport=polling" > /dev/null; then
+    ynh_print_info "✅ Socket.IO accessible localement"
+else
+    ynh_print_warn "⚠️ Socket.IO non accessible localement"
+fi
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+ynh_script_progression --message="Installation of $app completed" --last

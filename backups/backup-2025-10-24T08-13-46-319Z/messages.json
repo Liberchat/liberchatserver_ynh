@@ -1,0 +1,12 @@
+{
+  "messages": [
+    {
+      "id": 1,
+      "type": "text",
+      "username": "user1",
+      "content": "Message global de test",
+      "timestamp": 1761215094083
+    }
+  ],
+  "nextMessageId": 2
+}

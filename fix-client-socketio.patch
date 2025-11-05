@@ -1,0 +1,49 @@
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -75,7 +75,7 @@ function App() {
+   useEffect(() => {
+     // Connexion Socket.IO dynamique: IP locale, .onion, ou domaine, jamais localhost en prod
+     let socketUrl = '';
+-    let socketPath = '/socket.io/';
++    let socketPath = '/socket.io/';
+     
+     if (import.meta.env.DEV) {
+       socketUrl = 'http://localhost:3000';
+@@ -105,11 +105,18 @@ function App() {
+     const newSocket = io(socketUrl, {
+       path: socketPath,
+-      transports: ['polling'], // Forcer polling uniquement - WebSocket pose problème
++      transports: ['websocket', 'polling'], // Permettre WebSocket et polling
+       forceNew: true,
+       reconnection: true,
+-      timeout: 20000,
+-      upgrade: false // Désactiver l'upgrade vers WebSocket
++      reconnectionAttempts: 5,
++      reconnectionDelay: 1000,
++      reconnectionDelayMax: 5000,
++      timeout: 20000,
++      upgrade: true, // Permettre l'upgrade vers WebSocket
++      rememberUpgrade: false,
++      pingTimeout: 60000,
++      pingInterval: 25000,
++      autoConnect: true
+     });
+     setSocket(newSocket);
+ 
+@@ -118,6 +125,16 @@ function App() {
+       console.log('Socket connecté, id:', newSocket.id);
+     });
+     newSocket.on('disconnect', () => setIsConnected(false));
++    
++    // Gestion des erreurs de connexion
++    newSocket.on('connect_error', (error) => {
++      console.error('Erreur de connexion Socket.IO:', error);
++      setIsConnected(false);
++    });
++    
++    newSocket.on('reconnect_error', (error) => {
++      console.error('Erreur de reconnexion Socket.IO:', error);
++    });
+ 
+     newSocket.on('chat message', (msg: Message) => {
+       setMessages(prev => [...prev, msg]);

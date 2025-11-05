@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Socket.IO LiberChat</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Test Socket.IO LiberChat</h1>
+    <div id="status">Connexion...</div>
+    <div id="logs"></div>
+
+    <script>
+        const logs = document.getElementById('logs');
+        const status = document.getElementById('status');
+        
+        function log(message) {
+            console.log(message);
+            logs.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>';
+        }
+
+        // Configuration Socket.IO avec debug
+        const socket = io('https://liberchat.cnt-ait-contact.noho.st', {
+            path: '/liberchat/socket.io/',
+            transports: ['polling'], // Force polling seulement pour test
+            timeout: 20000,
+            forceNew: true, // Force nouvelle connexion
+            reconnection: true,
+            reconnectionDelay: 1000,
+            reconnectionAttempts: 3,
+            maxReconnectionAttempts: 3
+        });
+
+        socket.on('connect', () => {
+            log('✅ Connecté avec ID: ' + socket.id);
+            status.textContent = 'Connecté';
+            status.style.color = 'green';
+        });
+
+        socket.on('disconnect', (reason) => {
+            log('❌ Déconnecté: ' + reason);
+            status.textContent = 'Déconnecté: ' + reason;
+            status.style.color = 'red';
+        });
+
+        socket.on('connect_error', (error) => {
+            log('🔥 Erreur de connexion: ' + error.message);
+            status.textContent = 'Erreur: ' + error.message;
+            status.style.color = 'red';
+        });
+
+        socket.on('reconnect', (attemptNumber) => {
+            log('🔄 Reconnecté après ' + attemptNumber + ' tentatives');
+        });
+
+        socket.on('reconnect_attempt', (attemptNumber) => {
+            log('🔄 Tentative de reconnexion #' + attemptNumber);
+        });
+
+        socket.on('reconnect_error', (error) => {
+            log('🔥 Erreur de reconnexion: ' + error.message);
+        });
+
+        socket.on('reconnect_failed', () => {
+            log('💀 Reconnexion échouée définitivement');
+            status.textContent = 'Reconnexion échouée';
+            status.style.color = 'red';
+        });
+
+        // Test après 10 secondes
+        setTimeout(() => {
+            if (socket.connected) {
+                log('✅ Connexion stable après 10 secondes');
+                // Test d'envoi de message
+                socket.emit('register', 'TestUser' + Math.random().toString(36).substr(2, 5));
+            } else {
+                log('❌ Connexion instable après 10 secondes');
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

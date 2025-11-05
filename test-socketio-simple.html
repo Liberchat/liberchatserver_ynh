@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Socket.IO Simple</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Test Socket.IO LiberChat</h1>
+    <div id="status">Connexion en cours...</div>
+    <div id="logs"></div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const logsDiv = document.getElementById('logs');
+        
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.style.color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'blue';
+            div.textContent = new Date().toLocaleTimeString() + ': ' + message;
+            logsDiv.appendChild(div);
+            console.log(message);
+        }
+
+        // Configuration Socket.IO
+        const socketUrl = 'https://liberchat.cnt-ait-contact.noho.st';
+        const socketPath = '/liberchat/socket.io/';
+        
+        log('Tentative de connexion à: ' + socketUrl);
+        log('Chemin Socket.IO: ' + socketPath);
+
+        const socket = io(socketUrl, {
+            path: socketPath,
+            transports: ['polling'], // Polling uniquement
+            forceNew: true,
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 2000,
+            timeout: 10000,
+            autoConnect: true
+        });
+
+        socket.on('connect', () => {
+            statusDiv.textContent = 'Connecté !';
+            statusDiv.style.color = 'green';
+            log('✅ Connexion Socket.IO réussie !', 'success');
+            log('Socket ID: ' + socket.id, 'success');
+        });
+
+        socket.on('disconnect', (reason) => {
+            statusDiv.textContent = 'Déconnecté: ' + reason;
+            statusDiv.style.color = 'red';
+            log('❌ Déconnexion: ' + reason, 'error');
+        });
+
+        socket.on('connect_error', (error) => {
+            statusDiv.textContent = 'Erreur de connexion';
+            statusDiv.style.color = 'red';
+            log('❌ Erreur de connexion: ' + error.message, 'error');
+            log('Type d\'erreur: ' + error.type, 'error');
+            log('Description: ' + error.description, 'error');
+        });
+
+        socket.on('reconnect', (attemptNumber) => {
+            log('🔄 Reconnexion réussie (tentative ' + attemptNumber + ')', 'success');
+        });
+
+        socket.on('reconnect_attempt', (attemptNumber) => {
+            log('🔄 Tentative de reconnexion ' + attemptNumber, 'info');
+        });
+
+        socket.on('reconnect_error', (error) => {
+            log('❌ Erreur de reconnexion: ' + error.message, 'error');
+        });
+
+        socket.on('reconnect_failed', () => {
+            log('❌ Échec de toutes les tentatives de reconnexion', 'error');
+        });
+
+        // Test de ping après connexion
+        socket.on('connect', () => {
+            setTimeout(() => {
+                log('📡 Test de ping...', 'info');
+                const start = Date.now();
+                socket.emit('ping', start, (response) => {
+                    const latency = Date.now() - start;
+                    log('🏓 Pong reçu - Latence: ' + latency + 'ms', 'success');
+                });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
