@@ -1,0 +1,4 @@
+#!/bin/bash
+# Faux patch-package qui ne fait rien pour éviter les erreurs
+echo "patch-package: No patches to apply (fake script)"
+exit 0
