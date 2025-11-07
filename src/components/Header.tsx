@@ -5,7 +5,7 @@ import ThemeCustomizer from './ThemeCustomizer';
 import { CustomTheme } from '../hooks/useCustomThemes';
 
 interface HeaderProps {
-  onLogout?: () => void;
+  onLogout?: (clearLocalData?: boolean) => void;
   isLoggedIn?: boolean;
   accessibilitySettings?: AccessibilitySettings;
   onAccessibilityChange?: (settings: AccessibilitySettings) => void;
@@ -34,6 +34,7 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
 }) => {
   const [showAccessibilityModal, setShowAccessibilityModal] = useState(false);
   const [showThemeCustomizer, setShowThemeCustomizer] = useState(false);
+  const [showLogoutMenu, setShowLogoutMenu] = useState(false);
   // Gestion des raccourcis clavier
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -49,7 +50,7 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
             break;
           case 'q':
             e.preventDefault();
-            onLogout?.();
+            onLogout?.(false);
             break;
         }
       }
@@ -58,6 +59,22 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [onToggleTheme, onLogout]);
+
+  // Fermer le menu de déconnexion quand on clique ailleurs
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Element;
+      if (showLogoutMenu && !target.closest('.logout-menu-container')) {
+        setShowLogoutMenu(false);
+      }
+    };
+
+    if (showLogoutMenu) {
+      document.addEventListener('click', handleClickOutside);
+    }
+    
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [showLogoutMenu]);
 
   return (
     <header 
@@ -117,14 +134,46 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
           </button>
         )}
         {isLoggedIn && onLogout && (
-          <button
-            onClick={onLogout}
-            className="px-1 sm:px-2 py-0.5 text-[10px] sm:text-xs bg-gradient-to-r from-red-700 to-black text-white font-bold rounded border border-white hover:from-black hover:to-red-700 transition-all uppercase tracking-widest shadow ml-0 sm:ml-4 min-w-0 w-auto"
-            aria-label="Se déconnecter du chat"
-            data-shortcut="Alt+Q"
-          >
-            Déconnexion
-          </button>
+          <div className="relative logout-menu-container">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowLogoutMenu(!showLogoutMenu);
+              }}
+              className="px-1 sm:px-2 py-0.5 text-[10px] sm:text-xs bg-gradient-to-r from-red-700 to-black text-white font-bold rounded border border-white hover:from-black hover:to-red-700 transition-all uppercase tracking-widest shadow ml-0 sm:ml-4 min-w-0 w-auto"
+              aria-label="Menu de déconnexion"
+              data-shortcut="Alt+Q"
+            >
+              Déconnexion ▼
+            </button>
+            {showLogoutMenu && (
+              <div 
+                className="absolute right-0 top-full mt-1 bg-black border-2 border-red-700 rounded shadow-lg z-50 min-w-48"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={(e) => { 
+                    e.stopPropagation();
+                    onLogout?.(false); 
+                    setShowLogoutMenu(false); 
+                  }}
+                  className="block w-full px-3 py-2 text-left text-white hover:bg-red-700 transition text-xs font-mono"
+                >
+                  Se déconnecter (garder le nom)
+                </button>
+                <button
+                  onClick={(e) => { 
+                    e.stopPropagation();
+                    onLogout?.(true); 
+                    setShowLogoutMenu(false); 
+                  }}
+                  className="block w-full px-3 py-2 text-left text-white hover:bg-red-700 transition text-xs font-mono border-t border-red-700"
+                >
+                  Oublier mes données
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
       

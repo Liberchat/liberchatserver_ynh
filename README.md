@@ -24,6 +24,35 @@
 
 ---
 
+## 🆕 Nouveautés de la version 6.5
+
+### 🔄 Améliorations de l'expérience utilisateur
+
+- **🏷️ Terminologie mise à jour** : Remplacement de "camarades" par "compagnons" dans toute l'interface pour une approche plus inclusive
+- **📢 Nouveau slogan** : "La commune pour tous" remplace l'ancien slogan pour refléter l'ouverture à tous
+- **💬 Message de frappe modernisé** : L'indicateur passe de "insurrection" à "révolution sociale" pour un ton plus constructif
+
+### 🔐 Chiffrement automatisé
+
+- **🔑 Clé par défaut** : Génération automatique d'une clé de chiffrement partagée "RevolutionSociale2026_LiberChat_∞"
+- **⚡ Accès simplifié** : Plus besoin de saisir manuellement une clé, le chiffrement est activé automatiquement
+- **🛡️ Sécurité maintenue** : Le chiffrement de bout en bout reste actif avec la clé partagée
+
+### 💾 Persistance utilisateur améliorée
+
+- **📝 Sauvegarde automatique** : Le nom d'utilisateur est automatiquement sauvegardé dans le navigateur
+- **🔄 Reconnexion intelligente** : Reconnexion automatique avec le nom sauvegardé
+- **⚙️ Options de déconnexion** : Choix entre "Garder mon nom" ou "Supprimer mes données"
+- **✨ Pré-remplissage** : Le nom est pré-rempli lors de la reconnexion si conservé
+
+### 🧹 Optimisations techniques
+
+- **🚀 Compatibilité YunoHost** : Correction des erreurs de déploiement Node.js 18+
+- **🔧 Nettoyage du code** : Suppression de tous les logs de debug pour une meilleure performance
+- **📦 Simplification** : Suppression des patches inutiles (fix-websocket.patch)
+
+---
+
 </div>
 
 ## 🏴 Pourquoi un chat anarcho-syndicaliste ?

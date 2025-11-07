@@ -32,13 +32,20 @@ interface UserInfo {
 function App() {
   const [socket, setSocket] = useState<ReturnType<typeof io> | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(() => {
+    // Récupère le nom d'utilisateur depuis localStorage
+    return localStorage.getItem('liberchat-username') || '';
+  });
   const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<UserInfo[]>([]);
   const [callingUser, setCallingUser] = useState<string>('');
   // State pour la clé symétrique (CryptoKey ou string selon le backend)
   const [symmetricKey, setSymmetricKey] = useState<CryptoKey | string | null>(null);
-  const [keyPrompt, setKeyPrompt] = useState(true);
+  const [keyPrompt, setKeyPrompt] = useState(() => {
+    // Si on a déjà un nom sauvegardé, pas besoin du prompt de clé
+    const savedUsername = localStorage.getItem('liberchat-username');
+    return !savedUsername;
+  });
   const [keyInput, setKeyInput] = useState('');
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -63,6 +70,39 @@ function App() {
     deleteTheme: deleteCustomTheme
   } = useCustomThemes();
 
+  // Génération automatique d'une clé de chiffrement par défaut
+  useEffect(() => {
+    if (!keyInput && !symmetricKey) {
+      // Utilise une clé par défaut pour que tous les utilisateurs puissent communiquer
+      const defaultKey = 'RevolutionSociale2026_LiberChat_∞';
+      setKeyInput(defaultKey);
+
+    }
+  }, [keyInput, symmetricKey]);
+
+  // Sauvegarde du nom d'utilisateur dans localStorage
+  useEffect(() => {
+    if (username) {
+      localStorage.setItem('liberchat-username', username);
+    }
+  }, [username]);
+
+  // Reconnexion automatique si un nom d'utilisateur est sauvegardé
+  useEffect(() => {
+    if (username && socket && isConnected && !users.find(u => u.name === username)) {
+      socket.emit('register', username);
+    }
+  }, [username, socket, isConnected, users]);
+
+  // Si on a un nom sauvegardé au démarrage, on passe directement au chat
+  useEffect(() => {
+    const savedUsername = localStorage.getItem('liberchat-username');
+    if (savedUsername && !username) {
+      setUsername(savedUsername);
+      setKeyPrompt(false);
+    }
+  }, []);
+
   useEffect(() => {
     // Connexion Socket.IO dynamique selon l'environnement
     let socketUrl = '';
@@ -86,7 +126,7 @@ function App() {
       }
     }
     
-    console.log('Socket.IO config:', { socketUrl, socketPath });
+
     
     const newSocket = io(socketUrl, {
       path: socketPath,
@@ -144,11 +184,12 @@ function App() {
   }, [messages]);
 
   useEffect(() => {
-    // Génère la clé symétrique dès que keyPrompt passe à false et que keyInput est non vide
-    if (!keyPrompt && keyInput) {
+    // Génère la clé symétrique dès que keyInput est défini (chiffrement automatique)
+    if (keyInput && !symmetricKey) {
       generateSymmetricKeyFromPassword(keyInput).then(setSymmetricKey);
+
     }
-  }, [keyPrompt, keyInput]);
+  }, [keyInput, symmetricKey]);
 
   const handleJoin = (name: string) => {
     setUsername(name);
@@ -349,6 +390,12 @@ function App() {
     }
   };
 
+  // Nouvelle fonction pour accès sans chiffrement
+  const handleAccessWithoutEncryption = () => {
+    setKeyInput('no-encryption');
+    setKeyPrompt(false);
+  };
+
   // Nouvelle fonction pour valider l'accès après partage de la clé
   const handleAccessAfterShare = () => {
     setKeyPrompt(false);
@@ -356,14 +403,24 @@ function App() {
   };
 
   // Déconnexion utilisateur
-  const handleLogout = () => {
-    setUsername('');
+  const handleLogout = (clearLocalData = false) => {
+    setUsername(''); // On vide toujours le nom du state pour se déconnecter
     setMessages([]);
     setSymmetricKey(null); // Purge la clé à la déconnexion
-    setKeyPrompt(true);    // Réaffiche l'écran de saisie de clé
     setKeyInput('');
     setGeneratedKey(null);
     setCopied(false);
+    
+    // Supprime les données locales si demandé
+    if (clearLocalData) {
+      localStorage.removeItem('liberchat-username');
+      setKeyPrompt(true); // Réaffiche l'écran de saisie de clé seulement si on supprime les données
+    } else {
+      // Si on garde les données, le nom reste dans localStorage
+      // et sera rechargé automatiquement à l'écran de connexion
+      setKeyPrompt(false);
+    }
+    
     // Optionnel : socket?.disconnect();
   };
 
@@ -517,7 +574,7 @@ function App() {
     if (!socket) return;
     // Suppression d'un message côté client
     const handleMessageDeleted = ({ id }: { id: number }) => {
-      console.log('[CLIENT] Message supprimé reçu id:', id, typeof id);
+
       setMessages(prev => prev.filter(msg => msg.id !== id));
     };
     socket.on('message deleted', handleMessageDeleted);
@@ -612,11 +669,11 @@ function App() {
     if (!socket) return;
     // Gestion de l'indicateur "en train d'écrire"
     const handleTyping = (user: string) => {
-      console.log('[TYPING] reçu:', user);
+
       setTypingUsers(prev => prev.includes(user) ? prev : [...prev, user]);
     };
     const handleStopTyping = (user: string) => {
-      console.log('[STOP TYPING] reçu:', user);
+
       setTypingUsers(prev => prev.filter(u => u !== user));
     };
     socket.on('typing', handleTyping);
@@ -773,8 +830,8 @@ function App() {
                   <span className="mr-2">⚑</span>
                   <span className="font-mono">
                     {typingUsers.length === 1
-                      ? `${typingUsers[0]} prépare une insurrection...`
-                      : `${typingUsers.join(', ')} préparent une insurrection...`}
+                      ? `${typingUsers[0]} prépare une révolution sociale...`
+                      : `${typingUsers.join(', ')} préparent une révolution sociale...`}
                   </span>
                 </div>
               </div>

@@ -6,7 +6,10 @@ interface WelcomeScreenProps {
 }
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onJoin }) => {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(() => {
+    // Récupère le nom sauvegardé depuis localStorage
+    return localStorage.getItem('liberchat-username') || '';
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
