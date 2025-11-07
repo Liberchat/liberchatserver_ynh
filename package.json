@@ -41,7 +41,7 @@
     "socket.io-client": "^4.7.4",
     "tailwindcss": "^3.4.1",
     "vite": "^6.3.5",
-    "winston": "^3.11.0",
+    "winston": "^3.18.3",
     "xss": "^1.0.15"
   },
   "devDependencies": {
