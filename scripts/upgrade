@@ -40,6 +40,18 @@ if [ -f "$install_dir/src/main.tsx" ]; then
     sed -i "s|from './App'|from './components/App'|g" "$install_dir/src/main.tsx"
 fi
 
+# Copy missing component files from YunoHost repo if they don't exist in source
+if [ -d "../src/components" ]; then
+    for component_file in ../src/components/*.tsx ../src/components/*.ts; do
+        if [ -f "$component_file" ]; then
+            filename=$(basename "$component_file")
+            if [ ! -f "$install_dir/src/components/$filename" ]; then
+                cp "$component_file" "$install_dir/src/components/"
+            fi
+        fi
+    done
+fi
+
 # Fix permissions
 chown -R $app:www-data "$install_dir" 2>/dev/null || true
 
