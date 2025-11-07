@@ -33,6 +33,9 @@ chown -R $app:www-data "$install_dir"
 rm -f "$install_dir/package-lock.json"
 rm -rf "$install_dir/node_modules"
 
+# Remove obsolete App.tsx that conflicts with src/components/App.tsx
+rm -f "$install_dir/src/App.tsx"
+
 #=================================================
 # SYSTEM CONFIGURATION
 #=================================================

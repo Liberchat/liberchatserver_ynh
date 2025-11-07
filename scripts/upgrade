@@ -33,6 +33,9 @@ ynh_script_progression --message="Upgrading source files..." --weight=1
 ynh_setup_source --dest_dir="$install_dir" --keep=".env"
 chown -R $app:www-data "$install_dir"
 
+# Remove obsolete App.tsx that conflicts with src/components/App.tsx
+rm -f "$install_dir/src/App.tsx"
+
 #=================================================
 # UPDATE CONFIGURATION
 #=================================================
