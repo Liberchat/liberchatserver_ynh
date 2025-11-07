@@ -31,10 +31,12 @@ ynh_exec_as $app npm cache clean --force 2>/dev/null || true
 ynh_script_progression --message="Upgrading source files..." --weight=1
 
 ynh_setup_source --dest_dir="$install_dir" --keep=".env"
-chown -R $app:www-data "$install_dir"
 
 # Remove obsolete App.tsx that conflicts with src/components/App.tsx
 rm -f "$install_dir/src/App.tsx"
+
+# Fix permissions
+chown -R $app:www-data "$install_dir" 2>/dev/null || true
 
 #=================================================
 # UPDATE CONFIGURATION

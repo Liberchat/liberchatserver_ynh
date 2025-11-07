@@ -27,7 +27,6 @@ npm install -g patch-package
 ynh_script_progression --message="Setting up source files..." --weight=1
 
 ynh_setup_source --dest_dir="$install_dir"
-chown -R $app:www-data "$install_dir"
 
 # Remove problematic files that might cause conflicts
 rm -f "$install_dir/package-lock.json"
@@ -35,6 +34,9 @@ rm -rf "$install_dir/node_modules"
 
 # Remove obsolete App.tsx that conflicts with src/components/App.tsx
 rm -f "$install_dir/src/App.tsx"
+
+# Fix permissions (YunoHost provisioning handles user creation)
+chown -R $app:www-data "$install_dir" 2>/dev/null || true
 
 #=================================================
 # SYSTEM CONFIGURATION
