@@ -43,8 +43,7 @@ ynh_script_progression --message="Installing app..." --weight=10
 
 pushd "$install_dir"
 	rm -rf node_modules package-lock.json
-	ynh_exec_warn_less ynh_exec_as $app npm install --production=false --ignore-scripts
-	ynh_exec_warn_less ynh_exec_as $app npm rebuild
+	ynh_exec_warn_less ynh_exec_as $app npm install --production=false --legacy-peer-deps
 	ynh_exec_warn_less ynh_exec_as $app env YNH_APP_ARG_PATH="$path" npm run build
 popd
 
