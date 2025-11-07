@@ -58,4 +58,4 @@ ram.runtime = "50M"
     [resources.sources]
         [resources.sources.main]
         url = "https://github.com/AnARCHIS12/Liberchat/archive/refs/heads/main.tar.gz"
-        sha256 = "auto"
+        sha256 = "91fbaee0663205ef7d9926af240cdb02c4d482af4dd97e8bba77df89ece601ad"
