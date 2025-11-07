@@ -9,10 +9,10 @@ echo "Checking Node.js version..."
 if command -v node >/dev/null 2>&1; then
     node_version=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
     echo "Node.js version: $(node --version)"
-    if [ "$node_version" -ge 18 ]; then
+    if [ "$node_version" -ge 20 ]; then
         echo "✓ Node.js version is compatible"
     else
-        echo "✗ Node.js version is too old (need ≥18)"
+        echo "✗ Node.js version is too old (need ≥20 for some dependencies)"
     fi
 else
     echo "✗ Node.js not found"
@@ -49,13 +49,21 @@ for file in "${required_files[@]}"; do
     fi
 done
 
-# Test 5: Test npm install simulation
+# Test 5: Check for patch-package
+echo "Checking patch-package..."
+if command -v patch-package >/dev/null 2>&1; then
+    echo "✓ patch-package is available"
+else
+    echo "✗ patch-package not found (install with: npm install -g patch-package)"
+fi
+
+# Test 6: Test npm install simulation
 echo "Testing npm dependencies..."
 if [ -f "package.json" ] && command -v npm >/dev/null 2>&1; then
     temp_dir=$(mktemp -d)
     cp package.json "$temp_dir/"
     cd "$temp_dir"
-    if npm install --dry-run --legacy-peer-deps >/dev/null 2>&1; then
+    if npm install --dry-run --legacy-peer-deps --ignore-engines >/dev/null 2>&1; then
         echo "✓ npm dependencies can be resolved"
     else
         echo "✗ npm dependency issues detected"

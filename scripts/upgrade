@@ -59,11 +59,29 @@ fi
 ynh_script_progression --message="Upgrading app..." --weight=10
 
 pushd "$install_dir"
+	# Update Node.js if needed
+	current_node_version=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
+	if [ "$current_node_version" -lt 20 ]; then
+		ynh_script_progression --message="Updating Node.js to version 20..." --weight=3
+		curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+		apt-get install -y nodejs
+		npm install -g patch-package
+	fi
+	
 	# Clear npm cache
 	ynh_exec_as $app npm cache clean --force
 	
-	# Install dependencies
-	ynh_exec_warn_less ynh_exec_as $app npm install --production=false --legacy-peer-deps --no-audit --no-fund
+	# Set npm configuration
+	ynh_exec_as $app npm config set fund false
+	ynh_exec_as $app npm config set audit false
+	
+	# Install dependencies with ignore engines flag
+	ynh_exec_warn_less ynh_exec_as $app npm install --production=false --legacy-peer-deps --no-audit --no-fund --ignore-engines
+	
+	# Run postinstall if needed
+	if [ -f "package.json" ] && grep -q "postinstall" package.json; then
+		ynh_exec_warn_less ynh_exec_as $app npm run postinstall
+	fi
 	
 	# Build the application
 	ynh_exec_warn_less ynh_exec_as $app env NODE_ENV=production YNH_APP_ARG_PATH="$path" npm run build

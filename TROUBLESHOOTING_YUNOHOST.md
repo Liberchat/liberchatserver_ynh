@@ -4,29 +4,39 @@
 
 ### 1. Erreur d'installation Node.js
 
-**Symptôme :** `Node.js version is too old` ou `npm not found`
+**Symptôme :** `Node.js version is too old` ou `npm ERR! EBADENGINE`
 
 **Solution :**
 ```bash
-# Installer Node.js 18+ manuellement
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo bash -
+# Installer Node.js 20+ manuellement (requis pour certaines dépendances)
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
 sudo apt-get install -y nodejs
 
+# Installer patch-package globalement
+sudo npm install -g patch-package
+
 # Vérifier la version
-node --version  # Doit être ≥ v18.0.0
+node --version  # Doit être ≥ v20.0.0
 ```
 
 ### 2. Erreurs de dépendances npm
 
-**Symptôme :** `npm install` échoue avec des erreurs de peer dependencies
+**Symptôme :** `npm install` échoue avec des erreurs de peer dependencies ou `patch-package: not found`
 
 **Solution :**
 ```bash
 # Nettoyer le cache npm
 npm cache clean --force
 
+# Installer patch-package si manquant
+sudo npm install -g patch-package
+
 # Installer avec les flags appropriés
-npm install --legacy-peer-deps --no-audit --no-fund
+npm install --legacy-peer-deps --no-audit --no-fund --ignore-engines
+
+# Si problème persiste, supprimer node_modules
+rm -rf node_modules package-lock.json
+npm install --legacy-peer-deps --ignore-engines
 ```
 
 ### 3. Erreur de build Vite
@@ -92,17 +102,45 @@ cd /var/www/liberchat
 sudo -u liberchat npm start
 ```
 
+## Nettoyage après échec d'installation
+
+Si l'installation/upgrade échoue :
+
+```bash
+# Arrêter le service
+sudo systemctl stop liberchat
+
+# Nettoyer les fichiers
+sudo rm -rf /var/www/liberchat
+sudo rm -f /etc/systemd/system/liberchat.service
+sudo rm -f /etc/nginx/conf.d/liberchat.conf
+
+# Nettoyer les caches
+sudo npm cache clean --force
+
+# Recharger les services
+sudo systemctl daemon-reload
+sudo nginx -t && sudo systemctl reload nginx
+
+# Réinstaller avec Node.js 20+
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
+sudo apt-get install -y nodejs
+sudo npm install -g patch-package
+sudo yunohost app install ./
+```
+
 ## Réinstallation complète
 
 Si tous les dépannages échouent :
 
 ```bash
-# Désinstaller
+# Désinstaller complètement
 sudo yunohost app remove liberchat
 
-# Nettoyer les résidus
+# Nettoyer tous les résidus
 sudo rm -rf /var/www/liberchat
-sudo userdel liberchat
+sudo userdel liberchat 2>/dev/null || true
+sudo npm cache clean --force
 
 # Réinstaller
 sudo yunohost app install ./
