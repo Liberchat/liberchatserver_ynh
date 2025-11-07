@@ -8,13 +8,27 @@ source _common.sh
 #=================================================
 ynh_script_progression --message="Installing dependencies..." --weight=7
 
+# Install Node.js 18+ via NodeSource
+curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+apt-get install -y nodejs
+
+# Verify Node.js version
+node_version=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
+if [ "$node_version" -lt 18 ]; then
+    ynh_die --message="Node.js version 18+ is required, found version $node_version"
+fi
+
 #=================================================
-# COPY SOURCE FILES
+# DOWNLOAD AND EXTRACT SOURCE
 #=================================================
 ynh_script_progression --message="Setting up source files..." --weight=1
 
-cp -r ../. "$install_dir"
+ynh_setup_source --dest_dir="$install_dir"
 chown -R $app:www-data "$install_dir"
+
+# Remove problematic files that might cause conflicts
+rm -f "$install_dir/package-lock.json"
+rm -rf "$install_dir/node_modules"
 
 #=================================================
 # SYSTEM CONFIGURATION
@@ -42,9 +56,14 @@ chown $app:$app "$install_dir/.env"
 ynh_script_progression --message="Installing app..." --weight=10
 
 pushd "$install_dir"
-	rm -rf node_modules package-lock.json
-	ynh_exec_warn_less ynh_exec_as $app npm install --production=false --legacy-peer-deps
-	ynh_exec_warn_less ynh_exec_as $app env YNH_APP_ARG_PATH="$path" npm run build
+	# Clear npm cache to avoid conflicts
+	ynh_exec_as $app npm cache clean --force
+	
+	# Install dependencies with proper error handling
+	ynh_exec_warn_less ynh_exec_as $app npm install --production=false --legacy-peer-deps --no-audit --no-fund
+	
+	# Build the application
+	ynh_exec_warn_less ynh_exec_as $app env NODE_ENV=production YNH_APP_ARG_PATH="$path" npm run build
 popd
 
 #=================================================

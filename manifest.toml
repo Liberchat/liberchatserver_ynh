@@ -53,4 +53,9 @@ ram.runtime = "50M"
         url = "/"
 
     [resources.apt]
-    packages = ["nodejs", "npm"]
+    packages = ["curl", "gnupg"]
+    
+    [resources.sources]
+        [resources.sources.main]
+        url = "https://github.com/AnARCHIS12/Liberchat/archive/refs/heads/main.tar.gz"
+        sha256 = "auto"
