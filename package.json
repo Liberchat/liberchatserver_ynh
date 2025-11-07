@@ -8,7 +8,8 @@
     "build": "vite build",
     "start": "node server.js",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "echo 'Installation completed successfully'"
   },
   "dependencies": {
     "@capacitor/android": "^7.0.1",
@@ -58,7 +59,12 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.11",
     "globals": "^15.9.0",
+    "patch-package": "^8.0.0",
     "terser": "^5.36.0",
     "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }
