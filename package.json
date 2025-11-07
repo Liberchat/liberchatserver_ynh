@@ -18,7 +18,7 @@
     "@emoji-mart/react": "^1.1.1",
     "@types/emoji-mart": "^3.0.14",
     "@types/simple-peer": "^9.11.8",
-    "@vitejs/plugin-react": "^4.0.4",
+    "@vitejs/plugin-react": "^2.2.0",
     "autoprefixer": "^10.4.18",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
@@ -39,7 +39,7 @@
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",
     "tailwindcss": "^3.4.1",
-    "vite": "^4.5.5",
+    "vite": "^3.2.10",
     "winston": "^3.11.0",
     "xss": "^1.0.15"
   },
