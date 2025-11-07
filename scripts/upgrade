@@ -35,6 +35,11 @@ ynh_setup_source --dest_dir="$install_dir" --keep=".env"
 # Remove obsolete App.tsx that conflicts with src/components/App.tsx
 rm -f "$install_dir/src/App.tsx"
 
+# Fix main.tsx to import from components/App instead of ./App
+if [ -f "$install_dir/src/main.tsx" ]; then
+    sed -i "s|from './App'|from './components/App'|g" "$install_dir/src/main.tsx"
+fi
+
 # Fix permissions
 chown -R $app:www-data "$install_dir" 2>/dev/null || true
 
