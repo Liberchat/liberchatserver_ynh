@@ -5,6 +5,9 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// Get base path from environment or default to /liberchat/
+const basePath = (process.env.YNH_APP_ARG_PATH || '/liberchat').replace(/\/$/, '') + '/';
+
 // Create dist directory
 mkdirSync(resolve(__dirname, 'dist'), { recursive: true });
 mkdirSync(resolve(__dirname, 'dist/assets'), { recursive: true });
@@ -37,9 +40,6 @@ await esbuild.build({
   jsxImportSource: 'react',
   publicPath: basePath
 });
-
-// Get base path from environment or default to /liberchat/
-const basePath = (process.env.YNH_APP_ARG_PATH || '/liberchat').replace(/\/$/, '') + '/';
 
 // Generate index.html
 const html = `<!DOCTYPE html>
