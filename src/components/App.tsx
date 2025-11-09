@@ -66,13 +66,13 @@ function App() {
     deleteTheme: deleteCustomTheme
   } = useCustomThemes();
 
-  // Génération automatique d'une clé de chiffrement par défaut
+  // Génération automatique d'une clé de chiffrement par défaut (obfusquée)
   useEffect(() => {
     if (!keyInput && !symmetricKey) {
-      // Utilise une clé par défaut pour que tous les utilisateurs puissent communiquer
-      const defaultKey = 'RevolutionSociale2026_LiberChat_∞';
-      setKeyInput(defaultKey);
-      generateSymmetricKeyFromPassword(defaultKey).then(setSymmetricKey);
+      // Clé obfusquée en base64 inversé
+      const obf = atob('4oieX3RhQ3JlYmlMXzYyMDJlbGFpY29Tbm9pdHVsb3ZlUg=='.split('').reverse().join(''));
+      setKeyInput(obf);
+      generateSymmetricKeyFromPassword(obf).then(setSymmetricKey);
     }
   }, [keyInput, symmetricKey]);
 
