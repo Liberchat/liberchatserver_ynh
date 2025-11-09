@@ -26,30 +26,22 @@ rm -rf "$install_dir/build"
 ynh_exec_as $app npm cache clean --force 2>/dev/null || true
 
 #=================================================
-# DOWNLOAD AND EXTRACT SOURCE
+# COPY LOCAL SOURCE FILES
 #=================================================
 ynh_script_progression --message="Upgrading source files..." --weight=1
 
-ynh_setup_source --dest_dir="$install_dir" --keep=".env"
-
-# Remove obsolete App.tsx that conflicts with src/components/App.tsx
-rm -f "$install_dir/src/App.tsx"
-
-# Fix main.tsx to import from components/App instead of ./App
-if [ -f "$install_dir/src/main.tsx" ]; then
-    sed -i "s|from './App'|from './components/App'|g" "$install_dir/src/main.tsx"
+# Backup .env
+if [ -f "$install_dir/.env" ]; then
+    cp "$install_dir/.env" "/tmp/liberchat_env_backup"
 fi
 
-# Copy missing component files from YunoHost repo if they don't exist in source
-if [ -d "../src/components" ]; then
-    for component_file in ../src/components/*.tsx ../src/components/*.ts; do
-        if [ -f "$component_file" ]; then
-            filename=$(basename "$component_file")
-            if [ ! -f "$install_dir/src/components/$filename" ]; then
-                cp "$component_file" "$install_dir/src/components/"
-            fi
-        fi
-    done
+# Copy all files from the YunoHost package directory to install_dir
+cp -r "$YNH_APP_BASEDIR/"* "$install_dir/"
+rm -rf "$install_dir/scripts" "$install_dir/conf" "$install_dir/manifest.toml" "$install_dir/.git" 2>/dev/null || true
+
+# Restore .env
+if [ -f "/tmp/liberchat_env_backup" ]; then
+    mv "/tmp/liberchat_env_backup" "$install_dir/.env"
 fi
 
 # Fix permissions
@@ -140,15 +132,8 @@ pushd "$install_dir"
 	
 	# Build the application
 	ynh_print_info "Building the application..."
-	# Use esbuild on ARM64 to avoid Rollup issues
-	if [ "$(uname -m)" = "aarch64" ]; then
-		if ! ynh_exec_as $app env NODE_ENV=production PATH="/usr/local/bin:$PATH" npm run build:esbuild; then
-			ynh_die --message="Failed to build the application with esbuild. Check build logs."
-		fi
-	else
-		if ! ynh_exec_as $app env NODE_ENV=production YNH_APP_ARG_PATH="$path" PATH="/usr/local/bin:$PATH" npm run build; then
-			ynh_die --message="Failed to build the application. Check build logs."
-		fi
+	if ! ynh_exec_as $app env NODE_ENV=production YNH_APP_ARG_PATH="$path" PATH="/usr/local/bin:$PATH" npm run build; then
+		ynh_die --message="Failed to build the application. Check build logs."
 	fi
 popd
 
