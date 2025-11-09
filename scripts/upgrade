@@ -125,8 +125,12 @@ pushd "$install_dir"
 	
 	# Install dependencies with all necessary flags
 	ynh_print_info "Installing npm dependencies..."
-	if ! ynh_exec_as $app env PATH="/usr/local/bin:$PATH" npm install --production=false --legacy-peer-deps --no-audit --no-fund --ignore-engines; then
-		ynh_die --message="Failed to install npm dependencies. Check Node.js version and dependencies."
+	# Force clean install to fix ARM64 rollup issues
+	if ! ynh_exec_as $app env PATH="/usr/local/bin:$PATH" npm ci --production=false --legacy-peer-deps --no-audit --no-fund --ignore-engines 2>/dev/null; then
+		# Fallback to regular install if ci fails
+		if ! ynh_exec_as $app env PATH="/usr/local/bin:$PATH" npm install --production=false --legacy-peer-deps --no-audit --no-fund --ignore-engines; then
+			ynh_die --message="Failed to install npm dependencies. Check Node.js version and dependencies."
+		fi
 	fi
 	
 	# Run postinstall if needed
