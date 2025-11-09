@@ -20,7 +20,6 @@ export const useAccessibility = () => {
         const parsedSettings = JSON.parse(saved);
         setSettings({ ...DEFAULT_SETTINGS, ...parsedSettings });
       } catch (error) {
-        console.error('Erreur lors du chargement des paramètres d\'accessibilité:', error);
       }
     }
   }, []);

@@ -25,24 +25,20 @@ export const Chat = ({ socket, username }: ChatProps) => {
 
     // Gestion de la connexion
     const handleConnect = () => {
-      console.log('Connected to server');
       setIsConnected(true);
     };
 
     const handleDisconnect = () => {
-      console.log('Disconnected from server');
       setIsConnected(false);
     };
 
     // Gestion des messages
     const handleChatMessage = (message: Message) => {
-      console.log('Received message:', message);
       setMessages(prev => [...prev, message]);
     };
 
     // Gestion de l'état initial
     const handleInit = (data: { messages: Message[] }) => {
-      console.log('Received initial state:', data);
       setMessages(data.messages);
     };
 
@@ -82,7 +78,6 @@ export const Chat = ({ socket, username }: ChatProps) => {
     e.preventDefault();
     if (!newMessage.trim() || !socket) return;
 
-    console.log('Sending message:', newMessage);
     socket.emit('chat message', newMessage);
     setNewMessage('');
   };

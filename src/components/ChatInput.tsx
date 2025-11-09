@@ -130,7 +130,6 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onSendFile, onSend
         mimeType = 'audio/webm;codecs=opus';
       } else if (MediaRecorder.isTypeSupported('audio/wav')) {
         mimeType = 'audio/wav';
-        console.warn('[Vocal] Electron: fallback audio/wav');
       } else {
         mimeType = '';
         alert('Aucun format audio compatible trouvé pour Electron.');
@@ -152,7 +151,6 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onSendFile, onSend
       mimeType = 'audio/mp4';
     } else if (MediaRecorder.isTypeSupported('audio/wav')) {
       mimeType = 'audio/wav';
-      console.warn('[Vocal] Fallback audio/wav (hors Electron)');
     } else {
       alert('Aucun format audio compatible trouvé sur ce navigateur. Essayez de mettre à jour votre navigateur ou d\'en utiliser un autre.');
       return;
@@ -174,7 +172,6 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, onSendFile, onSend
     mediaRecorderRef.current.ondataavailable = e => audioChunks.current.push(e.data);
     mediaRecorderRef.current.onstop = async () => {
       const blob = new Blob(audioChunks.current, { type: mimeType || 'audio/webm' });
-      console.log('[Vocal] Type MIME:', blob.type, '| Taille:', blob.size, '| Android:', isAndroid);
       setAudioBlob(blob);
       setAudioPreview(URL.createObjectURL(blob));
     };

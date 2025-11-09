@@ -78,7 +78,6 @@ export const useCustomThemes = () => {
         setThemes(parsed.themes || DEFAULT_THEMES);
         setActiveTheme(parsed.activeTheme || null);
       } catch (e) {
-        console.error('Erreur lors du chargement des thèmes:', e);
       }
     }
   }, []);
