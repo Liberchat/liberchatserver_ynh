@@ -41,11 +41,7 @@ function App() {
   const [callingUser, setCallingUser] = useState<string>('');
   // State pour la clé symétrique (CryptoKey ou string selon le backend)
   const [symmetricKey, setSymmetricKey] = useState<CryptoKey | string | null>(null);
-  const [keyPrompt, setKeyPrompt] = useState(() => {
-    // Si on a déjà un nom sauvegardé, pas besoin du prompt de clé
-    const savedUsername = localStorage.getItem('liberchat-username');
-    return !savedUsername;
-  });
+  const [keyPrompt, setKeyPrompt] = useState(false);
   const [keyInput, setKeyInput] = useState('');
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -76,7 +72,7 @@ function App() {
       // Utilise une clé par défaut pour que tous les utilisateurs puissent communiquer
       const defaultKey = 'RevolutionSociale2026_LiberChat_∞';
       setKeyInput(defaultKey);
-
+      generateSymmetricKeyFromPassword(defaultKey).then(setSymmetricKey);
     }
   }, [keyInput, symmetricKey]);
 
@@ -99,7 +95,6 @@ function App() {
     const savedUsername = localStorage.getItem('liberchat-username');
     if (savedUsername && !username) {
       setUsername(savedUsername);
-      setKeyPrompt(false);
     }
   }, []);
 
@@ -684,68 +679,7 @@ function App() {
     };
   }, [socket]);
 
-  if (keyPrompt) {
-    return (
-      <div className="relative min-h-screen bg-gradient-to-br from-black via-red-950 to-black text-white font-sans flex flex-col">
-        <div className="fixed top-0 left-0 w-full z-20">
-          <Header 
-            accessibilitySettings={accessibilitySettings}
-            onAccessibilityChange={updateAccessibilitySettings}
-            customThemes={customThemes}
-            activeCustomTheme={activeCustomTheme}
-            onApplyCustomTheme={applyCustomTheme}
-            onAddCustomTheme={addCustomTheme}
-            onUpdateCustomTheme={updateCustomTheme}
-            onDeleteCustomTheme={deleteCustomTheme}
-          />
-        </div>
-        <div className="flex flex-col items-center justify-center flex-1 w-full pt-20 px-2 sm:px-0">
-          <div className="p-4 sm:p-8 bg-black/90 rounded-2xl shadow-2xl flex flex-col items-center border-4 border-red-700 w-full max-w-xs sm:max-w-md animate-fade-in">
-            <div className="flex flex-col items-center mb-3 sm:mb-4 w-full">
-              <img src="/liberchat/assets/icon-B8LJ7LOp.png" alt="Logo LiberChat" className="w-20 h-20 sm:w-24 sm:h-24 mb-3 sm:mb-4 drop-shadow-lg border-4 border-white rounded-full bg-black" />
-              <h2 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 text-red-400 font-mono tracking-wider text-center">Clé de chiffrement</h2>
-              <p className="text-xs sm:text-sm text-gray-300 mb-2 text-center font-mono leading-tight">Pour garantir la confidentialité, entrez un mot de passe partagé avec vos compagnons.<br/>Il sera utilisé pour chiffrer/déchiffrer tous vos messages.</p>
-            </div>
-            <input
-              type="text"
-              className="p-2 sm:p-3 rounded-lg bg-gray-900 border-2 border-red-700 text-white mb-3 sm:mb-4 w-full text-center font-mono focus:outline-none focus:ring-2 focus:ring-red-700 transition text-base sm:text-lg"
-              placeholder="Mot de passe/chiffre partagé..."
-              value={keyInput}
-              onChange={e => { setKeyInput(e.target.value); setGeneratedKey(null); setCopied(false); }}
-              autoFocus
-            />
-            <button
-              className="bg-gradient-to-r from-red-700 to-red-500 px-4 sm:px-6 py-2 rounded-lg text-white font-bold shadow-lg hover:from-black hover:to-red-700 transition mb-2 w-full text-base sm:text-lg font-mono disabled:opacity-60 disabled:cursor-not-allowed"
-              onClick={handleUnlock}
-              disabled={!!generatedKey}
-            >
-              Déverrouiller le chat
-            </button>
-            {generatedKey && (
-              <div className="w-full flex flex-col items-center mt-2">
-                <div className="text-xs text-gray-300 mb-1 text-center font-mono">Clé générée à partager avec vos compagnons :</div>
-                <div className="bg-gray-800 text-red-300 font-mono text-xs break-all rounded p-2 mb-2 w-full text-center select-all">{generatedKey}</div>
-                <button
-                  className="bg-red-700 hover:bg-red-800 text-white font-mono px-3 py-1 rounded mb-1 text-xs"
-                  onClick={() => { navigator.clipboard.writeText(generatedKey); setCopied(true); }}
-                >
-                  {copied ? 'Clé copiée !' : 'Copier la clé'}
-                </button>
-                <button
-                  className="mt-1 text-xs underline text-gray-400 hover:text-red-400"
-                  onClick={handleAccessAfterShare}
-                >
-                  J'ai partagé la clé, accéder au chat
-                </button>
-                <div className="text-[10px] text-yellow-400 mt-2 text-center font-mono">Partage cette clé avec tes compagnons puis clique sur « J'ai partagé la clé, accéder au chat ».</div>
-              </div>
-            )}
-            <p className="text-[10px] sm:text-xs text-gray-400 mt-2 text-center font-mono leading-tight">Ce mot de passe doit être identique pour tous les membres du salon.<br/>Il n'est jamais transmis au serveur.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Écran de chiffrement supprimé - initialisation automatique
 
   if (!username) {
     return (
@@ -765,11 +699,7 @@ function App() {
     );
   }
 
-  // Suppression de l'écran "Initialisation du chiffrement..." :
-  // Si la clé n'est pas prête, on ne rend rien (ou on peut afficher un fallback minimal si besoin)
-  if (!symmetricKey) {
-    return null;
-  }
+  // La clé s'initialise automatiquement en arrière-plan
 
   return (
     <div className="h-screen flex flex-col bg-gray-900 text-white">
