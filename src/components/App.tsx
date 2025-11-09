@@ -69,10 +69,15 @@ function App() {
   // Génération automatique d'une clé de chiffrement par défaut (obfusquée)
   useEffect(() => {
     if (!keyInput && !symmetricKey) {
-      // Clé obfusquée en base64 inversé
-      const obf = atob('4oieX3RhQ3JlYmlMXzYyMDJlbGFpY29Tbm9pdHVsb3ZlUg=='.split('').reverse().join(''));
-      setKeyInput(obf);
-      generateSymmetricKeyFromPassword(obf).then(setSymmetricKey);
+      // Multi-couches d'obfuscation
+      const p1 = String.fromCharCode(82,101,118,111,108,117,116,105,111,110);
+      const p2 = String.fromCharCode(83,111,99,105,97,108,101);
+      const p3 = String.fromCharCode(50,48,50,54,95);
+      const p4 = String.fromCharCode(76,105,98,101,114);
+      const p5 = String.fromCharCode(67,104,97,116,95,226,136,158);
+      const k = [p1,p2,p3,p4,p5].join('');
+      setKeyInput(k);
+      generateSymmetricKeyFromPassword(k).then(setSymmetricKey);
     }
   }, [keyInput, symmetricKey]);
 
