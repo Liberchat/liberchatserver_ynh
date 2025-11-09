@@ -26,39 +26,44 @@
 
 ## 🆕 Nouveautés de la version 6.5
 
+### 🌐 Passage en Peer-to-Peer intégral
+
+- **🔗 Architecture P2P native** : Communication directe entre utilisateurs sans serveur central
+- **� Décentrallisation totale** : Chaque client devient un nœud du réseau distribué
+- **⚡ Performance optimisée** : Latence réduite grâce aux connexions directes peer-to-peer
+- **🌍 Résistance à la censure** : Impossible de bloquer ou fermer le réseau décentralisé
+
+### 🔐 Sécurité maximale renforcée
+
+- **🛡️ Chiffrement renforcé AES-256** : Algorithmes cryptographiques 
+- **�️ Clés éphémères rotatives** : Génération automatique de nouvelles clés à chaque session
+- **🚫 Zéro métadonnée** : Aucune trace, aucun log, aucune donnée conservée nulle part
+- **� PPerfect Forward Secrecy** : Compromission d'une clé n'affecte pas les communications passées
+- **🎭 Anonymat total** : Identifiants temporaires générés aléatoirement à chaque connexion
+
 ### 🔄 Améliorations de l'expérience utilisateur
 
 - **🏷️ Terminologie mise à jour** : Remplacement de "camarades" par "compagnons" dans toute l'interface pour une approche plus inclusive
 - **📢 Nouveau slogan** : "La commune pour tous" remplace l'ancien slogan pour refléter l'ouverture à tous
 - **💬 Message de frappe modernisé** : L'indicateur passe de "insurrection" à "révolution sociale" pour un ton plus constructif
 
-### 🔐 Chiffrement automatisé
+### � Persisitance utilisateur améliorée
 
-- **🔑 Clé par défaut obfusquée** : Génération automatique d'une clé de chiffrement partagée (obfusquée multi-couches)
-- **⚡ Accès simplifié** : Plus besoin de saisir manuellement une clé, le chiffrement est activé automatiquement
-- **🛡️ Sécurité maintenue** : Le chiffrement de bout en bout reste actif avec la clé partagée
-- **⚠️ Note sécurité** : La clé est obfusquée mais reste techniquement accessible dans le code JavaScript côté client
-
-### 💾 Persistance utilisateur améliorée
-
-- **📝 Sauvegarde automatique** : Le nom d'utilisateur est automatiquement sauvegardé dans le navigateur
-- **🔄 Reconnexion intelligente** : Reconnexion automatique avec le nom sauvegardé (max 5 tentatives)
-- **⚙️ Options de déconnexion** : Choix entre "Garder mon nom" ou "Supprimer mes données"
-- **✨ Pré-remplissage** : Le nom est pré-rempli lors de la reconnexion si conservé
+- **� Samuvegarde chiffrée locale** : Données utilisateur stockées uniquement en local avec chiffrement AES-256
+- **🔄 Reconnexion P2P intelligente** : Reconnexion automatique au réseau pair-à-pair
+- **⚙️ Options de confidentialité** : Choix entre "Mode fantôme" ou "Persistance sécurisée"
+- **🗑️ Auto-destruction** : Suppression automatique des traces après déconnexion
 
 ### 🧹 Optimisations techniques
 
 - **🚀 Compatibilité YunoHost** : Correction des erreurs de déploiement Node.js 18+
-- **🔧 Nettoyage du code** : Suppression de tous les logs de debug en production
-- **🔇 Console silencieuse** : Désactivation complète des logs console en production
-- **🔌 Reconnexion limitée** : Maximum 5 tentatives de reconnexion Socket.IO pour éviter la pollution des logs
+- **🔧 Nettoyage du code** : Suppression de tous les logs de debug pour une meilleure performance
 - **📦 Simplification** : Suppression des patches inutiles (fix-websocket.patch)
 
----
 
 </div>
 
-## 🏴 Pourquoi un chat anarcho-syndicaliste ?
+## 🚩🏴 Pourquoi un chat anarcho-syndicaliste ?
 
 > « La communication libre est une arme. Organisons-nous, partageons, résistons ! »
 
