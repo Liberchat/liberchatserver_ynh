@@ -133,10 +133,7 @@ function App() {
       transports: ['websocket', 'polling'],
       forceNew: true,
       reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 2000,
-      timeout: 20000,
-      autoConnect: true
+      timeout: 20000
     });
     setSocket(newSocket);
 
