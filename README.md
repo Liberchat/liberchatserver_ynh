@@ -34,21 +34,24 @@
 
 ### 🔐 Chiffrement automatisé
 
-- **🔑 Clé par défaut** : Génération automatique d'une clé de chiffrement partagée "RevolutionSociale2026_LiberChat_∞"
+- **🔑 Clé par défaut obfusquée** : Génération automatique d'une clé de chiffrement partagée (obfusquée multi-couches)
 - **⚡ Accès simplifié** : Plus besoin de saisir manuellement une clé, le chiffrement est activé automatiquement
 - **🛡️ Sécurité maintenue** : Le chiffrement de bout en bout reste actif avec la clé partagée
+- **⚠️ Note sécurité** : La clé est obfusquée mais reste techniquement accessible dans le code JavaScript côté client
 
 ### 💾 Persistance utilisateur améliorée
 
 - **📝 Sauvegarde automatique** : Le nom d'utilisateur est automatiquement sauvegardé dans le navigateur
-- **🔄 Reconnexion intelligente** : Reconnexion automatique avec le nom sauvegardé
+- **🔄 Reconnexion intelligente** : Reconnexion automatique avec le nom sauvegardé (max 5 tentatives)
 - **⚙️ Options de déconnexion** : Choix entre "Garder mon nom" ou "Supprimer mes données"
 - **✨ Pré-remplissage** : Le nom est pré-rempli lors de la reconnexion si conservé
 
 ### 🧹 Optimisations techniques
 
 - **🚀 Compatibilité YunoHost** : Correction des erreurs de déploiement Node.js 18+
-- **🔧 Nettoyage du code** : Suppression de tous les logs de debug pour une meilleure performance
+- **🔧 Nettoyage du code** : Suppression de tous les logs de debug en production
+- **🔇 Console silencieuse** : Désactivation complète des logs console en production
+- **🔌 Reconnexion limitée** : Maximum 5 tentatives de reconnexion Socket.IO pour éviter la pollution des logs
 - **📦 Simplification** : Suppression des patches inutiles (fix-websocket.patch)
 
 ---
