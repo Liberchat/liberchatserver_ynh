@@ -22,35 +22,17 @@ fi
 npm install -g patch-package
 
 #=================================================
-# DOWNLOAD AND EXTRACT SOURCE
+# COPY LOCAL SOURCE FILES
 #=================================================
 ynh_script_progression --message="Setting up source files..." --weight=1
 
-ynh_setup_source --dest_dir="$install_dir"
+# Copy all files from the YunoHost package directory to install_dir
+cp -r "$YNH_APP_BASEDIR/"* "$install_dir/"
+rm -rf "$install_dir/scripts" "$install_dir/conf" "$install_dir/manifest.toml" "$install_dir/.git" 2>/dev/null || true
 
 # Remove problematic files that might cause conflicts
 rm -f "$install_dir/package-lock.json"
 rm -rf "$install_dir/node_modules"
-
-# Remove obsolete App.tsx that conflicts with src/components/App.tsx
-rm -f "$install_dir/src/App.tsx"
-
-# Fix main.tsx to import from components/App instead of ./App
-if [ -f "$install_dir/src/main.tsx" ]; then
-    sed -i "s|from './App'|from './components/App'|g" "$install_dir/src/main.tsx"
-fi
-
-# Copy missing component files from YunoHost repo if they don't exist in source
-if [ -d "../src/components" ]; then
-    for component_file in ../src/components/*.tsx ../src/components/*.ts; do
-        if [ -f "$component_file" ]; then
-            filename=$(basename "$component_file")
-            if [ ! -f "$install_dir/src/components/$filename" ]; then
-                cp "$component_file" "$install_dir/src/components/"
-            fi
-        fi
-    done
-fi
 
 # Fix permissions (YunoHost provisioning handles user creation)
 chown -R $app:www-data "$install_dir" 2>/dev/null || true
