@@ -90,7 +90,7 @@ function App() {
 
   // Reconnexion automatique si un nom d'utilisateur est sauvegardé
   useEffect(() => {
-    if (username && socket && isConnected && !users.find(u => u.name === username)) {
+    if (username && socket && isConnected && !users.find(u => u.username === username)) {
       socket.emit('register', username);
     }
   }, [username, socket, isConnected, users]);
