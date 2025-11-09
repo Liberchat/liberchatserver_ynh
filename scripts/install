@@ -109,7 +109,8 @@ pushd "$install_dir"
 	
 	# Build the application
 	ynh_print_info "Building the application..."
-	if ! ynh_exec_as $app env NODE_ENV=production YNH_APP_ARG_PATH="$path" PATH="/usr/local/bin:$PATH" npm run build; then
+	# Force Rollup to use JS version instead of native ARM64 binary
+	if ! ynh_exec_as $app env NODE_ENV=production YNH_APP_ARG_PATH="$path" PATH="/usr/local/bin:$PATH" ROLLUP_FORCE_WASM=1 npm run build; then
 		ynh_die --message="Failed to build the application. Check build logs."
 	fi
 popd
