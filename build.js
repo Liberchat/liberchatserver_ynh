@@ -23,10 +23,10 @@ await esbuild.build({
     '.jsx': 'jsx',
     '.js': 'js',
     '.css': 'css',
-    '.svg': 'file',
-    '.png': 'file',
-    '.jpg': 'file',
-    '.ico': 'file'
+    '.svg': 'dataurl',
+    '.png': 'dataurl',
+    '.jpg': 'dataurl',
+    '.ico': 'dataurl'
   },
   define: {
     'process.env.NODE_ENV': '"production"',
@@ -34,19 +34,23 @@ await esbuild.build({
     'import.meta.env.PROD': 'true'
   },
   jsx: 'automatic',
-  jsxImportSource: 'react'
+  jsxImportSource: 'react',
+  publicPath: basePath
 });
+
+// Get base path from environment or default to /liberchat/
+const basePath = (process.env.YNH_APP_ARG_PATH || '/liberchat').replace(/\/$/, '') + '/';
 
 // Generate index.html
 const html = `<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/liberchat/assets/liberchat-logo.svg" />
+  <link rel="icon" type="image/svg+xml" href="${basePath}assets/liberchat-logo.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Liberchat - La Commune Numérique</title>
-  <link rel="manifest" href="/liberchat/manifest.json">
-  <script type="module" crossorigin src="/liberchat/assets/index.js"></script>
+  <link rel="manifest" href="${basePath}manifest.json">
+  <script type="module" crossorigin src="${basePath}assets/index.js"></script>
 </head>
 <body>
   <div id="root"></div>
