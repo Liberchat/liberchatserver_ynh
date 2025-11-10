@@ -60,7 +60,7 @@
 
 </div>
 
-## 🏴 Pourquoi un chat anarcho-syndicaliste ?
+## 🚩🏴 Pourquoi un chat anarcho-syndicaliste ?
 
 > « La communication libre est une arme. Organisons-nous, partageons, résistons ! »
 
@@ -195,7 +195,7 @@ Créez votre propre univers visuel avec le nouveau **créateur de thèmes** !
 - ☀️ **Bleu Clair** : Mode jour apaisant
 - 🌿 **Vert Solidaire** : Nature militante
 - 🔮 **Mauve Mystique** : Féminisme spirituel
-- 🤝 **Solidarité Dorée** : Chaleur communautaire
+- 🤝 **Solidarité** : Chaleur communautaire
 - 🌊 **Bleu Océan** : Profondeur marine
 - 🌅 **Coucher de Soleil** : Chaleur orangée
 

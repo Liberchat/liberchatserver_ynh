@@ -10,7 +10,7 @@ export interface CustomTheme {
 const DEFAULT_THEMES: CustomTheme[] = [
   {
     id: 'anarchist-red',
-    name: '🏴 Rouge Anarchiste',
+    name: '🚩🏴 Anarchisme',
     css: `
       :root {
         --bg-primary: #1a0000;
@@ -108,7 +108,7 @@ const DEFAULT_THEMES: CustomTheme[] = [
   },
   {
     id: 'golden-solidarity',
-    name: '🤝 Solidarité Dorée',
+    name: '🤝 Solidarité',
     css: `
       :root {
         --bg-primary: #2d2416;
