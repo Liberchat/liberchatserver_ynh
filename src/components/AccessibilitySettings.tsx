@@ -434,8 +434,8 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
 
                   try {
                     // Créer un beep avec Web Audio API
-                    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-                    const audioContext = new AudioContextClass();
+                    const AudioContextConstructor = (window as any).AudioContext || (window as any).webkitAudioContext;
+                    const audioContext = new AudioContextConstructor();
                     const oscillator = audioContext.createOscillator();
                     const gainNode = audioContext.createGain();
 
@@ -536,8 +536,8 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
                     console.error('❌ SpeechSynthesis non supporté par ce navigateur');
                     // Fallback: notification sonore
                     try {
-                      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-                      const audioContext = new AudioContextClass();
+                      const AudioContextConstructor = (window as any).AudioContext || (window as any).webkitAudioContext;
+                      const audioContext = new AudioContextConstructor();
                       const oscillator = audioContext.createOscillator();
                       const gainNode = audioContext.createGain();
 
