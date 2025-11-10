@@ -1,7 +1,7 @@
 <div align="center">
 
 
-# 🚩✊ Liberchat — La Commune Numérique
+# 🚩🏴✊ Liberchat — La Commune Numérique
 
 <p align="center" style="font-size:1.2em; color:#ff2800; font-weight:bold;">
 « Pour l’autogestion, la solidarité et la liberté numérique. Un chat libre, par et pour le peuple. »
