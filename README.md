@@ -23,6 +23,84 @@
 [📝 Documentation](#-documentation) | [🤝 Contribuer](#-contribution) | [📧 Contact](#-contact)
 
 ---
+## 🆕 Nouveautés Version 6.5.5 - Accessibilité & Personnalisation
+
+### ♿ **SYSTÈME D'ACCESSIBILITÉ COMPLET**
+
+LiberChat intègre désormais un **système d'accessibilité révolutionnaire** pour une inclusion totale !
+
+**🎯 6 Options d'Accessibilité :**
+- **🔆 Contraste élevé** : Mode noir/jaune optimisé pour malvoyants
+- **📏 Tailles de police** : 4 niveaux adaptatifs (petit → très grand)
+- **📖 Police dyslexie** : Police Lexend scientifiquement prouvée + fallback Comic Sans
+- **🎭 Réduction animations** : Désactivation complète pour sensibilités
+- **🔊 Lecteur d'écran** : Annonces ARIA + synthèse vocale intégrée
+- **⌨️ Navigation clavier** : Focus renforcé + raccourcis visuels
+
+**🚀 Fonctionnalités Avancées :**
+- Interface adaptative qui s'ajuste à tous les paramètres
+- Test intégré du lecteur d'écran avec feedback audio
+- Sauvegarde automatique de tous les réglages
+- Conformité WCAG 2.1 niveau AA
+- Compatible avec NVDA, JAWS, VoiceOver, TalkBack
+
+**Accès :** Bouton ♿ dans l'en-tête ou raccourci **Alt+A**
+
+### 🎨 **SYSTÈME DE THÈMES PERSONNALISÉS**
+
+Créez votre propre univers visuel avec le nouveau **créateur de thèmes** !
+
+**🌈 8 Thèmes Prédéfinis :**
+- 🚩🏴 **Anarchisme** : Rouge révolutionnaire
+- 🌌 **Révolution Sociale** : Cyberpunk néon
+- ☀️ **Bleu Clair** : Mode jour apaisant
+- 🌿 **Vert Solidaire** : Nature militante
+- 🔮 **Mauve Mystique** : Féminisme spirituel
+- 🤝 **Solidarité** : Chaleur communautaire
+- 🌊 **Bleu Océan** : Profondeur marine
+- 🌅 **Coucher de Soleil** : Chaleur orangée
+
+**🛠️ Créateur de Thèmes :**
+- Interface intuitive pour créer vos thèmes CSS
+- Aperçu en temps réel des modifications
+- Gestion complète : création, modification, suppression
+- Aide intégrée avec exemples CSS
+- Sauvegarde automatique locale
+
+**Accès :** Bouton 🎨 dans l'en-tête ou raccourci **Alt+T**
+
+---
+
+## 📋 **RÉSUMÉ COMPLET VERSION 6.5.5**
+
+### 🎯 **Ce qui a été développé dans cette version majeure :**
+
+**♿ ACCESSIBILITÉ UNIVERSELLE :**
+- Système complet avec 6 options d'inclusion (contraste élevé, tailles de police, police dyslexie, réduction animations, lecteur d'écran, navigation clavier)
+- Interface adaptative qui s'ajuste automatiquement à tous les paramètres
+- Support complet des lecteurs d'écran (NVDA, JAWS, VoiceOver, TalkBack)
+- Conformité WCAG 2.1 niveau AA avec annonces vocales intégrées
+
+**🎨 PERSONNALISATION AVANCÉE :**
+- 8 thèmes prédéfinis couvrant différents styles et philosophies
+- Créateur de thèmes CSS avec interface intuitive et aperçu temps réel
+- Gestion complète : création, modification, suppression, activation
+- Aide contextuelle avec exemples CSS pour faciliter la personnalisation
+
+**🔧 AMÉLIORATIONS TECHNIQUES :**
+- Architecture CSS adaptative avec variables dynamiques
+- Hooks d'accessibilité pour application immédiate des changements
+- Modales responsives qui s'adaptent à toutes les tailles d'écran
+- Correction des images cassées et optimisation des performances
+
+**💾 PERSISTANCE ET EXPÉRIENCE :**
+- Sauvegarde automatique de tous les paramètres d'accessibilité et thèmes
+- Interface mobile optimisée avec support tactile
+- Tests intégrés pour vérifier le bon fonctionnement des fonctionnalités
+- Documentation complète et tooltips explicatifs
+
+
+
 
 ## 🆕 Nouveautés de la version 6.5 - La meilleure sécurité à ce jour - La meilleure sécurité à ce jour
 
@@ -32,14 +110,6 @@
 - **📢 Nouveau slogan** : "La commune pour tous" remplace l'ancien slogan pour refléter l'ouverture à tous
 - **💬 Message de frappe modernisé** : L'indicateur passe de "insurrection" à "révolution sociale" pour un ton plus constructif
 
-### 🔐 Sécurité renforcée - Chiffrement automatisé
-
-- **🔑 Clé par défaut obfusquée** : Génération automatique d'une clé de chiffrement partagée avec obfuscation multi-couches (String.fromCharCode)
-- **🔒 Protection avancée** : La clé est divisée en 5 parties et reconstituée dynamiquement pour compliquer la rétro-ingénierie
-- **⚡ Accès simplifié** : Plus besoin de saisir manuellement une clé, le chiffrement E2EE est activé automatiquement
-- **🛡️ Sécurité maintenue** : Le chiffrement de bout en bout (AES-256-GCM) reste actif avec la clé partagée
-- **⚠️ Note technique** : La clé est obfusquée mais reste techniquement accessible dans le code JavaScript côté client (limitation inhérente au JavaScript)
-- **👁️ Protection contre les curieux** : L'obfuscation protège efficacement contre les utilisateurs occasionnels cherchant la clé dans le code source
 
 ### 💾 Persistance utilisateur améliorée
 
@@ -162,81 +232,6 @@
   - Synchronisation en temps réel entre tous les clients
   - Respect total de la vie privée : le serveur ne connaît jamais le contenu des réactions
 
-## 🆕 Nouveautés Version 6.5.5 - Accessibilité & Personnalisation
-
-### ♿ **SYSTÈME D'ACCESSIBILITÉ COMPLET**
-
-LiberChat intègre désormais un **système d'accessibilité révolutionnaire** pour une inclusion totale !
-
-**🎯 6 Options d'Accessibilité :**
-- **🔆 Contraste élevé** : Mode noir/jaune optimisé pour malvoyants
-- **📏 Tailles de police** : 4 niveaux adaptatifs (petit → très grand)
-- **📖 Police dyslexie** : Police Lexend scientifiquement prouvée + fallback Comic Sans
-- **🎭 Réduction animations** : Désactivation complète pour sensibilités
-- **🔊 Lecteur d'écran** : Annonces ARIA + synthèse vocale intégrée
-- **⌨️ Navigation clavier** : Focus renforcé + raccourcis visuels
-
-**🚀 Fonctionnalités Avancées :**
-- Interface adaptative qui s'ajuste à tous les paramètres
-- Test intégré du lecteur d'écran avec feedback audio
-- Sauvegarde automatique de tous les réglages
-- Conformité WCAG 2.1 niveau AA
-- Compatible avec NVDA, JAWS, VoiceOver, TalkBack
-
-**Accès :** Bouton ♿ dans l'en-tête ou raccourci **Alt+A**
-
-### 🎨 **SYSTÈME DE THÈMES PERSONNALISÉS**
-
-Créez votre propre univers visuel avec le nouveau **créateur de thèmes** !
-
-**🌈 8 Thèmes Prédéfinis :**
-- 🚩🏴 **Anarchisme** : Rouge révolutionnaire
-- 🌌 **Révolution Sociale** : Cyberpunk néon
-- ☀️ **Bleu Clair** : Mode jour apaisant
-- 🌿 **Vert Solidaire** : Nature militante
-- 🔮 **Mauve Mystique** : Féminisme spirituel
-- 🤝 **Solidarité** : Chaleur communautaire
-- 🌊 **Bleu Océan** : Profondeur marine
-- 🌅 **Coucher de Soleil** : Chaleur orangée
-
-**🛠️ Créateur de Thèmes :**
-- Interface intuitive pour créer vos thèmes CSS
-- Aperçu en temps réel des modifications
-- Gestion complète : création, modification, suppression
-- Aide intégrée avec exemples CSS
-- Sauvegarde automatique locale
-
-**Accès :** Bouton 🎨 dans l'en-tête ou raccourci **Alt+T**
-
----
-
-## 📋 **RÉSUMÉ COMPLET VERSION 6.5.5**
-
-### 🎯 **Ce qui a été développé dans cette version majeure :**
-
-**♿ ACCESSIBILITÉ UNIVERSELLE :**
-- Système complet avec 6 options d'inclusion (contraste élevé, tailles de police, police dyslexie, réduction animations, lecteur d'écran, navigation clavier)
-- Interface adaptative qui s'ajuste automatiquement à tous les paramètres
-- Support complet des lecteurs d'écran (NVDA, JAWS, VoiceOver, TalkBack)
-- Conformité WCAG 2.1 niveau AA avec annonces vocales intégrées
-
-**🎨 PERSONNALISATION AVANCÉE :**
-- 8 thèmes prédéfinis couvrant différents styles et philosophies
-- Créateur de thèmes CSS avec interface intuitive et aperçu temps réel
-- Gestion complète : création, modification, suppression, activation
-- Aide contextuelle avec exemples CSS pour faciliter la personnalisation
-
-**🔧 AMÉLIORATIONS TECHNIQUES :**
-- Architecture CSS adaptative avec variables dynamiques
-- Hooks d'accessibilité pour application immédiate des changements
-- Modales responsives qui s'adaptent à toutes les tailles d'écran
-- Correction des images cassées et optimisation des performances
-
-**💾 PERSISTANCE ET EXPÉRIENCE :**
-- Sauvegarde automatique de tous les paramètres d'accessibilité et thèmes
-- Interface mobile optimisée avec support tactile
-- Tests intégrés pour vérifier le bon fonctionnement des fonctionnalités
-- Documentation complète et tooltips explicatifs
 
 ---
 
