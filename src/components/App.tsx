@@ -54,7 +54,7 @@ function App() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Hook d'accessibilité
-  const { settings: accessibilitySettings, updateSettings: updateAccessibilitySettings, announceToScreenReader } = useAccessibility();
+  const { settings: accessibilitySettings, updateSettings: updateAccessibilitySettings, announceToScreenReader, applyFontSizeImmediately } = useAccessibility();
   
   // Hook des thèmes personnalisables
   const {
@@ -63,7 +63,8 @@ function App() {
     applyTheme: applyCustomTheme,
     addTheme: addCustomTheme,
     updateTheme: updateCustomTheme,
-    deleteTheme: deleteCustomTheme
+    deleteTheme: deleteCustomTheme,
+    resetToDefaults: resetCustomThemes
   } = useCustomThemes();
 
   // Génération automatique d'une clé de chiffrement par défaut (obfusquée)
@@ -691,12 +692,14 @@ function App() {
         <Header 
           accessibilitySettings={accessibilitySettings}
           onAccessibilityChange={updateAccessibilitySettings}
+          onApplyFontSizeImmediately={applyFontSizeImmediately}
           customThemes={customThemes}
           activeCustomTheme={activeCustomTheme}
           onApplyCustomTheme={applyCustomTheme}
           onAddCustomTheme={addCustomTheme}
           onUpdateCustomTheme={updateCustomTheme}
           onDeleteCustomTheme={deleteCustomTheme}
+          onResetCustomThemes={resetCustomThemes}
         />
         <WelcomeScreen onJoin={handleJoin} />
       </>
@@ -714,12 +717,14 @@ function App() {
         onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
         accessibilitySettings={accessibilitySettings}
         onAccessibilityChange={updateAccessibilitySettings}
+        onApplyFontSizeImmediately={applyFontSizeImmediately}
         customThemes={customThemes}
         activeCustomTheme={activeCustomTheme}
         onApplyCustomTheme={applyCustomTheme}
         onAddCustomTheme={addCustomTheme}
         onUpdateCustomTheme={updateCustomTheme}
         onDeleteCustomTheme={deleteCustomTheme}
+        onResetCustomThemes={resetCustomThemes}
       />
       <div className="flex-1 flex flex-col sm:flex-row overflow-hidden min-h-0">
         <aside 

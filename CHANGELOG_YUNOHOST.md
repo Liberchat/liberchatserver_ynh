@@ -1,5 +1,47 @@
 # Changelog - Améliorations YunoHost
 
+## Version 6.5.5 (11 octobre 2025)
+
+### ♿ **SYSTÈME D'ACCESSIBILITÉ COMPLET**
+- **Panneau d'accessibilité** : Interface dédiée avec 6 options d'accessibilité
+- **Contraste élevé** : Mode noir/jaune pour malvoyants avec thème complet
+- **Tailles de police adaptatives** : 4 niveaux (petit, normal, grand, très grand)
+- **Police dyslexie** : Police Lexend scientifiquement optimisée + fallback Comic Sans
+- **Réduction des animations** : Désactivation complète des animations/transitions
+- **Support lecteur d'écran** : Annonces ARIA + synthèse vocale intégrée
+- **Navigation clavier** : Focus amélioré + raccourcis visuels
+- **Sauvegarde locale** : Tous les paramètres persistent entre sessions
+
+### 🎨 **SYSTÈME DE THÈMES PERSONNALISÉS**
+- **8 thèmes prédéfinis** : Anarchisme, Cyberpunk, Bleu clair, Vert solidaire, etc.
+- **Créateur de thèmes** : Interface pour créer/modifier des thèmes CSS
+- **Gestion complète** : Ajout, modification, suppression, activation
+- **Aperçu en temps réel** : Application immédiate des changements
+- **Aide intégrée** : Guide CSS pour personnalisation
+- **Sauvegarde automatique** : Thèmes sauvés localement
+
+### 🔧 **AMÉLIORATIONS TECHNIQUES**
+- **Hooks d'accessibilité** : Système de hooks pour application immédiate
+- **CSS adaptatif** : Variables CSS dynamiques pour tous les éléments
+- **Modales responsives** : Interface adaptée à toutes les tailles d'écran
+- **Performance optimisée** : Application efficace des styles sans lag
+- **Compatibilité mobile** : Interface tactile optimisée
+
+### 🐛 **CORRECTIONS DE BUGS**
+- **Images cassées** : Suppression des images problématiques dans UserList
+- **Chargement d'assets** : Résolution des erreurs de ressources manquantes
+- **Affichage mobile** : Amélioration de l'interface sur petits écrans
+- **Persistance des données** : Correction de la sauvegarde des préférences
+
+### 🎯 **EXPÉRIENCE UTILISATEUR**
+- **Interface intuitive** : Boutons switch, aperçus en temps réel
+- **Feedback visuel** : Notifications de confirmation pour chaque action
+- **Test intégré** : Outils de test pour lecteur d'écran et audio
+- **Documentation** : Aide contextuelle et tooltips explicatifs
+- **Accessibilité universelle** : Conforme aux standards WCAG 2.1
+
+---
+
 ## Version 6.1.21 (24 août 2025)
 
 ### 🔧 Corrections importantes

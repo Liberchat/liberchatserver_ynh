@@ -9,6 +9,7 @@ interface HeaderProps {
   isLoggedIn?: boolean;
   accessibilitySettings?: AccessibilitySettings;
   onAccessibilityChange?: (settings: AccessibilitySettings) => void;
+  onApplyFontSizeImmediately?: () => void;
   // Thèmes personnalisables
   customThemes?: CustomTheme[];
   activeCustomTheme?: string | null;
@@ -16,6 +17,7 @@ interface HeaderProps {
   onAddCustomTheme?: (theme: Omit<CustomTheme, 'id' | 'isActive'>) => string;
   onUpdateCustomTheme?: (id: string, updates: Partial<CustomTheme>) => void;
   onDeleteCustomTheme?: (id: string) => void;
+  onResetCustomThemes?: () => void;
 }
 
 const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?: () => void }> = ({ 
@@ -25,12 +27,14 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
   onToggleTheme, 
   accessibilitySettings, 
   onAccessibilityChange,
+  onApplyFontSizeImmediately,
   customThemes,
   activeCustomTheme,
   onApplyCustomTheme,
   onAddCustomTheme,
   onUpdateCustomTheme,
-  onDeleteCustomTheme
+  onDeleteCustomTheme,
+  onResetCustomThemes
 }) => {
   const [showAccessibilityModal, setShowAccessibilityModal] = useState(false);
   const [showThemeCustomizer, setShowThemeCustomizer] = useState(false);
@@ -188,6 +192,7 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
           onAddTheme={onAddCustomTheme}
           onUpdateTheme={onUpdateCustomTheme}
           onDeleteTheme={onDeleteCustomTheme}
+          onResetToDefaults={onResetCustomThemes}
         />
       )}
 
@@ -198,6 +203,7 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
           onClose={() => setShowAccessibilityModal(false)}
           settings={accessibilitySettings}
           onSettingsChange={onAccessibilityChange}
+          onApplyFontSizeImmediately={onApplyFontSizeImmediately}
         />
       )}
     </header>

@@ -216,33 +216,572 @@ body.theme-light {
   outline-offset: 2px !important;
 }
 
-/* Tailles de police */
+/* Tailles de police - Système amélioré */
+:root {
+  --font-size-small: 0.875rem;
+  --font-size-normal: 1rem;
+  --font-size-large: 1.25rem;
+  --font-size-xlarge: 1.5rem;
+  
+  --line-height-small: 1.4;
+  --line-height-normal: 1.5;
+  --line-height-large: 1.6;
+  --line-height-xlarge: 1.7;
+}
+
 .font-small {
-  font-size: 0.875rem;
+  --current-font-size: var(--font-size-small);
+  --current-line-height: var(--line-height-small);
 }
 
 .font-normal {
-  font-size: 1rem;
+  --current-font-size: var(--font-size-normal);
+  --current-line-height: var(--line-height-normal);
 }
 
 .font-large {
-  font-size: 1.25rem;
+  --current-font-size: var(--font-size-large);
+  --current-line-height: var(--line-height-large);
 }
 
 .font-xlarge {
-  font-size: 1.5rem;
+  --current-font-size: var(--font-size-xlarge);
+  --current-line-height: var(--line-height-xlarge);
 }
 
-.font-small * {
-  font-size: 0.875rem !important;
-}
-
-.font-large * {
-  font-size: 1.25rem !important;
-}
-
+/* Application des tailles à tous les éléments textuels */
+.font-small,
+.font-small *,
+.font-normal,
+.font-normal *,
+.font-large,
+.font-large *,
+.font-xlarge,
 .font-xlarge * {
-  font-size: 1.5rem !important;
+  font-size: var(--current-font-size) !important;
+  line-height: var(--current-line-height) !important;
+}
+
+/* Ajustements spécifiques pour les éléments d'interface */
+.font-small .text-xs,
+.font-small .text-sm { font-size: calc(var(--current-font-size) * 0.8) !important; }
+.font-small .text-base { font-size: var(--current-font-size) !important; }
+.font-small .text-lg { font-size: calc(var(--current-font-size) * 1.2) !important; }
+.font-small .text-xl { font-size: calc(var(--current-font-size) * 1.4) !important; }
+.font-small .text-2xl { font-size: calc(var(--current-font-size) * 1.6) !important; }
+
+.font-normal .text-xs { font-size: calc(var(--current-font-size) * 0.75) !important; }
+.font-normal .text-sm { font-size: calc(var(--current-font-size) * 0.875) !important; }
+.font-normal .text-base { font-size: var(--current-font-size) !important; }
+.font-normal .text-lg { font-size: calc(var(--current-font-size) * 1.125) !important; }
+.font-normal .text-xl { font-size: calc(var(--current-font-size) * 1.25) !important; }
+.font-normal .text-2xl { font-size: calc(var(--current-font-size) * 1.5) !important; }
+
+.font-large .text-xs { font-size: calc(var(--current-font-size) * 0.7) !important; }
+.font-large .text-sm { font-size: calc(var(--current-font-size) * 0.8) !important; }
+.font-large .text-base { font-size: var(--current-font-size) !important; }
+.font-large .text-lg { font-size: calc(var(--current-font-size) * 1.1) !important; }
+.font-large .text-xl { font-size: calc(var(--current-font-size) * 1.2) !important; }
+.font-large .text-2xl { font-size: calc(var(--current-font-size) * 1.4) !important; }
+
+.font-xlarge .text-xs { font-size: calc(var(--current-font-size) * 0.65) !important; }
+.font-xlarge .text-sm { font-size: calc(var(--current-font-size) * 0.75) !important; }
+.font-xlarge .text-base { font-size: var(--current-font-size) !important; }
+.font-xlarge .text-lg { font-size: calc(var(--current-font-size) * 1.05) !important; }
+.font-xlarge .text-xl { font-size: calc(var(--current-font-size) * 1.1) !important; }
+.font-xlarge .text-2xl { font-size: calc(var(--current-font-size) * 1.3) !important; }
+
+/* Ajustements pour les boutons et éléments interactifs */
+.font-small button,
+.font-small input,
+.font-small textarea,
+.font-small select {
+  font-size: var(--current-font-size) !important;
+  padding: calc(var(--current-font-size) * 0.5) calc(var(--current-font-size) * 0.75) !important;
+}
+
+.font-large button,
+.font-large input,
+.font-large textarea,
+.font-large select {
+  font-size: var(--current-font-size) !important;
+  padding: calc(var(--current-font-size) * 0.6) calc(var(--current-font-size) * 0.8) !important;
+}
+
+.font-xlarge button,
+.font-xlarge input,
+.font-xlarge textarea,
+.font-xlarge select {
+  font-size: var(--current-font-size) !important;
+  padding: calc(var(--current-font-size) * 0.7) calc(var(--current-font-size) * 0.9) !important;
+}
+
+/* Ajustements pour les icônes et emojis */
+.font-small .emoji,
+.font-small [role="img"] {
+  font-size: calc(var(--current-font-size) * 1.2) !important;
+}
+
+.font-large .emoji,
+.font-large [role="img"] {
+  font-size: calc(var(--current-font-size) * 1.1) !important;
+}
+
+.font-xlarge .emoji,
+.font-xlarge [role="img"] {
+  font-size: calc(var(--current-font-size) * 1.05) !important;
+}
+
+/* Forcer l'application sur tous les éléments spécifiques */
+.font-small h1, .font-small h2, .font-small h3, .font-small h4, .font-small h5, .font-small h6 {
+  font-size: calc(var(--current-font-size) * 1.5) !important;
+}
+
+.font-normal h1, .font-normal h2, .font-normal h3, .font-normal h4, .font-normal h5, .font-normal h6 {
+  font-size: calc(var(--current-font-size) * 1.75) !important;
+}
+
+.font-large h1, .font-large h2, .font-large h3, .font-large h4, .font-large h5, .font-large h6 {
+  font-size: calc(var(--current-font-size) * 1.4) !important;
+}
+
+.font-xlarge h1, .font-xlarge h2, .font-xlarge h3, .font-xlarge h4, .font-xlarge h5, .font-xlarge h6 {
+  font-size: calc(var(--current-font-size) * 1.3) !important;
+}
+
+/* Application forcée sur les éléments de navigation et interface */
+.font-small nav, .font-small nav *,
+.font-small header, .font-small header *,
+.font-small aside, .font-small aside *,
+.font-small main, .font-small main *,
+.font-small footer, .font-small footer * {
+  font-size: var(--current-font-size) !important;
+  line-height: var(--current-line-height) !important;
+}
+
+.font-normal nav, .font-normal nav *,
+.font-normal header, .font-normal header *,
+.font-normal aside, .font-normal aside *,
+.font-normal main, .font-normal main *,
+.font-normal footer, .font-normal footer * {
+  font-size: var(--current-font-size) !important;
+  line-height: var(--current-line-height) !important;
+}
+
+.font-large nav, .font-large nav *,
+.font-large header, .font-large header *,
+.font-large aside, .font-large aside *,
+.font-large main, .font-large main *,
+.font-large footer, .font-large footer * {
+  font-size: var(--current-font-size) !important;
+  line-height: var(--current-line-height) !important;
+}
+
+.font-xlarge nav, .font-xlarge nav *,
+.font-xlarge header, .font-xlarge header *,
+.font-xlarge aside, .font-xlarge aside *,
+.font-xlarge main, .font-xlarge main *,
+.font-xlarge footer, .font-xlarge footer * {
+  font-size: var(--current-font-size) !important;
+  line-height: var(--current-line-height) !important;
+}
+
+/* Exceptions pour les éléments qui doivent garder leur taille relative */
+.font-small .logo, .font-small .app-logo,
+.font-normal .logo, .font-normal .app-logo,
+.font-large .logo, .font-large .app-logo,
+.font-xlarge .logo, .font-xlarge .app-logo {
+  font-size: inherit !important;
+}
+
+/* Amélioration de l'espacement pour les grandes tailles */
+.font-large {
+  --spacing-multiplier: 1.1;
+}
+
+/* ===== ANIMATIONS ET TRANSITIONS ===== */
+
+/* Animations par défaut pour rendre visible l'effet de reduce-motion */
+button, input, textarea, select {
+  transition: all 0.3s ease !important;
+}
+
+button:hover {
+  transform: scale(1.05) !important;
+  transition: transform 0.2s ease !important;
+}
+
+.modal-content, .adaptive-modal {
+  animation: modalSlideIn 0.3s ease-out !important;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Animation pour les switches */
+.adaptive-switch-thumb {
+  transition: transform 0.3s ease !important;
+}
+
+/* Animation pour les notifications */
+.accessibility-announcement {
+  animation: slideInRight 0.4s ease-out !important;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Animation pour les boutons actifs */
+button:active {
+  transform: scale(0.98) !important;
+  transition: transform 0.1s ease !important;
+}
+
+/* ===== RÉDUCTION DES ANIMATIONS ===== */
+
+/* Quand reduce-motion est activé, supprimer toutes les animations */
+.reduce-motion,
+.reduce-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+  transform: none !important;
+}
+
+.reduce-motion .animate-pulse,
+.reduce-motion .animate-bounce,
+.reduce-motion .animate-spin {
+  animation: none !important;
+}
+
+.reduce-motion button:hover,
+.reduce-motion button:active {
+  transform: none !important;
+}
+
+.reduce-motion .modal-content,
+.reduce-motion .adaptive-modal {
+  animation: none !important;
+}
+
+.reduce-motion .accessibility-announcement {
+  animation: none !important;
+}
+
+/* Préférence système pour reduce-motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.font-xlarge {
+  --spacing-multiplier: 1.2;
+}
+
+/* ===== POLICES POUR LA DYSLEXIE ===== */
+
+/* Import des polices dyslexie (si disponibles) */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap');
+
+/* Polices spécialement conçues pour la dyslexie */
+.dyslexia-font,
+.dyslexia-font * {
+  font-family: 
+    'Lexend',                    /* Police scientifiquement prouvée pour la dyslexie */
+    'OpenDyslexic',              /* Police open source spécialisée */
+    'Dyslexie',                  /* Police commerciale spécialisée */
+    'Verdana',                   /* Bonne alternative sans-serif */
+    'Tahoma',                    /* Autre bonne alternative */
+    'Arial',                     /* Fallback standard */
+    'Comic Sans MS',             /* Dernier recours */
+    sans-serif !important;
+    
+  /* Paramètres optimisés pour la dyslexie */
+  letter-spacing: 0.12em !important;      /* Espacement entre lettres */
+  word-spacing: 0.16em !important;        /* Espacement entre mots */
+  line-height: 1.8 !important;            /* Interligne généreux */
+  font-weight: 400 !important;            /* Poids normal, pas trop fin */
+  
+  /* Éviter les ligatures qui peuvent confondre */
+  font-variant-ligatures: none !important;
+  font-feature-settings: "liga" 0 !important;
+  
+  /* Améliorer la lisibilité */
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Ajustements spécifiques pour différents éléments */
+.dyslexia-font h1, 
+.dyslexia-font h2, 
+.dyslexia-font h3, 
+.dyslexia-font h4, 
+.dyslexia-font h5, 
+.dyslexia-font h6 {
+  font-weight: 600 !important;
+  margin-bottom: 1em !important;
+}
+
+.dyslexia-font p,
+.dyslexia-font div,
+.dyslexia-font span {
+  text-align: left !important;              /* Éviter la justification */
+  hyphens: none !important;                 /* Pas de césure */
+  word-break: normal !important;
+}
+
+.dyslexia-font button,
+.dyslexia-font input,
+.dyslexia-font textarea {
+  font-family: inherit !important;
+  letter-spacing: inherit !important;
+  word-spacing: inherit !important;
+}
+
+/* Amélioration du contraste pour la dyslexie */
+.dyslexia-font {
+  --dyslexia-bg: #fefefe;
+  --dyslexia-text: #2a2a2a;
+  --dyslexia-accent: #0066cc;
+}
+
+.dyslexia-font.theme-dark {
+  --dyslexia-bg: #1a1a1a;
+  --dyslexia-text: #e8e8e8;
+  --dyslexia-accent: #66b3ff;
+}
+
+/* Couleurs optimisées pour la dyslexie */
+.dyslexia-font .text-white {
+  color: var(--dyslexia-text) !important;
+}
+
+.dyslexia-font .bg-black,
+.dyslexia-font .bg-gray-900 {
+  background-color: var(--dyslexia-bg) !important;
+}
+
+.dyslexia-font .text-red-400,
+.dyslexia-font .text-red-300 {
+  color: var(--dyslexia-accent) !important;
+}
+
+
+
+.font-large .p-1, .font-large .p-2, .font-large .p-3, .font-large .p-4 {
+  padding: calc(var(--spacing-multiplier) * 0.25rem) calc(var(--spacing-multiplier) * 0.5rem) !important;
+}
+
+.font-xlarge .p-1, .font-xlarge .p-2, .font-xlarge .p-3, .font-xlarge .p-4 {
+  padding: calc(var(--spacing-multiplier) * 0.375rem) calc(var(--spacing-multiplier) * 0.75rem) !important;
+}
+
+.font-large .m-1, .font-large .m-2, .font-large .m-3, .font-large .m-4 {
+  margin: calc(var(--spacing-multiplier) * 0.25rem) !important;
+}
+
+.font-xlarge .m-1, .font-xlarge .m-2, .font-xlarge .m-3, .font-xlarge .m-4 {
+  margin: calc(var(--spacing-multiplier) * 0.375rem) !important;
+}
+
+/* ===== STYLES POUR MODALES ADAPTATIVES ===== */
+
+/* Classe spéciale pour les modales qui s'adaptent aux tailles de police */
+.adaptive-modal {
+  /* Variables de base pour les modales */
+  --modal-padding-base: 0.75rem;
+  --modal-gap-base: 0.5rem;
+  --modal-border-radius: 0.5rem;
+  --modal-max-width: 28rem;
+  --modal-max-height: 90vh;
+}
+
+/* Ajustements selon la taille de police */
+.font-small .adaptive-modal {
+  --modal-padding-base: 0.5rem;
+  --modal-gap-base: 0.375rem;
+  --modal-max-width: 24rem;
+  --modal-max-height: 95vh;
+}
+
+.font-large .adaptive-modal {
+  --modal-padding-base: 1rem;
+  --modal-gap-base: 0.75rem;
+  --modal-max-width: 32rem;
+  --modal-max-height: 85vh;
+}
+
+.font-xlarge .adaptive-modal {
+  --modal-padding-base: 1.25rem;
+  --modal-gap-base: 1rem;
+  --modal-max-width: 36rem;
+  --modal-max-height: 80vh;
+}
+
+/* Application des styles adaptatifs */
+.adaptive-modal {
+  max-width: var(--modal-max-width) !important;
+  max-height: var(--modal-max-height) !important;
+  border-radius: var(--modal-border-radius) !important;
+}
+
+.adaptive-modal .modal-content {
+  padding: var(--modal-padding-base) !important;
+  gap: var(--modal-gap-base) !important;
+}
+
+.adaptive-modal .modal-header {
+  padding: var(--modal-padding-base) !important;
+  margin-bottom: calc(var(--modal-gap-base) * 1.5) !important;
+}
+
+.adaptive-modal .modal-section {
+  margin-bottom: calc(var(--modal-gap-base) * 2) !important;
+}
+
+.adaptive-modal .modal-button {
+  padding: calc(var(--modal-padding-base) * 0.6) calc(var(--modal-padding-base) * 1.2) !important;
+  margin: calc(var(--modal-gap-base) * 0.5) !important;
+}
+
+.adaptive-modal .modal-input {
+  padding: calc(var(--modal-padding-base) * 0.8) !important;
+  margin-bottom: var(--modal-gap-base) !important;
+}
+
+/* Responsive mobile pour les modales */
+@media (max-width: 640px) {
+  .adaptive-modal {
+    --modal-max-width: calc(100vw - 0.5rem) !important;
+    --modal-max-height: calc(100vh - 1rem) !important;
+    --modal-padding-base: 0.5rem !important;
+    --modal-gap-base: 0.375rem !important;
+    margin: 0.25rem !important;
+  }
+  
+  .font-large .adaptive-modal,
+  .font-xlarge .adaptive-modal {
+    --modal-padding-base: 0.75rem !important;
+    --modal-gap-base: 0.5rem !important;
+  }
+}
+
+/* Styles pour les grilles adaptatives dans les modales */
+.adaptive-modal .adaptive-grid {
+  display: grid;
+  gap: var(--modal-gap-base);
+}
+
+.adaptive-modal .adaptive-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.adaptive-modal .adaptive-grid-1 {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 480px) {
+  .adaptive-modal .adaptive-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Boutons adaptatifs dans les modales */
+.adaptive-modal .adaptive-button {
+  font-size: var(--current-font-size) !important;
+  line-height: var(--current-line-height) !important;
+  padding: calc(var(--modal-padding-base) * 0.6) calc(var(--modal-padding-base) * 1.2) !important;
+  border-radius: calc(var(--modal-border-radius) * 0.6) !important;
+  min-height: calc(var(--current-font-size) * 2.5) !important;
+}
+
+/* Inputs adaptatifs dans les modales */
+.adaptive-modal .adaptive-input {
+  font-size: var(--current-font-size) !important;
+  line-height: var(--current-line-height) !important;
+  padding: calc(var(--modal-padding-base) * 0.8) !important;
+  border-radius: calc(var(--modal-border-radius) * 0.6) !important;
+  min-height: calc(var(--current-font-size) * 2.5) !important;
+}
+
+/* Texte adaptatif dans les modales */
+.adaptive-modal .adaptive-text {
+  font-size: var(--current-font-size) !important;
+  line-height: var(--current-line-height) !important;
+}
+
+.adaptive-modal .adaptive-text-sm {
+  font-size: calc(var(--current-font-size) * 0.875) !important;
+  line-height: calc(var(--current-line-height) * 0.9) !important;
+}
+
+.adaptive-modal .adaptive-text-lg {
+  font-size: calc(var(--current-font-size) * 1.125) !important;
+  line-height: calc(var(--current-line-height) * 1.1) !important;
+}
+
+/* Switches adaptatifs */
+.adaptive-modal .adaptive-switch {
+  width: calc(var(--current-font-size) * 2.5) !important;
+  height: calc(var(--current-font-size) * 1.25) !important;
+}
+
+.adaptive-modal .adaptive-switch-thumb {
+  width: calc(var(--current-font-size) * 1) !important;
+  height: calc(var(--current-font-size) * 1) !important;
+  top: calc(var(--current-font-size) * 0.125) !important;
+}
+
+.adaptive-modal .adaptive-switch-thumb.active {
+  transform: translateX(calc(var(--current-font-size) * 1.25)) !important;
+}
+
+/* Scrollbar adaptative pour les modales */
+.adaptive-modal::-webkit-scrollbar {
+  width: calc(var(--current-font-size) * 0.5);
+}
+
+.adaptive-modal *::-webkit-scrollbar {
+  width: calc(var(--current-font-size) * 0.5);
+}
+
+/* Amélioration de la lisibilité sur mobile */
+@media (max-width: 640px) {
+  .adaptive-modal .adaptive-text {
+    word-break: break-word;
+    hyphens: auto;
+  }
+  
+  .adaptive-modal .adaptive-button {
+    min-height: calc(var(--current-font-size) * 3) !important;
+    touch-action: manipulation;
+  }
+  
+  .adaptive-modal .adaptive-input {
+    min-height: calc(var(--current-font-size) * 3) !important;
+  }
 }
 
 /* Police dyslexie (fallback vers Comic Sans MS) */

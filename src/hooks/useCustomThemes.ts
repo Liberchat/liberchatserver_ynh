@@ -23,12 +23,14 @@ const DEFAULT_THEMES: CustomTheme[] = [
       .border-red-700 { border-color: var(--accent) !important; }
       .text-white, .text-black { color: var(--text-primary) !important; }
       .bg-gray-800 { background: var(--bg-secondary) !important; }
+      .bg-red-700 { background: var(--accent) !important; }
+      .text-red-400, .text-red-300 { color: #ff6666 !important; }
     `,
     isActive: false
   },
   {
     id: 'cyberpunk',
-    name: '🌆 Cyberpunk',
+    name: '🌌 Révolution Sociale',
     css: `
       :root {
         --bg-primary: #0a0a0a;
@@ -42,6 +44,7 @@ const DEFAULT_THEMES: CustomTheme[] = [
       .text-red-400, .text-red-300 { color: var(--accent) !important; }
       .text-white, .text-black { color: var(--text-primary) !important; }
       .bg-gray-800 { background: var(--bg-secondary) !important; }
+      .bg-red-700 { background: var(--accent) !important; }
     `,
     isActive: false
   },
@@ -62,32 +65,162 @@ const DEFAULT_THEMES: CustomTheme[] = [
       .bg-red-700 { background: var(--accent) !important; }
     `,
     isActive: false
+  },
+  {
+    id: 'forest-green',
+    name: '🌿 Vert Solidaire',
+    css: `
+      :root {
+        --bg-primary: #0d2818;
+        --bg-secondary: #1a4d2e;
+        --text-primary: #90ee90;
+        --accent: #228b22;
+      }
+      body { background: var(--bg-primary) !important; color: var(--text-primary) !important; }
+      .bg-black, .bg-gray-900, .bg-white { background: var(--bg-secondary) !important; }
+      .border-red-700 { border-color: var(--accent) !important; }
+      .text-white, .text-black { color: var(--text-primary) !important; }
+      .bg-gray-800 { background: var(--bg-secondary) !important; }
+      .bg-red-700 { background: var(--accent) !important; }
+      .text-red-400, .text-red-300 { color: #32cd32 !important; }
+    `,
+    isActive: false
+  },
+  {
+    id: 'purple-feminist',
+    name: '🔮 Mauve Mystique',
+    css: `
+      :root {
+        --bg-primary: #2d1b3d;
+        --bg-secondary: #4a2c5a;
+        --text-primary: #dda0dd;
+        --accent: #8b008b;
+      }
+      body { background: var(--bg-primary) !important; color: var(--text-primary) !important; }
+      .bg-black, .bg-gray-900, .bg-white { background: var(--bg-secondary) !important; }
+      .border-red-700 { border-color: var(--accent) !important; }
+      .text-white, .text-black { color: var(--text-primary) !important; }
+      .bg-gray-800 { background: var(--bg-secondary) !important; }
+      .bg-red-700 { background: var(--accent) !important; }
+      .text-red-400, .text-red-300 { color: #da70d6 !important; }
+    `,
+    isActive: false
+  },
+  {
+    id: 'golden-solidarity',
+    name: '🤝 Solidarité Dorée',
+    css: `
+      :root {
+        --bg-primary: #2d2416;
+        --bg-secondary: #4a3d1a;
+        --text-primary: #ffd700;
+        --accent: #ff8c00;
+      }
+      body { background: var(--bg-primary) !important; color: var(--text-primary) !important; }
+      .bg-black, .bg-gray-900, .bg-white { background: var(--bg-secondary) !important; }
+      .border-red-700 { border-color: var(--accent) !important; }
+      .text-white, .text-black { color: var(--text-primary) !important; }
+      .bg-gray-800 { background: var(--bg-secondary) !important; }
+      .bg-red-700 { background: var(--accent) !important; }
+      .text-red-400, .text-red-300 { color: #ffb347 !important; }
+    `,
+    isActive: false
+  },
+  {
+    id: 'ocean-blue',
+    name: '🌊 Bleu Océan',
+    css: `
+      :root {
+        --bg-primary: #001122;
+        --bg-secondary: #003366;
+        --text-primary: #87ceeb;
+        --accent: #4682b4;
+      }
+      body { background: var(--bg-primary) !important; color: var(--text-primary) !important; }
+      .bg-black, .bg-gray-900, .bg-white { background: var(--bg-secondary) !important; }
+      .border-red-700 { border-color: var(--accent) !important; }
+      .text-white, .text-black { color: var(--text-primary) !important; }
+      .bg-gray-800 { background: var(--bg-secondary) !important; }
+      .bg-red-700 { background: var(--accent) !important; }
+      .text-red-400, .text-red-300 { color: #add8e6 !important; }
+    `,
+    isActive: false
+  },
+  {
+    id: 'sunset-orange',
+    name: '🌅 Coucher de Soleil',
+    css: `
+      :root {
+        --bg-primary: #2d1a0a;
+        --bg-secondary: #4a2c14;
+        --text-primary: #ffa500;
+        --accent: #ff4500;
+      }
+      body { background: linear-gradient(135deg, var(--bg-primary), #3d2414) !important; color: var(--text-primary) !important; }
+      .bg-black, .bg-gray-900, .bg-white { background: var(--bg-secondary) !important; }
+      .border-red-700 { border-color: var(--accent) !important; }
+      .text-white, .text-black { color: var(--text-primary) !important; }
+      .bg-gray-800 { background: var(--bg-secondary) !important; }
+      .bg-red-700 { background: var(--accent) !important; }
+      .text-red-400, .text-red-300 { color: #ffb347 !important; }
+    `,
+    isActive: false
   }
 ];
 
 export const useCustomThemes = () => {
   const [themes, setThemes] = useState<CustomTheme[]>(DEFAULT_THEMES);
   const [activeTheme, setActiveTheme] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-
+  // Charger les thèmes depuis le localStorage au démarrage
   useEffect(() => {
-    const saved = localStorage.getItem('liberchat-custom-themes');
-    if (saved) {
+    const loadThemes = () => {
       try {
-        const parsed = JSON.parse(saved);
-        setThemes(parsed.themes || DEFAULT_THEMES);
-        setActiveTheme(parsed.activeTheme || null);
-      } catch (e) {
+        const saved = localStorage.getItem('liberchat-custom-themes');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+
+          // Fusionner les thèmes par défaut avec les thèmes sauvegardés
+          const savedThemes = parsed.themes || [];
+          const mergedThemes = [...DEFAULT_THEMES];
+
+          // Ajouter les thèmes personnalisés qui ne sont pas des thèmes par défaut
+          savedThemes.forEach((savedTheme: CustomTheme) => {
+            if (!DEFAULT_THEMES.find(defaultTheme => defaultTheme.id === savedTheme.id)) {
+              mergedThemes.push(savedTheme);
+            }
+          });
+
+          setThemes(mergedThemes);
+          setActiveTheme(parsed.activeTheme || null);
+        }
+      } catch (error) {
+        console.warn('Erreur lors du chargement des thèmes:', error);
+        setThemes(DEFAULT_THEMES);
+        setActiveTheme(null);
+      } finally {
+        setIsLoaded(true);
       }
-    }
+    };
+
+    loadThemes();
   }, []);
 
+  // Sauvegarder les thèmes dans le localStorage quand ils changent
   useEffect(() => {
-    localStorage.setItem('liberchat-custom-themes', JSON.stringify({
-      themes,
-      activeTheme
-    }));
-  }, [themes, activeTheme]);
+    if (isLoaded) {
+      try {
+        localStorage.setItem('liberchat-custom-themes', JSON.stringify({
+          themes,
+          activeTheme,
+          version: '1.0' // Pour les futures migrations
+        }));
+      } catch (error) {
+        console.warn('Erreur lors de la sauvegarde des thèmes:', error);
+      }
+    }
+  }, [themes, activeTheme, isLoaded]);
 
   const applyTheme = (themeId: string | null) => {
     // Supprimer l'ancien thème
@@ -110,6 +243,13 @@ export const useCustomThemes = () => {
     setThemes(prev => prev.map(t => ({ ...t, isActive: t.id === themeId })));
   };
 
+  // Restaurer le thème actif au chargement
+  useEffect(() => {
+    if (isLoaded && activeTheme) {
+      applyTheme(activeTheme);
+    }
+  }, [isLoaded, activeTheme]);
+
   const addTheme = (theme: Omit<CustomTheme, 'id' | 'isActive'>) => {
     const newTheme: CustomTheme = {
       ...theme,
@@ -131,12 +271,20 @@ export const useCustomThemes = () => {
     setThemes(prev => prev.filter(t => t.id !== id));
   };
 
+  const resetToDefaults = () => {
+    setThemes(DEFAULT_THEMES);
+    setActiveTheme(null);
+    applyTheme(null);
+  };
+
   return {
     themes,
     activeTheme,
     applyTheme,
     addTheme,
     updateTheme,
-    deleteTheme
+    deleteTheme,
+    resetToDefaults,
+    isLoaded
   };
 };

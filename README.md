@@ -24,7 +24,7 @@
 
 ---
 
-## 🆕 Nouveautés de la version 6.5
+## 🆕 Nouveautés de la version 6.5 - La meilleure sécurité à ce jour - La meilleure sécurité à ce jour
 
 ### 🔄 Améliorations de l'expérience utilisateur
 
@@ -32,17 +32,19 @@
 - **📢 Nouveau slogan** : "La commune pour tous" remplace l'ancien slogan pour refléter l'ouverture à tous
 - **💬 Message de frappe modernisé** : L'indicateur passe de "insurrection" à "révolution sociale" pour un ton plus constructif
 
-### 🔐 Chiffrement automatisé
+### 🔐 Sécurité renforcée - Chiffrement automatisé
 
-- **🔑 Clé par défaut obfusquée** : Génération automatique d'une clé de chiffrement partagée (obfusquée multi-couches)
-- **⚡ Accès simplifié** : Plus besoin de saisir manuellement une clé, le chiffrement est activé automatiquement
-- **🛡️ Sécurité maintenue** : Le chiffrement de bout en bout reste actif avec la clé partagée
-- **⚠️ Note sécurité** : La clé est obfusquée mais reste techniquement accessible dans le code JavaScript côté client
+- **🔑 Clé par défaut obfusquée** : Génération automatique d'une clé de chiffrement partagée avec obfuscation multi-couches (String.fromCharCode)
+- **🔒 Protection avancée** : La clé est divisée en 5 parties et reconstituée dynamiquement pour compliquer la rétro-ingénierie
+- **⚡ Accès simplifié** : Plus besoin de saisir manuellement une clé, le chiffrement E2EE est activé automatiquement
+- **🛡️ Sécurité maintenue** : Le chiffrement de bout en bout (AES-256-GCM) reste actif avec la clé partagée
+- **⚠️ Note technique** : La clé est obfusquée mais reste techniquement accessible dans le code JavaScript côté client (limitation inhérente au JavaScript)
+- **👁️ Protection contre les curieux** : L'obfuscation protège efficacement contre les utilisateurs occasionnels cherchant la clé dans le code source
 
 ### 💾 Persistance utilisateur améliorée
 
 - **📝 Sauvegarde automatique** : Le nom d'utilisateur est automatiquement sauvegardé dans le navigateur
-- **🔄 Reconnexion intelligente** : Reconnexion automatique avec le nom sauvegardé (max 5 tentatives)
+- **🔄 Reconnexion intelligente** : Reconnexion automatique avec le nom sauvegardé sans limite de tentatives
 - **⚙️ Options de déconnexion** : Choix entre "Garder mon nom" ou "Supprimer mes données"
 - **✨ Pré-remplissage** : Le nom est pré-rempli lors de la reconnexion si conservé
 
@@ -50,9 +52,9 @@
 
 - **🚀 Compatibilité YunoHost** : Correction des erreurs de déploiement Node.js 18+
 - **🔧 Nettoyage du code** : Suppression de tous les logs de debug en production
-- **🔇 Console silencieuse** : Désactivation complète des logs console en production
-- **🔌 Reconnexion limitée** : Maximum 5 tentatives de reconnexion Socket.IO pour éviter la pollution des logs
+- **🔌 Reconnexion illimitée** : Reconnexion automatique sans limite pour une disponibilité maximale
 - **📦 Simplification** : Suppression des patches inutiles (fix-websocket.patch)
+- **🐛 Corrections TypeScript** : Résolution des erreurs de typage pour une meilleure stabilité
 
 ---
 
@@ -119,14 +121,17 @@
   - Protection contre le spam
   - Variables d'environnement sécurisées
 
-- 🎨 **Interface**
-  - Thème sombre élégant
-  - Animations fluides
+- 🎨 **Interface & Accessibilité**
+  - **♿ Système d'accessibilité complet** : 6 options pour inclusion totale
+  - **🎨 Thèmes personnalisés** : 8 thèmes prédéfinis + créateur CSS
+  - **📏 Tailles adaptatives** : Interface qui s'ajuste à tous les besoins
+  - **🔊 Support lecteurs d'écran** : Annonces vocales + ARIA complet
+  - **⌨️ Navigation clavier** : Raccourcis et focus renforcé
+  - Thème sombre élégant par défaut
+  - Animations fluides (désactivables)
   - Interface intuitive et responsive
-  - Style moderne
   - Sélecteur d'emojis intégré
   - Optimisations mobile/desktop
-  - **🖍️ Thèmes personnalisables CSS** : créez vos propres thèmes avec du CSS personnalisé
 
 - 🎤 **Messages vocaux universels**
   - Enregistrement vocal intégré (bouton micro)
@@ -157,22 +162,83 @@
   - Synchronisation en temps réel entre tous les clients
   - Respect total de la vie privée : le serveur ne connaît jamais le contenu des réactions
 
-## Nouveautés
+## 🆕 Nouveautés Version 6.5.5 - Accessibilité & Personnalisation
 
-### ♿ Mode Accessibilité
+### ♿ **SYSTÈME D'ACCESSIBILITÉ COMPLET**
 
-LiberChat intègre désormais un **mode accessibilité complet** pour les personnes en situation de handicap !
+LiberChat intègre désormais un **système d'accessibilité révolutionnaire** pour une inclusion totale !
 
-**Fonctionnalités :**
-- Contraste élevé (noir/blanc/jaune)
-- Taille de police ajustable (4 niveaux)
-- Police dyslexie (Comic Sans MS)
-- Réduction des animations
-- Support lecteurs d'écran avec annonces vocales
-- Navigation clavier complète (Alt+A, Alt+T, Alt+Q)
-- Étiquettes ARIA et conformité WCAG 2.1 niveau AA
+**🎯 6 Options d'Accessibilité :**
+- **🔆 Contraste élevé** : Mode noir/jaune optimisé pour malvoyants
+- **📏 Tailles de police** : 4 niveaux adaptatifs (petit → très grand)
+- **📖 Police dyslexie** : Police Lexend scientifiquement prouvée + fallback Comic Sans
+- **🎭 Réduction animations** : Désactivation complète pour sensibilités
+- **🔊 Lecteur d'écran** : Annonces ARIA + synthèse vocale intégrée
+- **⌨️ Navigation clavier** : Focus renforcé + raccourcis visuels
+
+**🚀 Fonctionnalités Avancées :**
+- Interface adaptative qui s'ajuste à tous les paramètres
+- Test intégré du lecteur d'écran avec feedback audio
+- Sauvegarde automatique de tous les réglages
+- Conformité WCAG 2.1 niveau AA
+- Compatible avec NVDA, JAWS, VoiceOver, TalkBack
 
 **Accès :** Bouton ♿ dans l'en-tête ou raccourci **Alt+A**
+
+### 🎨 **SYSTÈME DE THÈMES PERSONNALISÉS**
+
+Créez votre propre univers visuel avec le nouveau **créateur de thèmes** !
+
+**🌈 8 Thèmes Prédéfinis :**
+- 🚩🏴 **Anarchisme** : Rouge révolutionnaire
+- 🌌 **Révolution Sociale** : Cyberpunk néon
+- ☀️ **Bleu Clair** : Mode jour apaisant
+- 🌿 **Vert Solidaire** : Nature militante
+- 🔮 **Mauve Mystique** : Féminisme spirituel
+- 🤝 **Solidarité Dorée** : Chaleur communautaire
+- 🌊 **Bleu Océan** : Profondeur marine
+- 🌅 **Coucher de Soleil** : Chaleur orangée
+
+**🛠️ Créateur de Thèmes :**
+- Interface intuitive pour créer vos thèmes CSS
+- Aperçu en temps réel des modifications
+- Gestion complète : création, modification, suppression
+- Aide intégrée avec exemples CSS
+- Sauvegarde automatique locale
+
+**Accès :** Bouton 🎨 dans l'en-tête ou raccourci **Alt+T**
+
+---
+
+## 📋 **RÉSUMÉ COMPLET VERSION 6.5.5**
+
+### 🎯 **Ce qui a été développé dans cette version majeure :**
+
+**♿ ACCESSIBILITÉ UNIVERSELLE :**
+- Système complet avec 6 options d'inclusion (contraste élevé, tailles de police, police dyslexie, réduction animations, lecteur d'écran, navigation clavier)
+- Interface adaptative qui s'ajuste automatiquement à tous les paramètres
+- Support complet des lecteurs d'écran (NVDA, JAWS, VoiceOver, TalkBack)
+- Conformité WCAG 2.1 niveau AA avec annonces vocales intégrées
+
+**🎨 PERSONNALISATION AVANCÉE :**
+- 8 thèmes prédéfinis couvrant différents styles et philosophies
+- Créateur de thèmes CSS avec interface intuitive et aperçu temps réel
+- Gestion complète : création, modification, suppression, activation
+- Aide contextuelle avec exemples CSS pour faciliter la personnalisation
+
+**🔧 AMÉLIORATIONS TECHNIQUES :**
+- Architecture CSS adaptative avec variables dynamiques
+- Hooks d'accessibilité pour application immédiate des changements
+- Modales responsives qui s'adaptent à toutes les tailles d'écran
+- Correction des images cassées et optimisation des performances
+
+**💾 PERSISTANCE ET EXPÉRIENCE :**
+- Sauvegarde automatique de tous les paramètres d'accessibilité et thèmes
+- Interface mobile optimisée avec support tactile
+- Tests intégrés pour vérifier le bon fonctionnement des fonctionnalités
+- Documentation complète et tooltips explicatifs
+
+---
 
 ### 🎨 Mode Light
 

@@ -79,13 +79,7 @@ export const UserList = ({ users, currentUser, isMobile = false, inChatInput = f
                 : "bg-gradient-to-r from-black to-black/95 border-red-700"
             } hover:bg-gradient-to-r hover:from-red-950 hover:to-black`}
           >
-            <div className="absolute top-0 right-0 w-8 h-8 opacity-5">
-              <img 
-                src="/liberchat/assets/icon-B8LJ7LOp.png" 
-                alt="" 
-                className="w-full h-full"
-              />
-            </div>
+
             <div className={`w-2 h-2 rounded-full animate-pulse shadow-md ${
               user.username === currentUser 
                 ? "bg-red-500 shadow-red-500/30" 
@@ -101,13 +95,7 @@ export const UserList = ({ users, currentUser, isMobile = false, inChatInput = f
         ))}
         {users.length <= 1 && (
           <div className="relative text-center p-3 border border-red-700/50 rounded-lg bg-gradient-to-r from-black/30 to-red-950/10 overflow-hidden">
-            <div className="absolute top-1 right-1 w-6 h-6 opacity-5">
-              <img 
-                src="/liberchat/assets/icon-B8LJ7LOp.png" 
-                alt="" 
-                className="w-full h-full"
-              />
-            </div>
+
             <p className="text-gray-400 relative z-10">En attente d'autres compagnons...</p>
           </div>
         )}
