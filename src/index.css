@@ -221,12 +221,10 @@ body.theme-light {
   --font-size-small: 0.875rem;
   --font-size-normal: 1rem;
   --font-size-large: 1.25rem;
-  --font-size-xlarge: 1.5rem;
   
   --line-height-small: 1.4;
   --line-height-normal: 1.5;
   --line-height-large: 1.6;
-  --line-height-xlarge: 1.7;
 }
 
 .font-small {
@@ -244,22 +242,37 @@ body.theme-light {
   --current-line-height: var(--line-height-large);
 }
 
-.font-xlarge {
-  --current-font-size: var(--font-size-xlarge);
-  --current-line-height: var(--line-height-xlarge);
-}
+
 
 /* Application des tailles à tous les éléments textuels */
-.font-small,
-.font-small *,
-.font-normal,
-.font-normal *,
-.font-large,
-.font-large *,
-.font-xlarge,
-.font-xlarge * {
+body.font-small,
+body.font-small *,
+body.font-normal,
+body.font-normal *,
+body.font-large,
+body.font-large * {
   font-size: var(--current-font-size) !important;
   line-height: var(--current-line-height) !important;
+}
+
+/* SYSTÈME DE TAILLES ULTRA-SIMPLE - FONCTIONNE TOUJOURS */
+
+/* Taille PETITE - Force sur TOUT */
+body.font-small * {
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+
+/* Taille NORMALE - Force sur TOUT */
+body.font-normal * {
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+}
+
+/* Taille GRANDE - Force sur TOUT */
+body.font-large * {
+  font-size: 20px !important;
+  line-height: 1.6 !important;
 }
 
 /* Ajustements spécifiques pour les éléments d'interface */
@@ -284,12 +297,7 @@ body.theme-light {
 .font-large .text-xl { font-size: calc(var(--current-font-size) * 1.2) !important; }
 .font-large .text-2xl { font-size: calc(var(--current-font-size) * 1.4) !important; }
 
-.font-xlarge .text-xs { font-size: calc(var(--current-font-size) * 0.65) !important; }
-.font-xlarge .text-sm { font-size: calc(var(--current-font-size) * 0.75) !important; }
-.font-xlarge .text-base { font-size: var(--current-font-size) !important; }
-.font-xlarge .text-lg { font-size: calc(var(--current-font-size) * 1.05) !important; }
-.font-xlarge .text-xl { font-size: calc(var(--current-font-size) * 1.1) !important; }
-.font-xlarge .text-2xl { font-size: calc(var(--current-font-size) * 1.3) !important; }
+
 
 /* Ajustements pour les boutons et éléments interactifs */
 .font-small button,
@@ -308,13 +316,7 @@ body.theme-light {
   padding: calc(var(--current-font-size) * 0.6) calc(var(--current-font-size) * 0.8) !important;
 }
 
-.font-xlarge button,
-.font-xlarge input,
-.font-xlarge textarea,
-.font-xlarge select {
-  font-size: var(--current-font-size) !important;
-  padding: calc(var(--current-font-size) * 0.7) calc(var(--current-font-size) * 0.9) !important;
-}
+
 
 /* Ajustements pour les icônes et emojis */
 .font-small .emoji,
@@ -327,10 +329,7 @@ body.theme-light {
   font-size: calc(var(--current-font-size) * 1.1) !important;
 }
 
-.font-xlarge .emoji,
-.font-xlarge [role="img"] {
-  font-size: calc(var(--current-font-size) * 1.05) !important;
-}
+
 
 /* Forcer l'application sur tous les éléments spécifiques */
 .font-small h1, .font-small h2, .font-small h3, .font-small h4, .font-small h5, .font-small h6 {
@@ -345,9 +344,7 @@ body.theme-light {
   font-size: calc(var(--current-font-size) * 1.4) !important;
 }
 
-.font-xlarge h1, .font-xlarge h2, .font-xlarge h3, .font-xlarge h4, .font-xlarge h5, .font-xlarge h6 {
-  font-size: calc(var(--current-font-size) * 1.3) !important;
-}
+
 
 /* Application forcée sur les éléments de navigation et interface */
 .font-small nav, .font-small nav *,
@@ -377,22 +374,13 @@ body.theme-light {
   line-height: var(--current-line-height) !important;
 }
 
-.font-xlarge nav, .font-xlarge nav *,
-.font-xlarge header, .font-xlarge header *,
-.font-xlarge aside, .font-xlarge aside *,
-.font-xlarge main, .font-xlarge main *,
-.font-xlarge footer, .font-xlarge footer * {
-  font-size: var(--current-font-size) !important;
-  line-height: var(--current-line-height) !important;
-}
+
 
 /* Exceptions pour les éléments qui doivent garder leur taille relative */
 .font-small .logo, .font-small .app-logo,
 .font-normal .logo, .font-normal .app-logo,
 .font-large .logo, .font-large .app-logo,
-.font-xlarge .logo, .font-xlarge .app-logo {
-  font-size: inherit !important;
-}
+
 
 /* Amélioration de l'espacement pour les grandes tailles */
 .font-large {
@@ -495,9 +483,7 @@ button:active {
   }
 }
 
-.font-xlarge {
-  --spacing-multiplier: 1.2;
-}
+
 
 /* ===== POLICES POUR LA DYSLEXIE ===== */
 
@@ -594,17 +580,13 @@ button:active {
   padding: calc(var(--spacing-multiplier) * 0.25rem) calc(var(--spacing-multiplier) * 0.5rem) !important;
 }
 
-.font-xlarge .p-1, .font-xlarge .p-2, .font-xlarge .p-3, .font-xlarge .p-4 {
-  padding: calc(var(--spacing-multiplier) * 0.375rem) calc(var(--spacing-multiplier) * 0.75rem) !important;
-}
+
 
 .font-large .m-1, .font-large .m-2, .font-large .m-3, .font-large .m-4 {
   margin: calc(var(--spacing-multiplier) * 0.25rem) !important;
 }
 
-.font-xlarge .m-1, .font-xlarge .m-2, .font-xlarge .m-3, .font-xlarge .m-4 {
-  margin: calc(var(--spacing-multiplier) * 0.375rem) !important;
-}
+
 
 /* ===== STYLES POUR MODALES ADAPTATIVES ===== */
 
@@ -633,12 +615,7 @@ button:active {
   --modal-max-height: 85vh;
 }
 
-.font-xlarge .adaptive-modal {
-  --modal-padding-base: 1.25rem;
-  --modal-gap-base: 1rem;
-  --modal-max-width: 36rem;
-  --modal-max-height: 80vh;
-}
+
 
 /* Application des styles adaptatifs */
 .adaptive-modal {
@@ -671,20 +648,136 @@ button:active {
   margin-bottom: var(--modal-gap-base) !important;
 }
 
+/* Responsive pour TOUS les écrans - modales loin de la chat input */
+@media (min-width: 641px) {
+  /* DESKTOP ET TABLETTE - ULTRA LOIN DE LA CHAT INPUT */
+  .fixed.inset-0.bg-black\/80 {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 50 !important;
+    overflow-y: auto !important;
+    padding: 1rem !important;
+    padding-top: 3rem !important;
+    padding-bottom: 35rem !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+  }
+
+  .adaptive-modal {
+    max-width: 32rem !important;
+    max-height: calc(100vh - 38rem) !important;
+    margin: 0 !important;
+    margin-top: 0 !important;
+    position: relative !important;
+    top: 0 !important;
+    left: auto !important;
+    transform: none !important;
+  }
+}
+
 /* Responsive mobile pour les modales */
 @media (max-width: 640px) {
-  .adaptive-modal {
-    --modal-max-width: calc(100vw - 0.5rem) !important;
-    --modal-max-height: calc(100vh - 1rem) !important;
-    --modal-padding-base: 0.5rem !important;
-    --modal-gap-base: 0.375rem !important;
-    margin: 0.25rem !important;
+  /* CONTENEUR DE MODALE - MAXIMUM LOIN DE LA CHAT INPUT MOBILE */
+  .fixed.inset-0.bg-black\/80 {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 50 !important;
+    overflow-y: auto !important;
+    padding: 0.5rem !important;
+    padding-top: 4rem !important;
+    padding-bottom: 30rem !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
   }
-  
-  .font-large .adaptive-modal,
-  .font-xlarge .adaptive-modal {
+
+  .adaptive-modal {
+    --modal-max-width: calc(100vw - 1rem) !important;
+    --modal-max-height: calc(100vh - 34rem) !important;
     --modal-padding-base: 0.75rem !important;
     --modal-gap-base: 0.5rem !important;
+    margin: 0 !important;
+    margin-top: 0 !important;
+    max-height: calc(100vh - 34rem) !important;
+    width: calc(100vw - 1rem) !important;
+    min-height: auto !important;
+    position: relative !important;
+    top: 0 !important;
+    left: auto !important;
+    transform: none !important;
+  }
+  
+  .font-large .adaptive-modal {
+    --modal-padding-base: 1rem !important;
+    --modal-gap-base: 0.75rem !important;
+  }
+
+  /* FORCER LES MODALES TOUT EN HAUT SUR MOBILE */
+  .adaptive-modal {
+    align-self: flex-start !important;
+    margin-top: 0 !important;
+  }
+  
+  /* Assurer que les modales sont scrollables sur mobile */
+  .adaptive-modal .modal-content {
+    overflow-y: auto !important;
+    max-height: calc(100vh - 10rem) !important;
+    padding: 1rem !important;
+  }
+  
+  /* Header des modales plus compact sur mobile */
+  .adaptive-modal .modal-header {
+    padding: 1rem !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* Améliorer le scroll sur mobile */
+  .adaptive-modal::-webkit-scrollbar {
+    width: 6px !important;
+  }
+  
+  .adaptive-modal::-webkit-scrollbar-thumb {
+    background: #b91c1c !important;
+    border-radius: 3px !important;
+  }
+  
+  .adaptive-modal::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3) !important;
+  }
+  
+  /* Boutons plus grands sur mobile */
+  .adaptive-modal .adaptive-button {
+    min-height: 48px !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 1rem !important;
+  }
+  
+  /* Inputs plus grands sur mobile */
+  .adaptive-modal .adaptive-input {
+    min-height: 48px !important;
+    padding: 0.75rem !important;
+    font-size: 1rem !important;
+  }
+  
+  /* Texte plus lisible sur mobile */
+  .adaptive-modal .adaptive-text {
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+  }
+  
+  .adaptive-modal .adaptive-text-sm {
+    font-size: 0.875rem !important;
+  }
+  
+  .adaptive-modal .adaptive-text-lg {
+    font-size: 1.25rem !important;
   }
 }
 
@@ -781,6 +874,713 @@ button:active {
   
   .adaptive-modal .adaptive-input {
     min-height: calc(var(--current-font-size) * 3) !important;
+  }
+}
+
+/* ===== CORRECTIONS INTERFACE MOBILE ===== */
+
+/* Correction du header mobile */
+@media (max-width: 480px) {
+  /* Titre LiberChat - ne pas couper */
+  header h1 {
+    font-size: 0.875rem !important;
+    max-width: 50vw !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    min-width: fit-content !important;
+  }
+}
+
+@media (min-width: 481px) {
+  .xs\:inline {
+    display: none !important;
+  }
+  
+  .xs\:hidden {
+    display: inline !important;
+  }
+}
+
+/* Correction du titre LiberChat sur mobile */
+@media (max-width: 640px) {
+  /* S'assurer que LiberChat ne soit pas coupé */
+  header h1,
+  .header-title {
+    min-width: fit-content !important;
+    max-width: 45vw !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* Correction de la barre de saisie mobile */
+@media (max-width: 640px) {
+  /* Assurer que la barre de saisie reste bien fixée en bas */
+  .chat-input-container {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 20 !important;
+    background: rgba(0, 0, 0, 0.98) !important;
+    backdrop-filter: blur(8px) !important;
+    padding: 0.75rem !important;
+    border-top: 2px solid #b91c1c !important;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.5) !important;
+  }
+  
+  /* Empêcher tout flottement du formulaire */
+  .chat-input-container form {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    align-items: center !important;
+  }
+  
+  /* Assurer que les inputs ont une taille minimale pour éviter le zoom sur iOS */
+  .chat-input-container input[type="text"] {
+    font-size: 16px !important;
+    min-height: 44px !important;
+    flex: 1 !important;
+    order: 2 !important;
+  }
+  
+  /* Boutons de la barre de saisie */
+  .chat-input-container button {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    touch-action: manipulation !important;
+  }
+  
+  /* Correction du positionnement des emojis sur mobile */
+  .anarchist-emoji-picker {
+    position: fixed !important;
+    bottom: 80px !important;
+    left: 0.5rem !important;
+    right: 0.5rem !important;
+    max-width: calc(100vw - 1rem) !important;
+    width: auto !important;
+    z-index: 30 !important;
+  }
+  
+  /* Améliorer l'affichage des aperçus sur mobile */
+  .chat-input-container .preview-container {
+    width: 100% !important;
+    order: 1 !important;
+    margin-bottom: 0.5rem !important;
+  }
+}
+
+/* Correction spécifique pour les très petits écrans */
+@media (max-width: 360px) {
+  /* Header encore plus compact */
+  header h1 {
+    font-size: 0.75rem !important;
+    letter-spacing: 0.02em !important;
+    max-width: 55vw !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    min-width: fit-content !important;
+  }
+  
+  /* Boutons header plus petits */
+  header button {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.625rem !important;
+  }
+  
+  /* Icône plus petite */
+  header img {
+    height: 1.25rem !important;
+    width: 1.25rem !important;
+  }
+  
+  /* Badge "Commune" masqué sur très petits écrans */
+  header .commune-badge {
+    display: none !important;
+  }
+}
+
+/* Correction pour écrans moyens (tablettes portrait) */
+@media (min-width: 641px) and (max-width: 768px) {
+  header h1 {
+    font-size: 1.25rem !important;
+    max-width: 45vw !important;
+  }
+  
+  header button {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 1rem !important;
+  }
+}
+
+/* Corrections spécifiques pour le bouton de déconnexion */
+@media (max-width: 640px) {
+  /* Bouton de déconnexion avec emoji - taille fixe */
+  .logout-menu-container > button {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    padding: 0 !important;
+  }
+  
+  /* Menu déroulant de déconnexion adapté mobile */
+  .logout-dropdown {
+    min-width: 180px !important;
+    max-width: calc(100vw - 1rem) !important;
+    right: 0.5rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .logout-dropdown button {
+    font-size: 0.75rem !important;
+    padding: 0.75rem !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+}
+
+/* ===== CORRECTIONS MENU CONTEXTUEL MOBILE ===== */
+
+/* Corrections générales pour tous les menus contextuels sur mobile */
+@media (max-width: 640px) {
+  /* Tous les menus contextuels sur mobile */
+  .fixed.z-50 > div[class*="bg-black"]:not(.adaptive-modal):not([class*="inset-0"]) {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 220px !important;
+    max-width: calc(100vw - 2rem) !important;
+    background: rgba(0, 0, 0, 0.98) !important;
+    border: 2px solid #b91c1c !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(8px) !important;
+    padding: 0.75rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  /* Boutons dans les menus contextuels mobile SEULEMENT (pas le header) */
+  .fixed.z-50 > div[class*="bg-black"]:not(.adaptive-modal) button {
+    width: 100% !important;
+    padding: 0.875rem 1rem !important;
+    margin: 0.25rem 0 !important;
+    border-radius: 0.75rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.3 !important;
+    text-align: left !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    min-height: 48px !important;
+    touch-action: manipulation !important;
+    background: transparent !important;
+    color: white !important;
+    border: none !important;
+  }
+  
+  .fixed.z-50 > div[class*="bg-black"]:not(.adaptive-modal) button:hover,
+  .fixed.z-50 > div[class*="bg-black"]:not(.adaptive-modal) button:active {
+    background: #b91c1c !important;
+    color: white !important;
+    transform: scale(0.98) !important;
+  }
+  
+  /* Emoji picker sur mobile - taille réduite */
+  .anarchist-emoji-picker {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: calc(100vw - 2rem) !important;
+    max-width: 320px !important;
+    max-height: 60vh !important;
+    overflow: hidden !important;
+  }
+}
+
+/* ===== CORRECTIONS SCROLL MODALES POUR TOUTES LES TAILLES ===== */
+
+/* Corrections de scroll pour toutes les tailles de police */
+.font-small .adaptive-modal,
+.font-normal .adaptive-modal,
+.font-large .adaptive-modal {
+  /* Structure de scroll optimisée */
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: 90vh !important;
+  overflow: hidden !important;
+}
+
+/* Header des modales - toujours fixe en haut */
+.font-small .adaptive-modal .modal-header,
+.font-normal .adaptive-modal .modal-header,
+.font-large .adaptive-modal .modal-header {
+  flex-shrink: 0 !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
+  background: inherit !important;
+  border-bottom: 1px solid rgba(185, 28, 28, 0.3) !important;
+}
+
+/* Contenu principal - scrollable */
+.font-small .adaptive-modal .modal-content,
+.font-normal .adaptive-modal .modal-content,
+.font-large .adaptive-modal .modal-content {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 1rem !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #b91c1c rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Bouton de fermeture - toujours fixe en bas */
+.font-small .adaptive-modal > button:last-child,
+.font-normal .adaptive-modal > button:last-child,
+.font-large .adaptive-modal > button:last-child {
+  flex-shrink: 0 !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 10 !important;
+  background: inherit !important;
+  border-top: 1px solid rgba(185, 28, 28, 0.3) !important;
+  margin: 0 !important;
+  border-radius: 0 0 0.5rem 0.5rem !important;
+}
+
+/* Corrections spécifiques pour chaque taille */
+.font-small .adaptive-modal {
+  max-height: 95vh !important;
+}
+
+.font-large .adaptive-modal {
+  max-height: 85vh !important;
+}
+
+
+
+/* Corrections mobile pour toutes les tailles */
+@media (max-width: 640px) {
+  .font-small .adaptive-modal,
+  .font-normal .adaptive-modal,
+  .font-large .adaptive-modal {
+    max-height: calc(100vh - 2rem) !important;
+    height: auto !important;
+    min-height: 50vh !important;
+    width: calc(100vw - 1rem) !important;
+    max-width: calc(100vw - 1rem) !important;
+    margin: 0.5rem !important;
+  }
+  
+  .font-small .adaptive-modal .modal-content,
+  .font-normal .adaptive-modal .modal-content,
+  .font-large .adaptive-modal .modal-content {
+    max-height: calc(100vh - 8rem) !important;
+    padding: 0.75rem !important;
+  }
+  
+  /* Scrollbar plus visible sur mobile */
+  .font-small .adaptive-modal .modal-content::-webkit-scrollbar,
+  .font-normal .adaptive-modal .modal-content::-webkit-scrollbar,
+  .font-large .adaptive-modal .modal-content::-webkit-scrollbar {
+    width: 8px !important;
+  }
+  
+  .font-small .adaptive-modal .modal-content::-webkit-scrollbar-thumb,
+  .font-normal .adaptive-modal .modal-content::-webkit-scrollbar-thumb,
+  .font-large .adaptive-modal .modal-content::-webkit-scrollbar-thumb {
+    background: #b91c1c !important;
+    border-radius: 4px !important;
+  }
+  
+  .font-small .adaptive-modal .modal-content::-webkit-scrollbar-track,
+  .font-normal .adaptive-modal .modal-content::-webkit-scrollbar-track,
+  .font-large .adaptive-modal .modal-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3) !important;
+  }
+}
+
+/* Corrections pour très petits écrans */
+@media (max-width: 480px) {
+  .font-large .adaptive-modal {
+    max-height: calc(100vh - 1rem) !important;
+    margin: 0.25rem !important;
+    width: calc(100vw - 0.5rem) !important;
+    max-width: calc(100vw - 0.5rem) !important;
+  }
+  
+  .font-large .adaptive-modal .modal-content {
+    max-height: calc(100vh - 6rem) !important;
+    padding: 0.5rem !important;
+  }
+}
+
+/* Corrections pour les conteneurs de scroll imbriqués */
+.font-small .adaptive-modal .modal-section,
+.font-normal .adaptive-modal .modal-section,
+.font-large .adaptive-modal .modal-section {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* Assurer que les éléments longs peuvent scroller */
+.font-small .adaptive-modal textarea,
+.font-normal .adaptive-modal textarea,
+.font-large .adaptive-modal textarea {
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  resize: vertical !important;
+}
+
+/* Corrections pour les grilles dans les modales */
+.font-small .adaptive-modal .adaptive-grid,
+.font-normal .adaptive-modal .adaptive-grid,
+.font-large .adaptive-modal .adaptive-grid {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* Amélioration du touch scroll sur mobile */
+@media (max-width: 640px) {
+  .font-small .adaptive-modal .modal-content,
+  .font-normal .adaptive-modal .modal-content,
+  .font-large .adaptive-modal .modal-content {
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
+    scroll-behavior: smooth !important;
+  }
+  
+  /* Empêcher le scroll du body quand la modale est ouverte */
+  body.modal-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+}
+
+/* Corrections pour les modales avec beaucoup de contenu */
+.font-large .adaptive-modal .modal-content > * {
+  margin-bottom: 1rem !important;
+}
+
+.font-large .adaptive-modal .modal-content > *:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Assurer que les boutons restent accessibles */
+.font-small .adaptive-modal .adaptive-button,
+.font-normal .adaptive-modal .adaptive-button,
+.font-large .adaptive-modal .adaptive-button {
+  flex-shrink: 0 !important;
+  min-height: 44px !important;
+}
+
+/* Corrections pour les switches dans les modales */
+.font-small .adaptive-modal .adaptive-switch,
+.font-normal .adaptive-modal .adaptive-switch,
+.font-large .adaptive-modal .adaptive-switch {
+  flex-shrink: 0 !important;
+}
+
+/* Corrections pour les inputs dans les modales */
+.font-small .adaptive-modal .adaptive-input,
+.font-normal .adaptive-modal .adaptive-input,
+.font-large .adaptive-modal .adaptive-input {
+  flex-shrink: 0 !important;
+  min-height: 44px !important;
+  box-sizing: border-box !important;
+}
+
+/* ===== CORRECTIONS GÉNÉRALES MOBILE ===== */
+
+@media (max-width: 640px) {
+  /* Masquer les raccourcis clavier sur mobile */
+  .keyboard-shortcut,
+  [title*="Ctrl"],
+  [title*="Alt"],
+  [title*="Shift"],
+  [aria-label*="Ctrl"],
+  [aria-label*="Alt"],
+  [aria-label*="Shift"],
+  .shortcut-hint,
+  .kbd,
+  kbd {
+    display: none !important;
+  }
+  
+  /* Réduire la taille des tooltips sur mobile */
+  [title]:hover::after,
+  [data-tooltip]:hover::after {
+    font-size: 0.75rem !important;
+    max-width: 200px !important;
+    word-wrap: break-word !important;
+  }
+  
+  /* Menus déroulants plus compacts */
+  .dropdown-menu,
+  .context-menu,
+  .menu-dropdown {
+    min-width: 160px !important;
+    max-width: calc(100vw - 2rem) !important;
+    font-size: 0.875rem !important;
+  }
+  
+  .dropdown-menu button,
+  .context-menu button,
+  .menu-dropdown button {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.875rem !important;
+    min-height: 44px !important;
+  }
+  
+  /* S'assurer que les boutons du header restent visibles */
+  header button,
+  nav button,
+  .header-button {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    transform: none !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.75rem !important;
+    min-height: 32px !important;
+  }
+  
+  /* Boutons d'accessibilité et thèmes spécifiquement */
+  button[aria-label*="Accessibilité"],
+  button[aria-label*="accessibilité"],
+  button[title*="Accessibilité"],
+  button[title*="accessibilité"],
+  button[aria-label*="Thème"],
+  button[aria-label*="thème"],
+  button[title*="Thème"],
+  button[title*="thème"],
+  .accessibility-button,
+  .theme-button {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* ===== CORRECTIONS MODALES MOBILE ===== */
+  
+  /* Modales plus compactes et centrées */
+  .adaptive-modal {
+    width: calc(100vw - 2rem) !important;
+    max-width: 400px !important;
+    max-height: 90vh !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  .adaptive-modal .modal-content {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 0.75rem !important;
+    min-height: 0 !important;
+  }
+  
+  .adaptive-modal .modal-header {
+    flex-shrink: 0 !important;
+    padding: 0.75rem !important;
+  }
+  
+  /* Formulaire de création de thème plus compact */
+  .adaptive-modal textarea {
+    height: 60px !important;
+    max-height: 60px !important;
+    font-size: 0.65rem !important;
+    line-height: 1.1 !important;
+    resize: none !important;
+    overflow-y: auto !important;
+    padding: 0.375rem !important;
+  }
+  
+  /* Inputs plus compacts */
+  .adaptive-modal input {
+    padding: 0.375rem !important;
+    font-size: 0.75rem !important;
+    height: 32px !important;
+  }
+  
+  /* Formulaire de création plus compact */
+  .modal-section.bg-gray-800 {
+    padding: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .modal-section.bg-gray-800 .space-y-2 > * + * {
+    margin-top: 0.375rem !important;
+  }
+  
+  /* Sections de la modale plus compactes */
+  .adaptive-modal .modal-section {
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* Grille adaptative pour les boutons de thèmes */
+  .adaptive-modal .adaptive-grid-2 {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.375rem !important;
+  }
+  
+  /* Boutons de thèmes plus compacts */
+  .adaptive-modal .adaptive-button {
+    padding: 0.5rem !important;
+    font-size: 0.75rem !important;
+    min-height: 44px !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+  
+  /* Texte dans les boutons de thèmes plus compact */
+  .adaptive-modal .adaptive-button .adaptive-text {
+    font-size: 0.75rem !important;
+    line-height: 1.1 !important;
+  }
+  
+  .adaptive-modal .adaptive-button .adaptive-text-sm {
+    font-size: 0.65rem !important;
+    display: none !important; /* Masquer les descriptions sur mobile */
+  }
+  
+  /* Texte plus petit dans les modales */
+  .adaptive-modal .adaptive-text {
+    font-size: 0.875rem !important;
+  }
+  
+  .adaptive-modal .adaptive-text-sm {
+    font-size: 0.75rem !important;
+  }
+  
+  .adaptive-modal .adaptive-text-lg {
+    font-size: 1rem !important;
+  }
+  
+  /* Aide CSS masquée sur très petits écrans */
+  .adaptive-modal .modal-section.hidden.sm\\:block {
+    display: none !important;
+  }
+  
+  /* Forcer le scroll complet */
+  .adaptive-modal .modal-content {
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
+  }
+  
+  /* Assurer que les modales ne dépassent pas l'écran */
+  .fixed.inset-0.bg-black\/80 {
+    overflow: hidden !important;
+  }
+  
+  .adaptive-modal {
+    position: relative !important;
+    overflow: hidden !important;
+  }
+  
+  /* S'assurer que le dernier élément est visible */
+  .adaptive-modal .modal-content > *:last-child {
+    margin-bottom: 3rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+  
+  /* Forcer le scroll jusqu'en bas */
+  .adaptive-modal .modal-content {
+    padding-bottom: 2rem !important;
+  }
+  
+  /* Scrollbar visible sur mobile */
+  .adaptive-modal .modal-content::-webkit-scrollbar {
+    width: 8px !important;
+    display: block !important;
+  }
+  
+  .adaptive-modal .modal-content::-webkit-scrollbar-thumb {
+    background: #b91c1c !important;
+    border-radius: 4px !important;
+  }
+  
+  .adaptive-modal .modal-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3) !important;
+  }
+}
+
+@media (max-width: 360px) {
+  /* MODALES MAXIMUM LOIN DE LA CHAT INPUT SUR TRÈS PETITS ÉCRANS */
+  .fixed.inset-0.bg-black\/80 {
+    padding-top: 3rem !important;
+    padding-bottom: 25rem !important;
+  }
+
+  .adaptive-modal {
+    margin-top: 0 !important;
+    max-height: calc(100vh - 28rem) !important;
+  }
+
+  /* Bouton encore plus compact sur très petits écrans */
+  .logout-menu-container > button {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+  }
+  
+  .logout-menu-container > button span {
+    font-size: 12px !important;
+  }
+  
+  /* Modales encore plus compactes sur très petits écrans */
+  .adaptive-modal {
+    width: calc(100vw - 0.5rem) !important;
+    max-width: 350px !important;
+    max-height: 95vh !important;
+  }
+  
+  .adaptive-modal .modal-content {
+    padding: 0.375rem !important;
+    padding-bottom: 3rem !important;
+  }
+  
+  .adaptive-modal .modal-header {
+    padding: 0.5rem !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .adaptive-modal .adaptive-button {
+    padding: 0.375rem !important;
+    font-size: 0.7rem !important;
+    min-height: 40px !important;
+  }
+  
+  .adaptive-modal .adaptive-grid-2 {
+    gap: 0.25rem !important;
+  }
+  
+  /* S'assurer que le scroll fonctionne sur très petits écrans */
+  .adaptive-modal .modal-content > *:last-child {
+    margin-bottom: 4rem !important;
+    padding-bottom: 2rem !important;
   }
 }
 

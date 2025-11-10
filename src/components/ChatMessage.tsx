@@ -500,56 +500,48 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, isOwnMessage, onDele
         {/* Menu contextuel pour répondre/modifier/supprimer */}
         {showMenu && (
           isMobile() ? (
-            <div className="fixed inset-0 z-50" style={{ pointerEvents: 'none' }}>
+            <div className="fixed inset-0 z-50 bg-black/50" style={{ pointerEvents: 'auto' }} onClick={handleCloseMenu}>
               <div
-                className="absolute bg-black/95 border border-red-700 rounded-2xl shadow-2xl text-xs text-white font-mono w-36 max-w-[90vw] py-1 flex flex-col gap-1"
-                style={{
-                  left: (menuPos?.x ?? window.innerWidth / 2) - 72,
-                  top: (menuPos?.y ?? window.innerHeight / 2) + 8,
-                  minWidth: 110,
-                  pointerEvents: 'auto',
-                  transition: 'none',
-                  animation: 'none',
-                }}
+                className="mobile-context-menu"
+                onClick={(e) => e.stopPropagation()}
               >
                 <button
-                  className="block w-full text-left px-3 py-1.5 rounded-xl hover:bg-red-700/80 hover:text-white active:scale-95 transition-all duration-150"
                   onClick={e => { e.stopPropagation(); handleReplyMenu(); }}
                   aria-label="Répondre à ce message"
                 >
-                  ↩️ Répondre
+                  <span>↩️</span> Répondre
                 </button>
                 <button
-                  className="block w-full text-left px-3 py-1.5 rounded-xl hover:bg-red-700/80 hover:text-white active:scale-95 transition-all duration-150"
                   onClick={e => { e.stopPropagation(); setShowEmojiPicker(true); }}
                   aria-label="Ajouter une réaction emoji"
                 >
-                  😊 Réagir
+                  <span>😊</span> Réagir
                 </button>
                 {isOwnMessage && message.type === 'text' && (
-                  <button
-                    className="block w-full text-left px-3 py-1.5 rounded-xl text-red-400 font-mono hover:bg-red-700/80 hover:text-white border-t border-red-700 transition-all duration-150 active:scale-95"
-                    onClick={e => { e.stopPropagation(); setShowMenu(false); setIsEditing(true); setEditValue(message.content || ''); }}
-                    aria-label="Modifier ce message"
-                  >
-                    ✏️ Modifier
-                  </button>
+                  <>
+                    <div className="menu-separator"></div>
+                    <button
+                      onClick={e => { e.stopPropagation(); setShowMenu(false); setIsEditing(true); setEditValue(message.content || ''); }}
+                      aria-label="Modifier ce message"
+                    >
+                      <span>✏️</span> Modifier
+                    </button>
+                  </>
                 )}
                 {isOwnMessage && onDeleteMessage && (
                   <button
-                    className="block w-full text-left px-3 py-1.5 rounded-xl text-red-400 font-mono hover:bg-red-700/80 hover:text-white border-t border-red-700 transition-all duration-150 active:scale-95"
                     onClick={e => { e.stopPropagation(); onDeleteMessage(message.id); handleCloseMenu(); }}
                     aria-label="Supprimer ce message"
                   >
-                    🗑️ Supprimer
+                    <span>🗑️</span> Supprimer
                   </button>
                 )}
+                <div className="menu-separator"></div>
                 <button
-                  className="block w-full text-left px-3 py-1.5 rounded-xl text-gray-400 font-mono hover:bg-gray-800 hover:text-white border-t border-red-700 transition-all duration-150 active:scale-95"
                   onClick={e => { e.stopPropagation(); handleCloseMenu(); }}
                   aria-label="Fermer le menu"
                 >
-                  ✖️ Annuler
+                  <span>✖️</span> Fermer
                 </button>
                 {showEmojiPicker && (
                   <div className="absolute z-50 mt-2 border-4 border-red-700 rounded-2xl shadow-2xl bg-black/95 p-2 anarchist-emoji-picker left-1/2 -translate-x-1/2 w-[95vw] max-w-xs sm:left-0 sm:translate-x-0 sm:w-auto sm:max-w-[100vw]" style={{ minWidth: 200 }}>

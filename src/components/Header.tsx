@@ -89,10 +89,10 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
     >
       <div className="flex items-center gap-1 sm:gap-4 min-w-0">
         <img src={icon} alt="Liberchat Logo" className="h-7 w-7 sm:h-10 sm:w-10 flex-shrink-0 border-2 border-white rounded-full bg-black shadow-md" />
-        <h1 className="text-base sm:text-2xl font-extrabold text-white uppercase tracking-widest truncate" style={{ fontFamily: 'Impact, sans-serif', letterSpacing: '0.15em', maxWidth: '40vw' }}>
+        <h1 className="text-sm sm:text-2xl font-extrabold text-white uppercase tracking-wide sm:tracking-widest" style={{ fontFamily: 'Impact, sans-serif', letterSpacing: '0.05em', minWidth: 'fit-content', maxWidth: '50vw', whiteSpace: 'nowrap', overflow: 'visible' }}>
           LiberChat
         </h1>
-        <span className="ml-1 px-1 py-0.5 bg-red-700 text-white text-[10px] sm:text-xs rounded uppercase tracking-wider font-bold shadow hidden sm:inline">Commune</span>
+        <span className="ml-1 px-1 py-0.5 bg-red-700 text-white text-[10px] sm:text-xs rounded uppercase tracking-wider font-bold shadow hidden sm:inline commune-badge">Commune</span>
       </div>
       <div className="flex items-center gap-2 sm:gap-4">
         {/* Bouton Thèmes personnalisables */}
@@ -102,8 +102,9 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
             className={`flex items-center gap-1 sm:gap-2 px-1 sm:px-3 py-1 rounded-full shadow border-2 border-red-700 font-bold font-mono transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-700 text-xs sm:text-base ${theme === 'dark' ? 'bg-black/80 text-white hover:bg-white hover:text-red-700' : 'bg-white/90 text-black hover:bg-red-700 hover:text-white'}`}
             title="Thèmes personnalisables"
             aria-label="Ouvrir les thèmes personnalisables"
+            style={{ fontSize: '10px' }}
           >
-            <span className="inline-flex items-center">🖍️ <span className="ml-1 hidden sm:inline">Thèmes</span></span>
+            <span className="inline-flex items-center" style={{ fontSize: '10px' }}>🖍️ <span className="ml-1 hidden sm:inline">Thèmes</span></span>
           </button>
         )}
 
@@ -115,8 +116,9 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
             title="Paramètres d'accessibilité"
             aria-label="Ouvrir les paramètres d'accessibilité"
             data-shortcut="Alt+A"
+            style={{ fontSize: '10px' }}
           >
-            <span className="inline-flex items-center">♿ <span className="ml-1 hidden sm:inline">Accessibilité</span></span>
+            <span className="inline-flex items-center" style={{ fontSize: '10px' }}>♿ <span className="ml-1 hidden sm:inline">Accessibilité</span></span>
           </button>
         )}
         
@@ -125,15 +127,15 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
             onClick={onToggleTheme}
             className={`flex items-center gap-1 sm:gap-2 px-1 sm:px-3 py-1 rounded-full shadow border-2 border-red-700 font-bold font-mono transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-700
               ${theme === 'dark' ? 'bg-black/80 text-white hover:bg-white hover:text-red-700' : 'bg-white/90 text-black hover:bg-red-700 hover:text-white'} text-xs sm:text-base`}
-            style={{ fontSize: undefined }}
+            style={{ fontSize: '10px' }}
             title={theme === 'dark' ? 'Passer en thème clair' : 'Passer en thème sombre'}
             aria-label={theme === 'dark' ? 'Passer en thème clair' : 'Passer en thème sombre'}
             data-shortcut="Alt+T"
           >
             {theme === 'dark' ? (
-              <span className="inline-flex items-center">☀️ <span className="ml-1 hidden sm:inline">Clair</span></span>
+              <span className="inline-flex items-center" style={{ fontSize: '10px' }}>☀️ <span className="ml-1 hidden sm:inline">Clair</span></span>
             ) : (
-              <span className="inline-flex items-center">🌙 <span className="ml-1 hidden sm:inline">Sombre</span></span>
+              <span className="inline-flex items-center" style={{ fontSize: '10px' }}>🌙 <span className="ml-1 hidden sm:inline">Sombre</span></span>
             )}
           </button>
         )}
@@ -144,15 +146,17 @@ const Header: React.FC<HeaderProps & { theme?: 'light' | 'dark', onToggleTheme?:
                 e.stopPropagation();
                 setShowLogoutMenu(!showLogoutMenu);
               }}
-              className="px-1 sm:px-2 py-0.5 text-[10px] sm:text-xs bg-gradient-to-r from-red-700 to-black text-white font-bold rounded border border-white hover:from-black hover:to-red-700 transition-all uppercase tracking-widest shadow ml-0 sm:ml-4 min-w-0 w-auto"
+              className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-red-700 to-black text-white font-bold rounded border border-white hover:from-black hover:to-red-700 transition-all shadow"
               aria-label="Menu de déconnexion"
               data-shortcut="Alt+Q"
+              title="Déconnexion"
+              style={{ fontSize: '12px' }}
             >
-              Déconnexion ▼
+              <span className="text-sm sm:text-base" style={{ fontSize: '12px' }}>⍈</span>
             </button>
             {showLogoutMenu && (
               <div 
-                className="absolute right-0 top-full mt-1 bg-black border-2 border-red-700 rounded shadow-lg z-50 min-w-48"
+                className="absolute right-0 top-full mt-1 bg-black border-2 border-red-700 rounded shadow-lg z-50 min-w-48 sm:min-w-52 logout-dropdown"
                 onClick={(e) => e.stopPropagation()}
               >
                 <button

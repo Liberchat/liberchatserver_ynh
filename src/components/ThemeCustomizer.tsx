@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CustomTheme } from '../hooks/useCustomThemes';
 
 interface ThemeCustomizerProps {
@@ -29,6 +29,34 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
   const [newThemeCSS, setNewThemeCSS] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
 
+  useEffect(() => {
+    // Gérer le scroll du body quand la modale est ouverte/fermée
+    if (isOpen) {
+      document.body.classList.add('modal-open');
+      // Empêcher le scroll sur mobile
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
+    } else {
+      document.body.classList.remove('modal-open');
+      // Restaurer le scroll
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+    }
+
+    // Cleanup au démontage
+    return () => {
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleSaveTheme = () => {
@@ -58,67 +86,61 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-start sm:items-center justify-center z-50 p-2">
-      <div className="adaptive-modal bg-gray-900 border-2 border-red-700 rounded-lg w-full overflow-hidden flex flex-col" style={{ maxWidth: '48rem' }}>
+    <div className="fixed inset-0 bg-black/90 z-50 overflow-y-auto">
+      <div className="min-h-full flex items-center justify-center p-1">
+        <div className="bg-black border border-red-500 rounded-md shadow-2xl w-72 max-h-96 overflow-y-auto">
         
-        {/* Header compact */}
-        <div className="modal-header flex justify-between items-center border-b border-red-700/30 bg-black">
-          <h2 className="adaptive-text-lg font-bold text-red-400">🎨 Thèmes</h2>
-          <div className="flex gap-2">
+        {/* Header ultra-compact */}
+        <div className="flex justify-between items-center border-b border-red-500/50 bg-gray-900 px-2 py-1">
+          <span className="text-red-400 font-mono" style={{fontSize: '9px'}}>THÈMES</span>
+          <div className="flex gap-1">
             {onResetToDefaults && (
               <button
                 onClick={() => {
-                  if (confirm('Réinitialiser tous les thèmes ?')) {
+                  if (confirm('Reset ?')) {
                     onResetToDefaults();
                   }
                 }}
-                className="adaptive-button bg-yellow-600 hover:bg-yellow-500 text-white rounded font-bold"
+                className="bg-yellow-700 hover:bg-yellow-600 text-white rounded-sm"
+                style={{fontSize: '8px', padding: '1px 3px', lineHeight: '1'}}
                 title="Reset"
               >
-                🔄
+                ↻
               </button>
             )}
             <button
               onClick={onClose}
-              className="adaptive-button bg-red-600 hover:bg-red-500 text-white rounded font-bold"
+              className="bg-red-700 hover:bg-red-600 text-white rounded-sm"
+              style={{fontSize: '8px', padding: '1px 3px', lineHeight: '1'}}
             >
-              ✕
+              ×
             </button>
           </div>
         </div>
 
-        {/* Contenu principal avec scroll */}
-        <div className="modal-content flex-1 overflow-y-auto space-y-4">
+        {/* Contenu ultra-compact */}
+        <div className="p-1 space-y-1">
           
           {/* Thème par défaut */}
-          <div className="modal-section">
-            <h3 className="adaptive-text font-bold mb-2 text-white">THÈME PAR DÉFAUT</h3>
+          <div>
+            <div className="text-gray-400 font-mono mb-1" style={{fontSize: '8px'}}>DÉFAUT</div>
             <button
               onClick={() => onApplyTheme(null)}
-              className={`adaptive-button w-full rounded-lg border text-left transition ${
+              className={`w-full rounded border text-center transition ${
                 !activeTheme 
-                  ? 'border-red-500 bg-red-700/20 text-red-400' 
-                  : 'border-gray-600 bg-gray-800 text-white hover:border-red-500'
+                  ? 'border-red-500 bg-red-900/30 text-red-300' 
+                  : 'border-gray-600 bg-gray-800 text-gray-300 hover:border-red-500'
               }`}
+              style={{fontSize: '8px', padding: '2px 4px', lineHeight: '1.2'}}
             >
-              <div className="flex justify-between items-center">
-                <div className="min-w-0 flex-1">
-                  <div className="adaptive-text font-bold truncate">🌙 LiberChat Original</div>
-                  <div className="adaptive-text-sm text-gray-400 hidden sm:block">Mode light/dark automatique</div>
-                </div>
-                {!activeTheme && (
-                  <span className="bg-red-500 text-white px-2 py-1 rounded adaptive-text-sm font-bold ml-2">
-                    ACTIF
-                  </span>
-                )}
-              </div>
+              <div>Original {!activeTheme && '●'}</div>
             </button>
           </div>
 
           {/* Thèmes prédéfinis */}
-          <div className="modal-section">
-            <h3 className="adaptive-text font-bold mb-2 text-white">THÈMES MILITANTS</h3>
-            <div className="adaptive-grid adaptive-grid-1 sm:adaptive-grid-2">
+          <div>
+            <div className="text-gray-400 font-mono mb-1" style={{fontSize: '8px'}}>MILITANTS</div>
+            <div className="grid grid-cols-2 gap-1">
               {themes.filter(theme => 
                 theme.id.startsWith('anarchist-') || 
                 theme.id.startsWith('cyberpunk') || 
@@ -132,23 +154,15 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
                 <button
                   key={theme.id}
                   onClick={() => onApplyTheme(theme.id)}
-                  className={`adaptive-button rounded-lg border text-left transition ${
+                  className={`rounded border text-center transition truncate ${
                     theme.id === activeTheme 
-                      ? 'border-red-500 bg-red-700/20 text-red-400' 
-                      : 'border-gray-600 bg-gray-800 text-white hover:border-red-500'
+                      ? 'border-red-500 bg-red-900/30 text-red-300' 
+                      : 'border-gray-600 bg-gray-800 text-gray-300 hover:border-red-500'
                   }`}
+                  style={{fontSize: '7px', padding: '2px 3px', lineHeight: '1.1'}}
+                  title={theme.name}
                 >
-                  <div className="flex justify-between items-center">
-                    <div className="flex-1 min-w-0">
-                      <div className="adaptive-text font-bold truncate">{theme.name}</div>
-                      <div className="adaptive-text-sm text-gray-400 hidden sm:block">Prédéfini</div>
-                    </div>
-                    {theme.id === activeTheme && (
-                      <span className="bg-red-500 text-white px-2 py-1 rounded adaptive-text-sm font-bold ml-2">
-                        ACTIF
-                      </span>
-                    )}
-                  </div>
+                  {theme.name.split(' ')[0]} {theme.id === activeTheme && '●'}
                 </button>
               ))}
             </div>
@@ -165,134 +179,110 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
             !theme.id.startsWith('ocean-blue') &&
             !theme.id.startsWith('sunset-orange')
           ).length > 0 && (
-            <div className="modal-section">
-              <h3 className="adaptive-text font-bold mb-2 text-white">VOS CRÉATIONS</h3>
-              <div className="space-y-2">
-                {themes.filter(theme => 
-                  !theme.id.startsWith('anarchist-') && 
-                  !theme.id.startsWith('cyberpunk') && 
-                  !theme.id.startsWith('light-blue') &&
-                  !theme.id.startsWith('forest-green') &&
-                  !theme.id.startsWith('purple-feminist') &&
-                  !theme.id.startsWith('golden-solidarity') &&
-                  !theme.id.startsWith('ocean-blue') &&
-                  !theme.id.startsWith('sunset-orange')
-                ).map(theme => (
-                  <div key={theme.id} className={`modal-input rounded-lg border ${
-                    theme.id === activeTheme 
-                      ? 'border-red-500 bg-red-700/20' 
-                      : 'border-gray-600 bg-gray-800'
-                  }`}>
-                    <div className="flex items-center justify-between">
-                      <button
-                        onClick={() => onApplyTheme(theme.id)}
-                        className="flex-1 text-left min-w-0"
-                      >
-                        <div className="adaptive-text font-bold text-white truncate">{theme.name}</div>
-                        <div className="adaptive-text-sm text-gray-400 truncate">
-                          {theme.css.length > 50 ? `${theme.css.substring(0, 50)}...` : theme.css}
-                        </div>
-                      </button>
-                      <div className="flex items-center gap-1 ml-2">
-                        {theme.id === activeTheme && (
-                          <span className="bg-red-500 text-white px-2 py-1 rounded adaptive-text-sm font-bold">
-                            ACTIF
-                          </span>
-                        )}
-                        <button
-                          onClick={() => startEditing(theme)}
-                          className="adaptive-button bg-gray-600 hover:bg-gray-500 text-white rounded"
-                          title="Modifier"
-                        >
-                          ✏️
-                        </button>
-                        <button
-                          onClick={() => onDeleteTheme(theme.id)}
-                          className="adaptive-button bg-red-600 hover:bg-red-500 text-white rounded"
-                          title="Supprimer"
-                        >
-                          🗑️
-                        </button>
-                      </div>
-                    </div>
+            <div>
+              {themes.filter(theme => 
+                !theme.id.startsWith('anarchist-') && 
+                !theme.id.startsWith('cyberpunk') && 
+                !theme.id.startsWith('light-blue') &&
+                !theme.id.startsWith('forest-green') &&
+                !theme.id.startsWith('purple-feminist') &&
+                !theme.id.startsWith('golden-solidarity') &&
+                !theme.id.startsWith('ocean-blue') &&
+                !theme.id.startsWith('sunset-orange')
+              ).map(theme => (
+                <div key={theme.id} className={`flex items-center justify-between rounded border mb-1 ${
+                  theme.id === activeTheme 
+                    ? 'border-red-500 bg-red-900/30' 
+                    : 'border-gray-600 bg-gray-800'
+                }`} style={{padding: '2px 4px'}}>
+                  <button
+                    onClick={() => onApplyTheme(theme.id)}
+                    className="flex-1 text-left truncate text-gray-300"
+                    style={{fontSize: '7px', lineHeight: '1.1'}}
+                  >
+                    {theme.name} {theme.id === activeTheme && '●'}
+                  </button>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => startEditing(theme)}
+                      className="bg-gray-600 hover:bg-gray-500 text-white rounded-sm"
+                      style={{fontSize: '6px', padding: '1px 2px'}}
+                      title="Modifier"
+                    >
+                      ✏
+                    </button>
+                    <button
+                      onClick={() => onDeleteTheme(theme.id)}
+                      className="bg-red-600 hover:bg-red-500 text-white rounded-sm"
+                      style={{fontSize: '6px', padding: '1px 2px'}}
+                      title="Supprimer"
+                    >
+                      ×
+                    </button>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           )}
 
-          {/* Bouton créer nouveau thème */}
+          {/* Bouton créer nouveau thème - micro */}
           {!showCreateForm && (
-            <div className="modal-section">
+            <div className="flex justify-center">
               <button
                 onClick={() => setShowCreateForm(true)}
-                className="adaptive-button w-full border border-dashed border-gray-600 rounded-lg text-gray-400 hover:border-red-500 hover:text-white transition"
+                className="bg-gray-700 hover:bg-red-600 text-gray-300 hover:text-white border border-gray-500 hover:border-red-500 rounded transition-all duration-200"
+                style={{ fontSize: '8px', lineHeight: '1', padding: '2px 4px', minHeight: '16px', minWidth: '32px' }}
+                title="Créer un nouveau thème"
               >
-                ➕ Créer un nouveau thème
+                +
               </button>
             </div>
           )}
 
-          {/* Formulaire de création/modification */}
+          {/* Formulaire ultra-compact */}
           {showCreateForm && (
-            <div className="modal-section bg-gray-800 rounded-lg border border-gray-600">
-              <h4 className="adaptive-text font-bold mb-3 text-white">
-                {editingTheme ? '✏️ Modifier' : '➕ Créer'} un thème
-              </h4>
-              
-              <div className="space-y-3">
-                <div>
-                  <label className="block adaptive-text-sm font-bold mb-1 text-white">Nom</label>
-                  <input
-                    type="text"
-                    value={newThemeName}
-                    onChange={(e) => setNewThemeName(e.target.value)}
-                    className="adaptive-input w-full bg-gray-900 border border-gray-600 rounded text-white focus:border-red-500 focus:outline-none"
-                    placeholder="Mon thème personnalisé"
-                  />
-                </div>
+            <div className="bg-gray-800 rounded border border-gray-600 p-1">
+              <div className="space-y-1">
+                <input
+                  type="text"
+                  value={newThemeName}
+                  onChange={(e) => setNewThemeName(e.target.value)}
+                  className="w-full bg-gray-900 border border-gray-600 rounded text-white focus:border-red-500 focus:outline-none"
+                  style={{fontSize: '8px', padding: '2px 4px'}}
+                  placeholder="Nom"
+                />
                 
-                <div>
-                  <label className="block adaptive-text-sm font-bold mb-1 text-white">CSS</label>
-                  <textarea
-                    value={newThemeCSS}
-                    onChange={(e) => setNewThemeCSS(e.target.value)}
-                    className="adaptive-input w-full h-32 bg-gray-900 border border-gray-600 rounded text-white font-mono focus:border-red-500 focus:outline-none resize-none"
-                    style={{ fontSize: 'calc(var(--current-font-size) * 0.875)' }}
-                    placeholder=":root { --bg-primary: #1a0000; }
-body { background: var(--bg-primary) !important; }
-.text-white { color: #ff4444 !important; }"
-                  />
-                </div>
+                <textarea
+                  value={newThemeCSS}
+                  onChange={(e) => setNewThemeCSS(e.target.value)}
+                  className="w-full bg-gray-900 border border-gray-600 rounded text-white font-mono focus:border-red-500 focus:outline-none resize-none"
+                  style={{fontSize: '7px', padding: '2px 4px', height: '40px'}}
+                  placeholder="CSS..."
+                />
                 
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-1">
                   <button
                     onClick={handleSaveTheme}
                     disabled={!newThemeName.trim() || !newThemeCSS.trim()}
-                    className="adaptive-button flex-1 bg-red-600 hover:bg-red-500 disabled:bg-gray-600 text-white rounded font-bold transition"
+                    className="flex-1 bg-red-600 hover:bg-red-500 disabled:bg-gray-600 text-white rounded"
+                    style={{fontSize: '7px', padding: '2px 4px'}}
                   >
-                    {editingTheme ? 'Modifier' : 'Créer'}
+                    {editingTheme ? 'Mod' : 'OK'}
                   </button>
                   <button
                     onClick={cancelEditing}
-                    className="adaptive-button bg-gray-600 hover:bg-gray-500 text-white rounded font-bold transition"
+                    className="bg-gray-600 hover:bg-gray-500 text-white rounded"
+                    style={{fontSize: '7px', padding: '2px 4px'}}
                   >
-                    Annuler
+                    ×
                   </button>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Aide rapide - masquée sur très petits écrans */}
-          <div className="modal-section bg-gray-800 border border-gray-600 rounded-lg hidden sm:block">
-            <h4 className="adaptive-text font-bold mb-2 text-gray-300">💡 Aide CSS</h4>
-            <div className="adaptive-text-sm text-gray-300 space-y-1">
-              <p><code className="bg-gray-700 px-1 rounded adaptive-text-sm">body</code> - Arrière-plan</p>
-              <p><code className="bg-gray-700 px-1 rounded adaptive-text-sm">.text-white</code> - Texte</p>
-              <p><code className="bg-gray-700 px-1 rounded adaptive-text-sm">.bg-gray-900</code> - Zones</p>
-            </div>
-          </div>
+
+        </div>
         </div>
       </div>
     </div>

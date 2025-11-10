@@ -778,7 +778,7 @@ function App() {
             <div ref={messagesEndRef} />
           </main>
           <div 
-            className="flex-shrink-0 sticky bottom-0 z-10 bg-black/95 border-t-2 border-red-700"
+            className="flex-shrink-0 sticky bottom-0 z-10 bg-black/95 border-t-2 border-red-700 chat-input-container"
             role="region"
             aria-label="Zone de saisie des messages"
           >

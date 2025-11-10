@@ -32,7 +32,7 @@ export const useAccessibility = () => {
   useEffect(() => {
     const root = document.documentElement;
     const body = document.body;
-    
+
     // Contraste élevé
     if (settings.highContrast) {
       root.classList.add('high-contrast');
@@ -42,31 +42,56 @@ export const useAccessibility = () => {
       body.classList.remove('high-contrast');
     }
 
-    // Taille de police - Application améliorée
-    root.classList.remove('font-small', 'font-normal', 'font-large', 'font-xlarge');
-    body.classList.remove('font-small', 'font-normal', 'font-large', 'font-xlarge');
-    
-    const fontClass = `font-${settings.fontSize}`;
-    root.classList.add(fontClass);
-    body.classList.add(fontClass);
-    
-    // Définir les variables CSS pour la taille de police
+    // FORCER LA TAILLE DIRECTEMENT SUR TOUS LES ÉLÉMENTS
     const fontSizes = {
-      small: '0.875rem',
-      normal: '1rem',
-      large: '1.25rem',
-      xlarge: '1.5rem'
+      small: '14px',
+      normal: '16px'
     };
-    
+
     const lineHeights = {
       small: '1.4',
-      normal: '1.5',
-      large: '1.6',
-      xlarge: '1.7'
+      normal: '1.5'
     };
-    
-    root.style.setProperty('--current-font-size', fontSizes[settings.fontSize]);
-    root.style.setProperty('--current-line-height', lineHeights[settings.fontSize]);
+
+    // MÉTHODE INTELLIGENTE : APPLIQUER SEULEMENT SUR LES ÉLÉMENTS TEXTUELS
+    const textElements = document.querySelectorAll('p, div, span, h1, h2, h3, h4, h5, h6, label, li, td, th, a');
+    textElements.forEach(element => {
+      if (element instanceof HTMLElement) {
+        // Ne pas toucher aux éléments du menu d'accessibilité
+        if (!element.closest('.adaptive-modal') && !element.closest('header') && !element.closest('nav')) {
+          element.style.fontSize = fontSizes[settings.fontSize];
+          element.style.lineHeight = lineHeights[settings.fontSize];
+        }
+      }
+    });
+
+    // Appliquer aussi sur les boutons SAUF ceux du menu d'accessibilité
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+      if (button instanceof HTMLElement) {
+        // Ne pas toucher aux boutons du menu d'accessibilité et du header
+        if (!button.closest('.adaptive-modal') && !button.closest('header') && !button.closest('nav')) {
+          button.style.fontSize = fontSizes[settings.fontSize];
+        }
+      }
+    });
+
+    // FORCER UNE TAILLE FIXE SUR LES BOUTONS DU MENU D'ACCESSIBILITÉ
+    const modalButtons = document.querySelectorAll('.adaptive-modal button, header button, nav button');
+    modalButtons.forEach(button => {
+      if (button instanceof HTMLElement) {
+        button.style.fontSize = '14px'; // Taille fixe pour rester visible
+        button.style.lineHeight = '1.4';
+        button.style.minHeight = '32px';
+        button.style.padding = '6px 12px';
+      }
+    });
+
+    // AUSSI CHANGER LA CLASSE
+    document.body.classList.remove('font-small', 'font-normal');
+    document.body.classList.add(`font-${settings.fontSize}`);
+
+    console.log(`HOOK: Taille appliquée: ${settings.fontSize} (${fontSizes[settings.fontSize]})`);
 
     // Police dyslexie
     if (settings.dyslexiaFont) {
@@ -108,14 +133,7 @@ export const useAccessibility = () => {
       body.classList.remove('keyboard-navigation');
     }
 
-    // Forcer le re-rendu des éléments pour appliquer les nouvelles tailles
-    const allElements = document.querySelectorAll('*');
-    allElements.forEach(element => {
-      if (element instanceof HTMLElement) {
-        element.style.fontSize = '';
-        element.offsetHeight; // Force reflow
-      }
-    });
+    // C'EST TOUT - PAS BESOIN DE PLUS
 
   }, [settings]);
 
@@ -127,39 +145,39 @@ export const useAccessibility = () => {
     announcement.setAttribute('role', 'status');
     announcement.className = 'sr-only';
     announcement.textContent = message;
-    
+
     const announcementId = `announcement-${Date.now()}`;
     announcement.id = announcementId;
     document.body.appendChild(announcement);
-    
+
     // Si le mode lecteur d'écran est activé, ajouter aussi la synthèse vocale du navigateur
     if (settings.screenReader) {
       // Synthèse vocale native du navigateur pour les tests
       if ('speechSynthesis' in window) {
         // Arrêter toute synthèse en cours
         window.speechSynthesis.cancel();
-        
+
         const utterance = new SpeechSynthesisUtterance(message);
         utterance.lang = 'fr-FR';
         utterance.rate = 0.9;
         utterance.pitch = 1;
         utterance.volume = 0.8;
-        
+
         // Essayer de trouver une voix française
         const voices = window.speechSynthesis.getVoices();
-        const frenchVoice = voices.find(voice => 
-          voice.lang.startsWith('fr') || 
+        const frenchVoice = voices.find(voice =>
+          voice.lang.startsWith('fr') ||
           voice.name.toLowerCase().includes('french') ||
           voice.name.toLowerCase().includes('français')
         );
-        
+
         if (frenchVoice) {
           utterance.voice = frenchVoice;
         }
-        
+
         window.speechSynthesis.speak(utterance);
       }
-      
+
       // Notification visuelle pour confirmer
       const visualAnnouncement = document.createElement('div');
       visualAnnouncement.textContent = `🔊 ${message}`;
@@ -179,14 +197,14 @@ export const useAccessibility = () => {
         animation: slideIn 0.3s ease-out;
       `;
       document.body.appendChild(visualAnnouncement);
-      
+
       setTimeout(() => {
         if (document.body.contains(visualAnnouncement)) {
           document.body.removeChild(visualAnnouncement);
         }
       }, 3000);
     }
-    
+
     setTimeout(() => {
       if (document.body.contains(announcement)) {
         document.body.removeChild(announcement);
@@ -195,33 +213,52 @@ export const useAccessibility = () => {
   };
 
   const applyFontSizeImmediately = () => {
-    // Force l'application immédiate des tailles de police
-    const root = document.documentElement;
-    const body = document.body;
-    
-    // Supprimer toutes les classes de taille
-    root.classList.remove('font-small', 'font-normal', 'font-large', 'font-xlarge');
-    body.classList.remove('font-small', 'font-normal', 'font-large', 'font-xlarge');
-    
-    // Forcer un reflow
-    body.offsetHeight;
-    
-    // Réappliquer la classe
-    const fontClass = `font-${settings.fontSize}`;
-    root.classList.add(fontClass);
-    body.classList.add(fontClass);
-    
-    // Forcer la mise à jour de tous les éléments
-    const allElements = document.querySelectorAll('*');
-    allElements.forEach(element => {
+    // FORCER LA TAILLE DIRECTEMENT SUR LES ÉLÉMENTS TEXTUELS
+    const fontSizes = {
+      small: '14px',
+      normal: '16px'
+    };
+
+    const lineHeights = {
+      small: '1.4',
+      normal: '1.5'
+    };
+
+    // MÉTHODE INTELLIGENTE : APPLIQUER SEULEMENT SUR LES ÉLÉMENTS TEXTUELS
+    const textElements = document.querySelectorAll('p, div, span, h1, h2, h3, h4, h5, h6, label, li, td, th, a');
+    textElements.forEach(element => {
       if (element instanceof HTMLElement) {
-        const computedStyle = window.getComputedStyle(element);
-        element.style.fontSize = computedStyle.fontSize;
-        setTimeout(() => {
-          element.style.fontSize = '';
-        }, 10);
+        // Ne pas toucher aux éléments du menu d'accessibilité
+        if (!element.closest('.adaptive-modal') && !element.closest('header') && !element.closest('nav')) {
+          element.style.fontSize = fontSizes[settings.fontSize];
+          element.style.lineHeight = lineHeights[settings.fontSize];
+        }
       }
     });
+
+    // Appliquer aussi sur les boutons SAUF ceux du menu d'accessibilité
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+      if (button instanceof HTMLElement) {
+        // Ne pas toucher aux boutons du menu d'accessibilité et du header
+        if (!button.closest('.adaptive-modal') && !button.closest('header') && !button.closest('nav')) {
+          button.style.fontSize = fontSizes[settings.fontSize];
+        }
+      }
+    });
+
+    // FORCER UNE TAILLE FIXE SUR LES BOUTONS DU MENU D'ACCESSIBILITÉ
+    const modalButtons = document.querySelectorAll('.adaptive-modal button, header button, nav button');
+    modalButtons.forEach(button => {
+      if (button instanceof HTMLElement) {
+        button.style.fontSize = '14px'; // Taille fixe pour rester visible
+        button.style.lineHeight = '1.4';
+        button.style.minHeight = '32px';
+        button.style.padding = '6px 12px';
+      }
+    });
+
+    console.log(`APPLY IMMEDIATELY: ${settings.fontSize} (${fontSizes[settings.fontSize]})`);
   };
 
   return {

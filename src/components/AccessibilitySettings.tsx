@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 export interface AccessibilitySettings {
   highContrast: boolean;
-  fontSize: 'small' | 'normal' | 'large' | 'xlarge';
+  fontSize: 'small' | 'normal';
   dyslexiaFont: boolean;
   reduceMotion: boolean;
   screenReader: boolean;
@@ -30,6 +30,34 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
     setLocalSettings(settings);
   }, [settings]);
 
+  useEffect(() => {
+    // Gérer le scroll du body quand la modale est ouverte/fermée
+    if (isOpen) {
+      document.body.classList.add('modal-open');
+      // Empêcher le scroll sur mobile
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
+    } else {
+      document.body.classList.remove('modal-open');
+      // Restaurer le scroll
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+    }
+
+    // Cleanup au démontage
+    return () => {
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+    };
+  }, [isOpen]);
+
   const handleSettingChange = (key: keyof AccessibilitySettings, value: any) => {
     const newSettings = { ...localSettings, [key]: value };
     setLocalSettings(newSettings);
@@ -46,7 +74,7 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black/80 flex items-start sm:items-center justify-center z-50 p-2"
+      className="fixed inset-0 bg-black/80 z-50 overflow-y-auto"
       onClick={onClose}
       onKeyDown={handleKeyDown}
       tabIndex={-1}
@@ -54,40 +82,43 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
       aria-labelledby="accessibility-title"
       aria-modal="true"
     >
-      <div
-        className={`adaptive-modal bg-black border-2 border-red-700 rounded-lg w-full overflow-y-auto
-          ${localSettings.highContrast ? 'bg-black text-white border-yellow-400' : ''}`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="modal-header flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <h2
-              id="accessibility-title"
-              className={`adaptive-text-lg font-bold ${localSettings.highContrast ? 'text-yellow-400' : 'text-red-400'}`}
-            >
-              ♿ Accessibilité
-            </h2>
-            {localSettings.screenReader && (
-              <span
-                className="bg-green-500 text-white px-2 py-1 rounded adaptive-text-sm font-bold"
-                title="Lecteur d'écran actif"
-                aria-label="Lecteur d'écran actif"
+      <div className="min-h-full flex items-start justify-center p-2 pt-4 pb-4">
+        <div
+          className={`bg-black border-2 border-red-700 rounded-lg w-full max-w-sm sm:max-w-lg my-auto
+            ${localSettings.highContrast ? 'bg-black text-white border-yellow-400' : ''}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex justify-between items-center border-b border-red-700/30 bg-black p-4">
+            <div className="flex items-center gap-2">
+              <h2
+                id="accessibility-title"
+                className={`adaptive-text-lg font-bold ${localSettings.highContrast ? 'text-yellow-400' : 'text-red-400'}`}
               >
-                🔊 ACTIF
-              </span>
-            )}
+                ♿ Accessibilité
+              </h2>
+              {localSettings.screenReader && (
+                <span
+                  className="bg-green-500 text-white px-2 py-1 rounded adaptive-text-sm font-bold"
+                  title="Lecteur d'écran actif"
+                  aria-label="Lecteur d'écran actif"
+                >
+                  🔊 ACTIF
+                </span>
+              )}
+            </div>
+            <button
+              onClick={onClose}
+              className={`adaptive-button hover:bg-red-700 rounded transition-colors
+                ${localSettings.highContrast ? 'text-yellow-400 hover:bg-yellow-600' : 'text-white hover:bg-red-700'}`}
+              aria-label="Fermer les paramètres d'accessibilité"
+            >
+              ✕
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            className={`adaptive-button hover:bg-red-700 rounded transition-colors
-              ${localSettings.highContrast ? 'text-yellow-400 hover:bg-yellow-600' : 'text-white hover:bg-red-700'}`}
-            aria-label="Fermer les paramètres d'accessibilité"
-          >
-            ✕
-          </button>
-        </div>
 
-        <div className="modal-content space-y-4">
+          {/* Contenu principal */}
+          <div className="p-4 space-y-4">
           {/* Contraste élevé */}
           <div className="modal-section flex items-center justify-between">
             <label
@@ -142,37 +173,75 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
               <p
                 className={`adaptive-text ${localSettings.highContrast ? 'text-yellow-200' : 'text-gray-300'}`}
                 style={{
-                  fontSize: localSettings.fontSize === 'small' ? '0.875rem' :
-                    localSettings.fontSize === 'normal' ? '1rem' :
-                      localSettings.fontSize === 'large' ? '1.25rem' : '1.5rem'
+                  fontSize: localSettings.fontSize === 'small' ? '14px' : '16px'
                 }}
               >
                 Aperçu du texte avec la taille {
-                  localSettings.fontSize === 'small' ? 'petite' :
-                    localSettings.fontSize === 'normal' ? 'moyenne' :
-                      localSettings.fontSize === 'large' ? 'grande' : 'très grande'
+                  localSettings.fontSize === 'small' ? 'petite' : 'moyenne'
                 }
               </p>
             </div>
 
             <div className="adaptive-grid adaptive-grid-2">
-              {(['small', 'normal', 'large', 'xlarge'] as const).map((size) => (
+              {(['small', 'normal'] as const).map((size) => (
                 <button
                   key={size}
                   onClick={() => {
-                    handleSettingChange('fontSize', size);
+                    // SAUVEGARDER LES SETTINGS
+                    const newSettings = { ...localSettings, fontSize: size };
+                    setLocalSettings(newSettings);
+                    onSettingsChange(newSettings);
 
-                    // Force l'application immédiate des styles
-                    setTimeout(() => {
-                      onApplyFontSizeImmediately?.();
-                    }, 50);
+                    // FORCER LA TAILLE DIRECTEMENT SUR TOUS LES ÉLÉMENTS
+                    const fontSizes = {
+                      small: '14px',
+                      normal: '16px'
+                    };
+
+                    // MÉTHODE INTELLIGENTE : APPLIQUER SEULEMENT SUR LES ÉLÉMENTS TEXTUELS
+                    const textElements = document.querySelectorAll('p, div, span, h1, h2, h3, h4, h5, h6, label, li, td, th, a');
+                    textElements.forEach(element => {
+                      if (element instanceof HTMLElement) {
+                        // Ne pas toucher aux éléments du menu d'accessibilité
+                        if (!element.closest('.adaptive-modal') && !element.closest('header') && !element.closest('nav')) {
+                          element.style.fontSize = fontSizes[size];
+                          element.style.lineHeight = size === 'small' ? '1.4' : size === 'normal' ? '1.5' : '1.6';
+                        }
+                      }
+                    });
+
+                    // Appliquer aussi sur les boutons SAUF ceux du menu d'accessibilité
+                    const buttons = document.querySelectorAll('button');
+                    buttons.forEach(button => {
+                      if (button instanceof HTMLElement) {
+                        // Ne pas toucher aux boutons du menu d'accessibilité et du header
+                        if (!button.closest('.adaptive-modal') && !button.closest('header') && !button.closest('nav')) {
+                          button.style.fontSize = fontSizes[size];
+                        }
+                      }
+                    });
+
+                    // FORCER UNE TAILLE FIXE SUR LES BOUTONS DU MENU D'ACCESSIBILITÉ
+                    const modalButtons = document.querySelectorAll('.adaptive-modal button, header button, nav button');
+                    modalButtons.forEach(button => {
+                      if (button instanceof HTMLElement) {
+                        button.style.fontSize = '14px'; // Taille fixe pour rester visible
+                        button.style.lineHeight = '1.4';
+                        button.style.minHeight = '32px';
+                        button.style.padding = '6px 12px';
+                      }
+                    });
+
+                    // AUSSI CHANGER LA CLASSE POUR LA COHÉRENCE
+                    document.body.classList.remove('font-small', 'font-normal');
+                    document.body.classList.add(`font-${size}`);
+
+                    console.log(`TAILLE CHANGÉE VERS: ${size} (${fontSizes[size]})`);
 
                     // Annonce vocale du changement
                     const sizeNames = {
                       small: 'petite',
-                      normal: 'moyenne',
-                      large: 'grande',
-                      xlarge: 'très grande'
+                      normal: 'moyenne'
                     };
                     setTimeout(() => {
                       const announcement = document.createElement('div');
@@ -182,7 +251,9 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
                       announcement.textContent = `Taille de police changée vers ${sizeNames[size]}`;
                       document.body.appendChild(announcement);
                       setTimeout(() => {
-                        document.body.removeChild(announcement);
+                        if (document.body.contains(announcement)) {
+                          document.body.removeChild(announcement);
+                        }
                       }, 1000);
                     }, 100);
                   }}
@@ -192,20 +263,14 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
                       : (localSettings.highContrast ? 'border-yellow-400 text-yellow-400 hover:bg-yellow-400/20' : 'border-red-700 text-white hover:bg-red-700/20')
                     }`}
                   aria-pressed={localSettings.fontSize === size}
-                  aria-label={`Définir la taille de police à ${size === 'small' ? 'petite' :
-                    size === 'normal' ? 'moyenne' :
-                      size === 'large' ? 'grande' : 'très grande'
-                    }`}
+                  aria-label={`Définir la taille de police à ${size === 'small' ? 'petite' : 'moyenne'}`}
                   style={{
                     fontSize: size === 'small' ? '0.75rem' :
-                      size === 'normal' ? '0.875rem' :
-                        size === 'large' ? '1rem' : '1.125rem'
+                      size === 'normal' ? '0.875rem' : '1rem'
                   }}
                 >
                   {size === 'small' && 'Petit'}
                   {size === 'normal' && 'Moyen'}
-                  {size === 'large' && 'Grand'}
-                  {size === 'xlarge' && 'XL'}
                   {localSettings.fontSize === size && (
                     <span className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full" aria-hidden="true" />
                   )}
@@ -216,9 +281,7 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
             {/* Indicateur de taille actuelle */}
             <div className={`mt-2 adaptive-text-sm ${localSettings.highContrast ? 'text-yellow-300' : 'text-gray-400'}`}>
               Taille actuelle : {
-                localSettings.fontSize === 'small' ? 'Petite (0.875rem)' :
-                  localSettings.fontSize === 'normal' ? 'Moyenne (1rem)' :
-                    localSettings.fontSize === 'large' ? 'Grande (1.25rem)' : 'Très grande (1.5rem)'
+                localSettings.fontSize === 'small' ? 'Petite (14px)' : 'Moyenne (16px)'
               }
             </div>
           </div>
@@ -415,11 +478,10 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
                 ${localSettings.keyboardNavigation ? 'adaptive-switch-thumb active' : 'translate-x-1'}`} />
             </button>
           </div>
-        </div>
 
-        {/* Zone de test du lecteur d'écran */}
-        {localSettings.screenReader && (
-          <div className={`modal-input rounded border-2 ${localSettings.highContrast ? 'border-yellow-400 bg-yellow-900/30' : 'border-green-500 bg-green-900/20'}`}>
+          {/* Zone de test du lecteur d'écran */}
+          {localSettings.screenReader && (
+            <div className={`modal-input rounded border-2 ${localSettings.highContrast ? 'border-yellow-400 bg-yellow-900/30' : 'border-green-500 bg-green-900/20'}`}>
             <div className="flex items-center justify-between mb-2">
               <h3 className={`adaptive-text font-bold ${localSettings.highContrast ? 'text-yellow-200' : 'text-green-400'}`}>
                 🔊 Test du lecteur d'écran
@@ -605,24 +667,13 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
                 🎯 Tester les annonces vocales
               </button>
             </div>
+            </div>
+          )}
+
+
+
           </div>
-        )}
-
-        <div className={`modal-input rounded border ${localSettings.highContrast ? 'border-yellow-400 bg-yellow-900/20' : 'border-red-700 bg-red-900/20'}`}>
-          <p className={`adaptive-text-sm ${localSettings.highContrast ? 'text-yellow-200' : 'text-gray-300'}`}>
-            💡 <strong>Astuce :</strong> Paramètres sauvegardés localement.
-          </p>
         </div>
-
-        <button
-          onClick={onClose}
-          className={`adaptive-button w-full rounded font-bold transition-colors
-            ${localSettings.highContrast
-              ? 'bg-yellow-400 text-black hover:bg-yellow-500'
-              : 'bg-red-700 text-white hover:bg-red-800'}`}
-        >
-          Fermer
-        </button>
       </div>
     </div>
   );
