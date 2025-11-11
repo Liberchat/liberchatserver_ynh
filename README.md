@@ -41,7 +41,7 @@
 
 - **🧩 Composants modulaires** : Meilleure séparation des responsabilités entre Header, ThemeCustomizer et AccessibilitySettings
 - **📐 Responsive design avancé** : Adaptation automatique selon les paramètres d'accessibilité utilisateur
-- **⚡ Performance améliorée** : Réduction de l'encombrement visuel pour une navigation plus fluide
+- ** Performance améliorée** : Réduction de l'encombrement visuel pour une navigation plus fluide
 - **💾 Sauvegarde des thèmes** : Les paramètres de thèmes personnalisés sont automatiquement sauvegardés localement
 
 ---
@@ -52,7 +52,7 @@
 
 - **🔗 Architecture P2P native** : Communication directe entre utilisateurs sans serveur central
 - **� Décentrallisation totale** : Chaque client devient un nœud du réseau distribué
-- **⚡ Performance optimisée** : Latence réduite grâce aux connexions directes peer-to-peer
+- ** Performance optimisée** : Latence réduite grâce aux connexions directes peer-to-peer
 - **🌍 Résistance à la censure** : Impossible de bloquer ou fermer le réseau décentralisé
 
 ### 🔐 Sécurité maximale renforcée
