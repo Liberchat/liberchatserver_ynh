@@ -28,6 +28,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
   const [editingTheme, setEditingTheme] = useState<CustomTheme | null>(null);
   const [newThemeName, setNewThemeName] = useState('');
   const [newThemeCSS, setNewThemeCSS] = useState('');
+  const [confirmReset, setConfirmReset] = useState(false);
 
   const exportThemes = () => {
     const dataStr = JSON.stringify({ themes, activeTheme }, null, 2);
@@ -217,16 +218,26 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
           )}
           <button
             onClick={() => {
-              localStorage.removeItem('liberchat-custom-themes');
-              onApplyTheme(null);
-              window.location.reload();
+              if (confirmReset) {
+                localStorage.removeItem('liberchat-custom-themes');
+                localStorage.removeItem('liberchat-active-theme');
+                onApplyTheme(null);
+                setTimeout(() => window.location.reload(), 100);
+              } else {
+                setConfirmReset(true);
+                setTimeout(() => setConfirmReset(false), 3000);
+              }
             }}
-            className={`bg-gray-800 hover:bg-red-700 text-white rounded text-xs border border-gray-600 ${
+            className={`text-white rounded text-xs border-2 ${
+              confirmReset 
+                ? 'bg-red-700 border-red-900 animate-pulse' 
+                : 'bg-gray-800 border-gray-600 hover:bg-red-700'
+            } ${
               isMobile ? 'px-1 py-1' : 'px-2 py-1'
             }`}
-            title="Réinitialiser tous les thèmes"
+            title={confirmReset ? 'Cliquez à nouveau pour confirmer' : 'Réinitialiser tous les thèmes'}
           >
-            🔄
+            {confirmReset ? '⚠️' : '🔄'}
           </button>
         </div>
         
