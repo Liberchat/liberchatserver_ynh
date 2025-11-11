@@ -95,6 +95,19 @@ function App() {
     }
   }, [username, socket, isConnected, users]);
 
+  // Réinitialisation automatique au premier chargement de la version 6.6
+  useEffect(() => {
+    const version = localStorage.getItem('liberchat-version');
+    if (version !== '6.6') {
+      // Nettoyer toutes les anciennes configurations
+      localStorage.removeItem('liberchat-custom-themes');
+      localStorage.removeItem('liberchat-active-theme');
+      localStorage.removeItem('liberchat-accessibility');
+      // Marquer la version actuelle
+      localStorage.setItem('liberchat-version', '6.6');
+    }
+  }, []);
+
   // Si on a un nom sauvegardé au démarrage, on passe directement au chat
   useEffect(() => {
     const savedUsername = localStorage.getItem('liberchat-username');
