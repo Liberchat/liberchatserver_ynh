@@ -65,7 +65,7 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
             id="accessibility-title"
             className={`font-bold ${isCompactMode ? 'text-sm' : 'text-xl'} ${localSettings.highContrast ? 'text-yellow-400' : 'text-red-400'}`}
           >
-            ♿ ${isCompactMode ? '' : 'Accessibilité'}
+            ♿ {isCompactMode ? '' : 'Accessibilité'}
           </h2>
           <button
             onClick={onClose}

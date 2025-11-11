@@ -118,7 +118,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'cyberpunk' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            🌌 Révolution Sociale : Cyberpunk néon
+            🌌 Égalité Solidarité
           </button>
           
           <button
