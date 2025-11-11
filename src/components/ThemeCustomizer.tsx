@@ -217,9 +217,11 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
           )}
           <button
             onClick={() => {
-              localStorage.removeItem('liberchat-custom-themes');
-              onApplyTheme(null);
-              onClose();
+              if (window.confirm('Êtes-vous sûr de vouloir réinitialiser tous les thèmes ?')) {
+                localStorage.removeItem('liberchat-custom-themes');
+                onApplyTheme(null);
+                window.location.reload();
+              }
             }}
             className={`bg-gray-800 hover:bg-red-700 text-white rounded text-xs border border-gray-600 ${
               isMobile ? 'px-1 py-1' : 'px-2 py-1'
