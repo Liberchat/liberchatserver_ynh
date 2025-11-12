@@ -127,7 +127,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'light-blue' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            ☀️ Bleu Clair : Mode jour apaisant
+            ☀️ Bleu Clair 
           </button>
           
           <button
@@ -136,7 +136,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'green-solidarity' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            🌿 Vert Solidaire : Nature militante
+            🌿 Vert Solidaire 
           </button>
           
           <button
@@ -154,7 +154,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'warm-solidarity' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            🤝 Solidarité : Chaleur communautaire
+            🤝 Solidarité 
           </button>
           
           <button
@@ -163,7 +163,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'ocean-blue' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            🌊 Bleu Océan : Profondeur marine
+            🌊 Bleu Océan 
           </button>
           
           <button
@@ -172,7 +172,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'sunset-orange' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            🌅 Coucher de Soleil : Chaleur orangée
+            🌅 Coucher de Soleil 
           </button>
           
           {!isMobile && themes.filter(t => !['anarchist-red', 'cyberpunk', 'light-blue', 'green-solidarity', 'purple-mystic', 'warm-solidarity', 'ocean-blue', 'sunset-orange'].includes(t.id)).map(theme => (
