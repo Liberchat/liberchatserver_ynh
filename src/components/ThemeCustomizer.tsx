@@ -145,7 +145,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'purple-mystic' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            🔮 Mauve Mystique : Féminisme spirituel
+            ♀️ Anarchisme  
           </button>
           
           <button
