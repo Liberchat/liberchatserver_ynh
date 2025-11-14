@@ -9,6 +9,7 @@ import { TranslationSettings } from './TranslationSettings';
 import CryptoJS from 'crypto-js';
 import { useAccessibility } from '../hooks/useAccessibility';
 import { useCustomThemes } from '../hooks/useCustomThemes';
+import { I18nProvider, useI18nContext } from '../contexts/I18nContext';
 
 interface Message {
   id: number;
@@ -30,7 +31,8 @@ interface UserInfo {
   socketId: string;
 }
 
-function App() {
+function AppContent() {
+  const { t } = useI18nContext();
   const [socket, setSocket] = useState<ReturnType<typeof io> | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [username, setUsername] = useState(() => {
@@ -68,6 +70,8 @@ function App() {
     updateTheme: updateCustomTheme,
     deleteTheme: deleteCustomTheme
   } = useCustomThemes();
+  
+
 
   // Génération automatique d'une clé de chiffrement par défaut (obfusquée)
   useEffect(() => {
@@ -229,11 +233,11 @@ function App() {
   // Correction du type de la prop onSendFile pour chiffrer les fichiers en E2EE
   const handleSendFile = async (file: File) => {
     if (!socket || !isConnected) {
-      alert('Connexion au serveur non établie.');
+      alert(t.messages.connectionNotEstablished);
       return;
     }
     if (!symmetricKey) {
-      alert('Clé de chiffrement non initialisée.');
+      alert(t.errors.encryptionKeyNotInitialized);
       return;
     }
     // Traitement image (redimensionnement/compression sans perte visible)
@@ -272,7 +276,7 @@ function App() {
   // Ajout de la gestion de l'envoi de messages vocaux
   const handleSendAudio = async (audioBase64: string) => {
     if (!symmetricKey) {
-      alert('Clé de chiffrement non initialisée.');
+      alert(t.errors.encryptionKeyNotInitialized);
       return;
     }
     const encrypted = await encryptMessageE2EE(audioBase64, symmetricKey);
@@ -718,6 +722,7 @@ function App() {
           onAddCustomTheme={addCustomTheme}
           onUpdateCustomTheme={updateCustomTheme}
           onDeleteCustomTheme={deleteCustomTheme}
+          onTranslationSettingsChange={handleTranslationSettingsChange}
         />
         <WelcomeScreen onJoin={handleJoin} />
       </>
@@ -741,6 +746,7 @@ function App() {
         onAddCustomTheme={addCustomTheme}
         onUpdateCustomTheme={updateCustomTheme}
         onDeleteCustomTheme={deleteCustomTheme}
+        onTranslationSettingsChange={handleTranslationSettingsChange}
       />
       <div className="flex-1 flex flex-col sm:flex-row overflow-hidden min-h-0">
         <aside 
@@ -787,8 +793,8 @@ function App() {
                   <span className="mr-2">⚑</span>
                   <span className="font-mono">
                     {typingUsers.length === 1
-                      ? `${typingUsers[0]} prépare une révolution sociale...`
-                      : `${typingUsers.join(', ')} préparent une révolution sociale...`}
+                      ? `${typingUsers[0]} ${t.chat.typingSingle}`
+                      : `${typingUsers.join(', ')} ${t.chat.typingMultiple}`}
                   </span>
                 </div>
               </div>
@@ -824,6 +830,14 @@ function App() {
         </div>
       )}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <I18nProvider>
+      <AppContent />
+    </I18nProvider>
   );
 }
 

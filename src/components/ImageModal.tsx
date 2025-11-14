@@ -1,4 +1,5 @@
 import React from 'react';
+import { useI18nContext } from '../contexts/I18nContext';
 
 interface ImageModalProps {
   src: string;
@@ -7,6 +8,7 @@ interface ImageModalProps {
 }
 
 const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => {
+  const { t } = useI18nContext();
   React.useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -26,7 +28,7 @@ const ImageModal: React.FC<ImageModalProps> = ({ src, alt, onClose }) => {
       <button
         className="absolute top-4 right-4 text-white text-3xl font-bold bg-black/60 rounded-full px-3 py-1 hover:bg-red-700 transition"
         onClick={onClose}
-        aria-label="Fermer"
+        aria-label={t.translation.close}
       >
         ×
       </button>

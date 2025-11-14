@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useI18nContext } from '../contexts/I18nContext';
 
 interface UserListProps {
   users: Array<{ username: string; socketId: string }>;
@@ -9,6 +10,7 @@ interface UserListProps {
 }
 
 export const UserList = ({ users, currentUser, isMobile = false, inChatInput = false }: UserListProps) => {
+  const { t } = useI18nContext();
   const [isExpanded, setIsExpanded] = useState(false);
   const otherUsers = users.filter(user => user.username !== currentUser);
   const userCount = otherUsers.length;
@@ -31,7 +33,7 @@ export const UserList = ({ users, currentUser, isMobile = false, inChatInput = f
                           sm:left-0 
                           max-sm:left-1/2 max-sm:transform max-sm:-translate-x-1/2">
             <div className="p-2 bg-red-700/20 border-b border-red-700">
-              <h3 className="text-sm font-bold text-white font-mono">Compagnons présent·e·s</h3>
+              <h3 className="text-sm font-bold text-white font-mono">{t.users.companions}</h3>
             </div>
             <div className="max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-red-700 scrollbar-track-black">
               {users.map(user => (
@@ -48,12 +50,12 @@ export const UserList = ({ users, currentUser, isMobile = false, inChatInput = f
                     }`} />
                   <span className="text-white font-mono">{user.username}</span>
                   {user.username === currentUser && (
-                    <span className="text-xs text-red-400 ml-1">(Vous)</span>
+                    <span className="text-xs text-red-400 ml-1">({t.users.you})</span>
                   )}
                 </div>
               ))}
               {users.length <= 1 && (
-                <p className="p-2 text-sm text-gray-400 italic font-mono">En attente d'autres compagnons...</p>
+                <p className="p-2 text-sm text-gray-400 italic font-mono">En attente d'autres {t.users.companions.toLowerCase()}...</p>
               )}
             </div>
           </div>
@@ -66,7 +68,7 @@ export const UserList = ({ users, currentUser, isMobile = false, inChatInput = f
   return (
     <div className="p-4">
       <h2 className="text-lg font-bold mb-4">
-        <span className="text-red-600">Compagnons présent·e·s</span>
+        <span className="text-red-600">{t.users.companions}</span>
         <div className="h-0.5 w-full bg-gradient-to-r from-red-700 via-red-600 to-transparent mt-2"></div>
       </h2>
       <div className="space-y-2">
@@ -86,14 +88,14 @@ export const UserList = ({ users, currentUser, isMobile = false, inChatInput = f
             <span className={`text-white relative z-10 ${user.username === currentUser ? "font-bold" : ""
               }`}>{user.username}</span>
             {user.username === currentUser && (
-              <span className="text-xs text-red-400 ml-2">(Vous)</span>
+              <span className="text-xs text-red-400 ml-2">({t.users.you})</span>
             )}
           </div>
         ))}
         {users.length <= 1 && (
           <div className="relative text-center p-3 border border-red-700/50 rounded-lg bg-gradient-to-r from-black/30 to-red-950/10 overflow-hidden">
 
-            <p className="text-gray-400 relative z-10">En attente d'autres compagnons...</p>
+            <p className="text-gray-400 relative z-10">En attente d'autres {t.users.companions.toLowerCase()}...</p>
           </div>
         )}
       </div>

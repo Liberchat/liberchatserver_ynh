@@ -5,6 +5,7 @@ import { TranslationButton } from './TranslationButton';
 import { TranslationModal } from './TranslationModal';
 import { AutoTranslation } from './AutoTranslation';
 import { Message } from '../types/global';
+import { useI18nContext } from '../contexts/I18nContext';
 
 // Fonction utilitaire pour détecter les appareils mobiles
 const isMobile = (): boolean => {
@@ -36,6 +37,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   autoTranslationEnabled = false,
   autoTranslationLanguage = 'fr'
 }) => {
+  const { t } = useI18nContext();
   const [modalOpen, setModalOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -91,7 +93,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             onClick={() => handleOpenIframe(url)}
             title="Ouvrir dans l'application"
           >
-            Ouvrir
+            {t.messages.open}
           </button>
         </div>
       </div>
@@ -137,7 +139,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             )
           )}
           {message.edited && (
-            <span className="text-xs text-gray-400 ml-2">(modifié)</span>
+            <span className="text-xs text-gray-400 ml-2">({t.chat.edited})</span>
           )}
         </div>
       );
@@ -164,7 +166,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             />
             <p className="text-xs sm:text-sm text-red-300 mt-1 truncate font-mono break-all max-w-full overflow-hidden">{message.fileName}</p>
             {message.edited && (
-              <span className="text-xs text-gray-400 mt-1">(modifié)</span>
+              <span className="text-xs text-gray-400 mt-1">({t.chat.edited})</span>
             )}
             {modalOpen && (
               <ImageModal src={message.fileData!} alt={message.fileName} onClose={() => { setModalOpen(false); setShowMenu(false); }} />
@@ -172,7 +174,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           </div>
         );
       }
-      return <span className="text-red-400 text-xs sm:text-sm">Fichier non supporté</span>;
+      return <span className="text-red-400 text-xs sm:text-sm">{t.chat.fileNotSupported}</span>;
     } else if (message.type === 'audio' && message.fileData) {
       const preventContextMenu = (e: React.MouseEvent<HTMLAudioElement>) => e.preventDefault();
       return (
@@ -189,13 +191,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           />
           {audioError ? (
             <span className="text-xs text-red-400 mt-1 font-mono">
-              ⚠️ Lecture vocale non supportée sur ce navigateur/appareil.
+              ⚠️ {t.chat.audioNotSupported}
             </span>
           ) : (
-            <span className="text-xs text-gray-400 mt-1 font-mono">Message vocal</span>
+            <span className="text-xs text-gray-400 mt-1 font-mono">{t.chat.voiceMessage}</span>
           )}
           {message.edited && (
-            <span className="text-xs text-gray-400 mt-1">(modifié)</span>
+            <span className="text-xs text-gray-400 mt-1">({t.chat.edited})</span>
           )}
         </div>
       );
@@ -392,7 +394,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               className="bg-black/60 border border-red-700 rounded-full px-2 py-0.5 text-sm cursor-pointer select-none flex items-center gap-1 hover:bg-red-700/40 focus:ring-2 focus:ring-red-700"
               onClick={() => handleReact(emoji)}
               title={userList.join(', ')}
-              aria-label={`Réaction ${emoji} par ${userList.join(', ')}. Cliquez pour réagir`}
+              aria-label={`Réaction ${emoji} par ${userList.join(', ')}. ${t.messages.clickToReact}`}
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -443,7 +445,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           <div className="mb-2 px-3 py-1 bg-black/95 border-l-4 border-red-700 rounded-lg shadow-inner max-w-[260px] sm:max-w-[360px] flex items-center gap-2">
             {message.replyTo.type === 'file' && message.replyTo.fileData && message.replyTo.fileType && message.replyTo.fileType.startsWith('image/') ? (
               <>
-                <img src={message.replyTo.fileData} alt="miniature" className="w-16 h-16 object-cover rounded border-2 border-white bg-black" style={{maxWidth:64,maxHeight:64}} />
+                <img src={message.replyTo.fileData} alt={t.messages.thumbnail} className="w-16 h-16 object-cover rounded border-2 border-white bg-black" style={{maxWidth:64,maxHeight:64}} />
                 <div className="flex flex-col min-w-0">
                   <span className="text-[11px] text-red-400 font-mono mb-0.5 truncate">{message.replyTo.username}</span>
                   {message.replyTo.fileName && (
@@ -471,7 +473,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         )}
         {message.username && message.type !== 'system' && (
           <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-red-300 mb-1 block font-mono flex items-center gap-2">
-            {isOwnMessage ? 'Vous' : message.username}
+            {isOwnMessage ? t.users.you : message.username}
           </span>
         )}
         {isEditing && message.type === 'text' ? (
@@ -489,7 +491,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             <button 
               type="submit" 
               className="bg-red-700 text-white px-2 py-1 rounded-lg font-mono text-xs sm:text-sm shadow hover:bg-red-800 active:scale-95 transition-all"
-              aria-label="Confirmer la modification"
+              aria-label={t.messages.confirmEdit}
             >
               OK
             </button>
@@ -520,10 +522,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         {showConfirm && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/90">
             <div className="bg-black border-2 border-red-700 rounded-xl px-6 py-5 shadow-lg flex flex-col items-center max-w-sm w-full">
-              <p className="text-white mb-6 font-mono text-center text-base">Supprimer ce message&nbsp;?</p>
+              <p className="text-white mb-6 font-mono text-center text-base">{t.chat.deleteConfirm}</p>
               <div className="flex gap-4 w-full justify-center">
-                <button onClick={confirmDelete} className="bg-red-700 hover:bg-red-800 text-white px-6 py-2 rounded-lg font-mono shadow border border-red-900 transition-colors focus:ring-0 focus:outline-none text-sm">Supprimer</button>
-                <button onClick={cancelDelete} className="bg-black hover:bg-red-900 active:bg-red-950 text-white px-6 py-2 rounded-lg font-mono shadow border border-red-700 transition-colors focus:ring-0 focus:outline-none text-sm">Annuler</button>
+                <button onClick={confirmDelete} className="bg-red-700 hover:bg-red-800 text-white px-6 py-2 rounded-lg font-mono shadow border border-red-900 transition-colors focus:ring-0 focus:outline-none text-sm">{t.chat.delete}</button>
+                <button onClick={cancelDelete} className="bg-black hover:bg-red-900 active:bg-red-950 text-white px-6 py-2 rounded-lg font-mono shadow border border-red-700 transition-colors focus:ring-0 focus:outline-none text-sm">{t.chat.cancel}</button>
               </div>
             </div>
           </div>
@@ -548,14 +550,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                   onClick={e => { e.stopPropagation(); handleReplyMenu(); }}
                   aria-label="Répondre à ce message"
                 >
-                  ↩️ Répondre
+                  ↩️ {t.chat.reply}
                 </button>
                 <button
                   className="block w-full text-left px-3 py-1.5 rounded-xl hover:bg-red-700/80 hover:text-white active:scale-95 transition-all duration-150"
                   onClick={e => { e.stopPropagation(); setShowEmojiPicker(true); }}
                   aria-label="Ajouter une réaction emoji"
                 >
-                  😊 Réagir
+                  😊 {t.chat.react}
                 </button>
                 {message.type === 'text' && message.content && (
                   <TranslationButton
@@ -570,7 +572,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                     onClick={e => { e.stopPropagation(); setShowMenu(false); setIsEditing(true); setEditValue(message.content || ''); }}
                     aria-label="Modifier ce message"
                   >
-                    ✏️ Modifier
+                    ✏️ {t.chat.edit}
                   </button>
                 )}
                 {isOwnMessage && onDeleteMessage && (
@@ -579,7 +581,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                     onClick={e => { e.stopPropagation(); onDeleteMessage(message.id); handleCloseMenu(); }}
                     aria-label="Supprimer ce message"
                   >
-                    🗑️ Supprimer
+                    🗑️ {t.chat.delete}
                   </button>
                 )}
                 <button
@@ -587,7 +589,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                   onClick={e => { e.stopPropagation(); handleCloseMenu(); }}
                   aria-label="Fermer le menu"
                 >
-                  ✖️ Annuler
+                  ✖️ {t.chat.cancel}
                 </button>
                 {showEmojiPicker && (
                   <div className="absolute z-50 mt-2 border-4 border-red-700 rounded-2xl shadow-2xl bg-black/95 p-2 anarchist-emoji-picker left-1/2 -translate-x-1/2 w-[95vw] max-w-xs sm:left-0 sm:translate-x-0 sm:w-auto sm:max-w-[100vw]" style={{ minWidth: 200 }}>
@@ -626,13 +628,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                   className="block w-full text-left px-4 py-2 hover:bg-red-700/80 hover:text-white"
                   onClick={e => { e.stopPropagation(); handleReplyMenu(); }}
                 >
-                  ↩️ Répondre
+                  ↩️ {t.chat.reply}
                 </button>
                 <button
                   className="block w-full text-left px-4 py-2 hover:bg-red-700/80 hover:text-white"
                   onClick={e => { e.stopPropagation(); setShowEmojiPicker(true); }}
                 >
-                  😊 Réagir
+                  😊 {t.chat.react}
                 </button>
                 {message.type === 'text' && message.content && (
                   <TranslationButton
@@ -646,7 +648,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                     className="block w-full text-left px-4 py-2 bg-black text-red-400 font-mono hover:bg-red-700/80 hover:text-white border-t border-red-700 transition-colors"
                     onClick={e => { e.stopPropagation(); setShowMenu(false); setIsEditing(true); setEditValue(message.content || ''); }}
                   >
-                    ✏️ Modifier
+                    ✏️ {t.chat.edit}
                   </button>
                 )}
                 {isOwnMessage && onDeleteMessage && (
@@ -654,7 +656,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                     className="block w-full text-left px-4 py-2 bg-black text-red-400 font-mono hover:bg-red-700/80 hover:text-white border-t border-red-700 transition-colors"
                     onClick={e => { e.stopPropagation(); onDeleteMessage(message.id); handleCloseMenu(); }}
                   >
-                    🗑️ Supprimer
+                    🗑️ {t.chat.delete}
                   </button>
                 )}
                 <button
@@ -704,7 +706,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           <div className="bg-black rounded-lg shadow-lg w-[90vw] max-w-2xl h-[80vh] flex flex-col">
             <div className="flex justify-between items-center p-2 border-b border-gray-700">
               <span className="text-xs text-white truncate max-w-[70vw]">{iframeUrl}</span>
-              <button className="ml-2 text-xs bg-red-700 hover:bg-red-600 text-white rounded px-2 py-1" onClick={() => { setIframeUrl(null); setIframeError(false); }}>Fermer</button>
+              <button className="ml-2 text-xs bg-red-700 hover:bg-red-600 text-white rounded px-2 py-1" onClick={() => { setIframeUrl(null); setIframeError(false); }}>{t.translation.close}</button>
             </div>
             <iframe
               src={iframeUrl}

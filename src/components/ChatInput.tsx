@@ -3,6 +3,7 @@ import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import { UserList } from './UserList';
 import { TranslationSettings } from './TranslationSettings';
+import { useI18nContext } from '../contexts/I18nContext';
 
 // Définition locale du type Message (copié de App.tsx)
 type Message = {
@@ -50,6 +51,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
   autoTranslationLanguage = 'fr',
   onTranslationSettingsChange
 }) => {
+  const { t } = useI18nContext();
   const [message, setMessage] = useState<string>('');
   const [showEmoji, setShowEmoji] = useState<boolean>(false);
   const [recording, setRecording] = useState(false);
@@ -90,11 +92,11 @@ const ChatInput: React.FC<ChatInputProps> = ({
     if (!file) return;
 
     if (file.size > 50 * 1024 * 1024) {
-      alert('Le fichier est trop volumineux (max 50MB)');
+      alert(t.messages.fileTooLarge + ' (max 50MB)');
       return;
     }
     if (!file.type.startsWith('image/')) {
-      alert('Seules les images sont acceptées');
+      alert(t.messages.onlyImagesAccepted);
       return;
     }
     setSelectedImage(file);
@@ -139,7 +141,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
       } else if (window.MediaRecorder && MediaRecorder.isTypeSupported('audio/3gpp')) {
         mimeType = 'audio/3gpp';
       } else {
-        alert("L'enregistrement audio n'est pas supporté sur ce navigateur Android. Essayez Chrome ou Firefox mobile.");
+        alert(t.messages.audioNotSupportedAndroid);
         return;
       }
     } else if (isElectron) {
@@ -169,20 +171,20 @@ const ChatInput: React.FC<ChatInputProps> = ({
     } else if (MediaRecorder.isTypeSupported('audio/wav')) {
       mimeType = 'audio/wav';
     } else {
-      alert('Aucun format audio compatible trouvé sur ce navigateur. Essayez de mettre à jour votre navigateur ou d\'en utiliser un autre.');
+      alert(t.messages.noCompatibleAudioFormat);
       return;
     }
     let stream;
     try {
       stream = await navigator.mediaDevices.getUserMedia(audioConstraints);
     } catch (err) {
-      alert('Impossible d\'accéder au micro.');
+      alert(t.messages.microphoneAccessDenied);
       return;
     }
     try {
       mediaRecorderRef.current = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
     } catch (err) {
-      alert("Impossible de démarrer l'enregistrement audio sur ce navigateur. Essayez Chrome ou Firefox mobile.");
+      alert(t.messages.audioRecordingFailed);
       return;
     }
     audioChunks.current = [];
@@ -331,7 +333,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
           <div className="flex items-center gap-2 max-w-[80%]">
             {replyTo.type === 'file' && replyTo.fileData && replyTo.fileType && replyTo.fileType.startsWith('image/') ? (
               <>
-                <img src={replyTo.fileData} alt="miniature" className="w-12 h-12 object-cover rounded border-2 border-white bg-black" style={{maxWidth:48,maxHeight:48}} />
+                <img src={replyTo.fileData} alt={t.messages.thumbnail} className="w-12 h-12 object-cover rounded border-2 border-white bg-black" style={{maxWidth:48,maxHeight:48}} />
                 <div className="flex flex-col min-w-0">
                   <span className="text-xs text-red-400 font-mono mb-0.5 truncate">{replyTo.username}</span>
                   {replyTo.fileName && (
@@ -344,7 +346,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
                 <span className="text-2xl mr-2">🎤</span>
                 <div className="flex flex-col min-w-0">
                   <span className="text-xs text-red-400 font-mono mb-0.5 truncate">{replyTo.username}</span>
-                  <span className="text-xs text-gray-200 font-mono break-words truncate">{replyTo.fileName || 'Message vocal'}</span>
+                  <span className="text-xs text-gray-200 font-mono break-words truncate">{replyTo.fileName || t.chat.voiceMessage}</span>
                 </div>
               </>
             ) : (
@@ -356,17 +358,17 @@ const ChatInput: React.FC<ChatInputProps> = ({
               </div>
             )}
           </div>
-          <button type="button" onClick={() => onReplyHandled && onReplyHandled()} className="ml-2 text-gray-400 hover:text-red-500 p-0.5 rounded focus:outline-none" title="Annuler la réponse" aria-label="Annuler la réponse">×</button>
+          <button type="button" onClick={() => onReplyHandled && onReplyHandled()} className="ml-2 text-gray-400 hover:text-red-500 p-0.5 rounded focus:outline-none" title={t.chat.cancel} aria-label={t.chat.cancel}>×</button>
         </div>
       )}
       {/* Aperçu de l'image à envoyer */}
       {imagePreview && (
         <div className="w-full flex flex-col items-center mb-2">
           <div className="bg-black border-2 border-red-700 rounded-lg shadow-lg p-2 flex flex-col items-center">
-            <img src={imagePreview} alt="Aperçu" className="max-h-48 rounded-lg border-2 border-white shadow mb-2 bg-black" style={{objectFit:'contain', background:'#000'}} />
+            <img src={imagePreview} alt={t.messages.preview} className="max-h-48 rounded-lg border-2 border-white shadow mb-2 bg-black" style={{objectFit:'contain', background:'#000'}} />
             <div className="flex gap-2">
-              <button type="button" onClick={handleSendImage} className="px-4 py-2 bg-red-700 text-white rounded-lg border-2 border-white hover:bg-black hover:text-red-700 transition-colors font-mono">Envoyer</button>
-              <button type="button" onClick={handleCancelImage} className="px-4 py-2 bg-black text-red-700 rounded-lg border-2 border-red-700 hover:bg-red-700 hover:text-white transition-colors font-mono">Annuler</button>
+              <button type="button" onClick={handleSendImage} className="px-4 py-2 bg-red-700 text-white rounded-lg border-2 border-white hover:bg-black hover:text-red-700 transition-colors font-mono">{t.chat.sendMessage}</button>
+              <button type="button" onClick={handleCancelImage} className="px-4 py-2 bg-black text-red-700 rounded-lg border-2 border-red-700 hover:bg-red-700 hover:text-white transition-colors font-mono">{t.chat.cancel}</button>
             </div>
           </div>
         </div>
@@ -377,8 +379,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
           <div className="bg-black border-2 border-red-700 rounded-lg shadow-lg p-2 flex flex-col items-center">
             <audio src={audioPreview} controls className="w-full max-w-xs mb-2 rounded border-2 border-white bg-black" />
             <div className="flex gap-2">
-              <button type="button" onClick={handleSendAudioPreview} className="px-4 py-2 bg-red-700 text-white rounded-lg border-2 border-white hover:bg-black hover:text-red-700 transition-colors font-mono">Envoyer</button>
-              <button type="button" onClick={handleCancelAudio} className="px-4 py-2 bg-black text-red-700 rounded-lg border-2 border-red-700 hover:bg-red-700 hover:text-white transition-colors font-mono">Annuler</button>
+              <button type="button" onClick={handleSendAudioPreview} className="px-4 py-2 bg-red-700 text-white rounded-lg border-2 border-white hover:bg-black hover:text-red-700 transition-colors font-mono">{t.chat.sendMessage}</button>
+              <button type="button" onClick={handleCancelAudio} className="px-4 py-2 bg-black text-red-700 rounded-lg border-2 border-red-700 hover:bg-red-700 hover:text-white transition-colors font-mono">{t.chat.cancel}</button>
             </div>
           </div>
         </div>
@@ -429,7 +431,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
           onKeyPress={(e: React.KeyboardEvent) => { handleTyping(); if (e.key === 'Enter' && !e.shiftKey) handleSubmit(); }}
           className="w-full px-3 py-2 bg-black border-2 border-red-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 text-white placeholder-gray-400 text-sm sm:text-base font-mono shadow"
           style={{ fontSize: '16px' }}
-          placeholder={isConnected ? "Écrivez un message révolutionnaire..." : "Connexion au serveur..."}
+          placeholder={isConnected ? t.chat.messageInput : t.messages.reconnecting}
           maxLength={500}
           autoComplete="off"
           disabled={!isConnected}
@@ -480,7 +482,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
         disabled={!message.trim() || !isConnected}
         className="flex-shrink-0 px-4 py-2 h-10 bg-red-700 text-white rounded-lg border-2 border-white hover:bg-black hover:text-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed order-2 sm:order-none w-full sm:w-auto"
       >
-        Envoyer
+        {t.chat.sendMessage}
       </button>
     </form>
   );

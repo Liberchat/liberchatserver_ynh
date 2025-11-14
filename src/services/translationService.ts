@@ -31,8 +31,6 @@ class TranslationService {
 
     for (const url of urlsToTry) {
       try {
-        console.log(`🌐 Tentative de connexion à: ${url}`);
-
         const headers: Record<string, string> = {
           'Accept': 'application/json',
         };
@@ -42,44 +40,23 @@ class TranslationService {
           headers['Authorization'] = `Bearer ${this.apiKey}`;
         }
 
-        console.log(`🌐 Headers utilisés:`, headers);
-
         const response = await fetch(`${url}/languages`, {
           method: 'GET',
           headers,
           signal: AbortSignal.timeout(5000) // Timeout de 5 secondes
         });
 
-        console.log(`🌐 Réponse de ${url}:`, {
-          status: response.status,
-          statusText: response.statusText,
-          headers: Object.fromEntries(response.headers.entries())
-        });
-
         if (response.ok) {
           const languages = await response.json();
           this.supportedLanguages = languages;
           this.currentBaseUrl = url;
-          console.log(`🌐 Connexion réussie à ${url}, langues chargées:`, languages.length, languages);
           return;
-        } else {
-          const errorText = await response.text();
-          console.warn(`🌐 Erreur HTTP ${response.status} pour ${url}:`, errorText);
         }
       } catch (error) {
-        console.warn(`🌐 Échec de connexion à ${url}:`, error);
-        if (error instanceof Error) {
-          console.warn(`🌐 Détails de l'erreur:`, {
-            name: error.name,
-            message: error.message,
-            stack: error.stack
-          });
-        }
         continue;
       }
     }
 
-    console.warn('🌐 Aucun service de traduction disponible, utilisation des langues par défaut');
     this.setDefaultLanguages();
   }
 
@@ -94,7 +71,8 @@ class TranslationService {
       { code: 'ru', name: 'Русский' },
       { code: 'zh', name: '中文' },
       { code: 'ja', name: '日本語' },
-      { code: 'ar', name: 'العربية' }
+      { code: 'ar', name: 'العربية' },
+      { code: 'eo', name: 'Esperanto' }
     ];
   }
 
@@ -116,7 +94,7 @@ class TranslationService {
         return result[0]?.language || 'auto';
       }
     } catch (error) {
-      console.error('🌐 Erreur lors de la détection de langue:', error);
+      // Erreur silencieuse
     }
     return 'auto';
   }
@@ -132,8 +110,6 @@ class TranslationService {
 
     for (const url of urlsToTry) {
       try {
-        console.log(`🌐 Tentative traduction via ${url}: "${text}" (${sourceLanguage} → ${targetLanguage})`);
-
         const requestBody = {
           q: text,
           source: sourceLanguage,
@@ -166,30 +142,23 @@ class TranslationService {
 
         if (response.ok) {
           const result = await response.json();
-          console.log(`🌐 Traduction réussie via ${url}:`, result.translatedText);
 
           // Mettre à jour le service actuel si ce n'était pas le premier essayé
           if (url !== this.currentBaseUrl) {
             this.currentBaseUrl = url;
-            console.log(`🌐 Service mis à jour vers: ${url}`);
           }
 
           return {
             translatedText: result.translatedText,
             detectedLanguage: result.detectedLanguage
           };
-        } else {
-          const errorText = await response.text();
-          console.warn(`🌐 Erreur ${response.status} avec ${url}:`, errorText);
         }
       } catch (error) {
-        console.warn(`🌐 Échec traduction avec ${url}:`, error);
         continue;
       }
     }
 
     // Si tous les services échouent, retourner une traduction simulée ou le texte original
-    console.error('🌐 Tous les services de traduction ont échoué');
     return this.getFallbackTranslation(text, targetLanguage, sourceLanguage);
   }
 
@@ -201,13 +170,45 @@ class TranslationService {
         'bonjour': 'hello',
         'merci': 'thank you',
         'oui': 'yes',
-        'non': 'no'
+        'non': 'no',
+        'salut': 'hi',
+        'au revoir': 'goodbye'
       },
       'fr': {
         'hello': 'bonjour',
         'thank you': 'merci',
         'yes': 'oui',
-        'no': 'non'
+        'no': 'non',
+        'hi': 'salut',
+        'goodbye': 'au revoir'
+      },
+      'es': {
+        'bonjour': 'hola',
+        'merci': 'gracias',
+        'oui': 'sí',
+        'non': 'no',
+        'salut': 'hola',
+        'au revoir': 'adiós',
+        'hello': 'hola',
+        'thank you': 'gracias',
+        'yes': 'sí',
+        'no': 'no',
+        'hi': 'hola',
+        'goodbye': 'adiós'
+      },
+      'eo': {
+        'bonjour': 'saluton',
+        'merci': 'dankon',
+        'oui': 'jes',
+        'non': 'ne',
+        'salut': 'saluton',
+        'au revoir': 'ĝis revido',
+        'hello': 'saluton',
+        'thank you': 'dankon',
+        'yes': 'jes',
+        'no': 'ne',
+        'hi': 'saluton',
+        'goodbye': 'ĝis revido'
       }
     };
 

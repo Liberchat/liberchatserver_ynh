@@ -1,4 +1,5 @@
 import React from 'react';
+import { useI18nContext } from '../contexts/I18nContext';
 
 interface MediaDeviceSelectorProps {
   devices: MediaDeviceInfo[];
@@ -15,6 +16,7 @@ export const MediaDeviceSelector: React.FC<MediaDeviceSelectorProps> = ({
   onVideoChange,
   onAudioChange,
 }) => {
+  const { t } = useI18nContext();
   const videoDevices = devices.filter(device => device.kind === 'videoinput');
   const audioDevices = devices.filter(device => device.kind === 'audioinput');
 
@@ -27,7 +29,7 @@ export const MediaDeviceSelector: React.FC<MediaDeviceSelectorProps> = ({
       {videoDevices.length > 0 && (
         <div className="flex-1 min-w-[200px]">
           <label htmlFor="videoDevice" className="block text-sm font-medium text-gray-300 mb-2">
-            Caméra
+            {t.media.camera}
           </label>
           <select
             id="videoDevice"
@@ -47,7 +49,7 @@ export const MediaDeviceSelector: React.FC<MediaDeviceSelectorProps> = ({
       {audioDevices.length > 0 && (
         <div className="flex-1 min-w-[200px]">
           <label htmlFor="audioDevice" className="block text-sm font-medium text-gray-300 mb-2">
-            Microphone
+            {t.media.microphone}
           </label>
           <select
             id="audioDevice"

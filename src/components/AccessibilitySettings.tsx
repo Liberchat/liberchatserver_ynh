@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useI18nContext } from '../contexts/I18nContext';
 
 export interface AccessibilitySettings {
   highContrast: boolean;
@@ -22,6 +23,7 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
   settings,
   onSettingsChange
 }) => {
+  const { t } = useI18nContext();
   const [localSettings, setLocalSettings] = useState<AccessibilitySettings>(settings);
 
   useEffect(() => {
@@ -65,13 +67,13 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
             id="accessibility-title"
             className={`font-bold ${isCompactMode ? 'text-sm' : 'text-xl'} ${localSettings.highContrast ? 'text-yellow-400' : 'text-red-400'}`}
           >
-            ♿ {isCompactMode ? '' : 'Accessibilité'}
+            {t.accessibility.title}
           </h2>
           <button
             onClick={onClose}
             className={`text-2xl hover:bg-red-700 rounded p-1 transition-colors
               ${localSettings.highContrast ? 'text-yellow-400 hover:bg-yellow-600' : 'text-white hover:bg-red-700'}`}
-            aria-label="Fermer les paramètres d'accessibilité"
+            aria-label={t.translation.close}
           >
             ✕
           </button>
@@ -84,7 +86,7 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
               htmlFor="high-contrast"
               className={`font-semibold ${localSettings.highContrast ? 'text-yellow-400' : 'text-white'}`}
             >
-              🔆 Contraste élevé
+              🔆 {t.accessibility.highContrast}
             </label>
             <button
               id="high-contrast"
@@ -104,7 +106,7 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
             <label 
               className={`block font-semibold mb-2 ${localSettings.highContrast ? 'text-yellow-400' : 'text-white'}`}
             >
-              📏 Taille de police
+              📏 {t.accessibility.fontSize}
             </label>
             <div className="grid grid-cols-2 gap-2">
               {(['small', 'normal', 'large', 'xlarge'] as const).map((size) => (
@@ -118,10 +120,10 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
                     }`}
                   aria-pressed={localSettings.fontSize === size}
                 >
-                  {size === 'small' && 'Petit'}
-                  {size === 'normal' && 'Moyen'}
-                  {size === 'large' && 'Grand'}
-                  {size === 'xlarge' && 'Très grand'}
+                  {size === 'small' && t.accessibility.fontSizes.small}
+                  {size === 'normal' && t.accessibility.fontSizes.medium}
+                  {size === 'large' && t.accessibility.fontSizes.large}
+                  {size === 'xlarge' && t.accessibility.fontSizes.extraLarge}
                 </button>
               ))}
             </div>
@@ -133,7 +135,7 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
               htmlFor="dyslexia-font"
               className={`font-semibold ${localSettings.highContrast ? 'text-yellow-400' : 'text-white'}`}
             >
-              📖 Police dyslexie
+              📖 {t.accessibility.dyslexiaFont}
             </label>
             <button
               id="dyslexia-font"
@@ -154,7 +156,7 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
               htmlFor="reduce-motion"
               className={`font-semibold ${localSettings.highContrast ? 'text-yellow-400' : 'text-white'}`}
             >
-              🎭 Réduire les animations
+              🎭 {t.accessibility.reduceAnimations}
             </label>
             <button
               id="reduce-motion"
@@ -175,7 +177,7 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
               htmlFor="screen-reader"
               className={`font-semibold ${localSettings.highContrast ? 'text-yellow-400' : 'text-white'}`}
             >
-              🔊 Mode lecteur d'écran
+              🔊 {t.accessibility.screenReader}
             </label>
             <button
               id="screen-reader"
@@ -196,7 +198,7 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
               htmlFor="keyboard-nav"
               className={`font-semibold ${localSettings.highContrast ? 'text-yellow-400' : 'text-white'}`}
             >
-              ⌨️ Navigation clavier améliorée
+              ⌨️ {t.accessibility.keyboardNavigation}
             </label>
             <button
               id="keyboard-nav"
@@ -214,7 +216,7 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
 
         <div className={`mt-6 p-3 rounded border-2 ${localSettings.highContrast ? 'border-yellow-400 bg-yellow-900/20' : 'border-red-700 bg-red-900/20'}`}>
           <p className={`text-sm ${localSettings.highContrast ? 'text-yellow-200' : 'text-gray-300'}`}>
-            💡 <strong>Astuce :</strong> Ces paramètres sont sauvegardés localement et s'appliquent immédiatement.
+            💡 <strong>{t.accessibility.tip}</strong> {t.accessibility.settingsSavedLocally}
           </p>
         </div>
 
@@ -225,7 +227,7 @@ const AccessibilitySettingsModal: React.FC<AccessibilitySettingsProps> = ({
               ? 'bg-yellow-400 text-black hover:bg-yellow-500' 
               : 'bg-red-700 text-white hover:bg-red-800'}`}
         >
-          Fermer
+          {t.translation.close}
         </button>
       </div>
     </div>

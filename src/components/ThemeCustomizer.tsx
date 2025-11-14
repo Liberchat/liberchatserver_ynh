@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CustomTheme } from '../hooks/useCustomThemes';
 import { AccessibilitySettings } from './AccessibilitySettings';
+import { useI18nContext } from '../contexts/I18nContext';
 
 interface ThemeCustomizerProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
   onDeleteTheme,
   accessibilitySettings
 }) => {
+  const { t } = useI18nContext();
   const [editingTheme, setEditingTheme] = useState<CustomTheme | null>(null);
   const [newThemeName, setNewThemeName] = useState('');
   const [newThemeCSS, setNewThemeCSS] = useState('');
@@ -88,7 +90,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
         isMobile ? 'max-w-xs' : 'max-w-md'
       }`}>
         <div className="flex justify-between items-center mb-3">
-          <h2 className="text-sm font-bold text-red-400">🖍️ Thèmes</h2>
+          <h2 className="text-sm font-bold text-red-400">{t.themes.title}</h2>
           <button onClick={onClose} className="text-white hover:text-red-400">✕</button>
         </div>
         
@@ -100,7 +102,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               !activeTheme ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            🌙 Défaut
+            🌙 {t.themes.dark}
           </button>
           
           <button
@@ -109,7 +111,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'anarchist-red' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            🚩🏴 Anarchisme
+            🚩🏴 {t.themes.anarchistRed}
           </button>
           
           <button
@@ -118,7 +120,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'cyberpunk' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            🌌 Égalité Solidarité
+            🌌 {t.themes.equalitySolidarity}
           </button>
           
           <button
@@ -127,7 +129,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'light-blue' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            ☀️ Bleu Clair 
+            ☀️ {t.themes.lightBlue}
           </button>
           
           <button
@@ -136,7 +138,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'green-solidarity' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            🌿 Vert Solidaire 
+            🌿 {t.themes.greenSolidarity}
           </button>
           
           <button
@@ -145,7 +147,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'purple-mystic' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            ♀️ Anarchisme  
+            ♀️ {t.themes.feministAnarchism}
           </button>
           
           <button
@@ -154,7 +156,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'warm-solidarity' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            🤝 Solidarité 
+            🤝 {t.themes.solidarity}
           </button>
           
           <button
@@ -163,7 +165,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'ocean-blue' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            🌊 Bleu Océan 
+            🌊 {t.themes.oceanBlue}
           </button>
           
           <button
@@ -172,7 +174,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               activeTheme === 'sunset-orange' ? 'bg-red-700 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            🌅 Coucher de Soleil 
+            🌅 {t.themes.sunset}
           </button>
           
           {!isMobile && themes.filter(t => !['anarchist-red', 'cyberpunk', 'light-blue', 'green-solidarity', 'purple-mystic', 'warm-solidarity', 'ocean-blue', 'sunset-orange'].includes(t.id)).map(theme => (
@@ -235,7 +237,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
             } ${
               isMobile ? 'px-1 py-1' : 'px-2 py-1'
             }`}
-            title={confirmReset ? 'Cliquez à nouveau pour confirmer' : 'Réinitialiser tous les thèmes'}
+            title={confirmReset ? t.messages.clickToConfirm : t.messages.resetAllThemes}
           >
             {confirmReset ? '⚠️' : '🔄'}
           </button>
@@ -248,7 +250,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
               value={newThemeName}
               onChange={(e) => setNewThemeName(e.target.value)}
               className="w-full p-1 bg-gray-800 border border-gray-600 rounded text-white text-xs"
-              placeholder="Nom du thème"
+              placeholder={t.themes.createCustom}
             />
             
             <textarea
@@ -264,7 +266,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
                 disabled={!newThemeName.trim() || !newThemeCSS.trim()}
                 className="bg-red-700 hover:bg-red-600 disabled:bg-gray-600 text-white px-2 py-1 rounded text-xs"
               >
-                {editingTheme ? 'Modifier' : 'Créer'}
+                {editingTheme ? t.chat.edit : t.themes.createCustom}
               </button>
               
               {editingTheme && (
@@ -276,7 +278,7 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({
                   }}
                   className="bg-gray-600 hover:bg-gray-500 text-white px-2 py-1 rounded text-xs"
                 >
-                  Annuler
+                  {t.chat.cancel}
                 </button>
               )}
             </div>

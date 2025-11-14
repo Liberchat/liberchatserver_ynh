@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import icon from '../../icon.png';
+import { useI18nContext, SupportedLanguage } from '../contexts/I18nContext';
 
 interface WelcomeScreenProps {
   onJoin: (username: string) => void;
 }
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onJoin }) => {
+  const { t, currentLanguage, changeLanguage, getSupportedLanguages } = useI18nContext();
   const [username, setUsername] = useState(() => {
     // Récupère le nom sauvegardé depuis localStorage
     return localStorage.getItem('liberchat-username') || '';
@@ -19,12 +21,12 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onJoin }) => {
   };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-gradient-to-br from-black via-red-900 to-black flex items-center justify-center p-2 sm:p-4"
       role="main"
       aria-label="Écran d'accueil LiberChat"
     >
-      <div 
+      <div
         className="w-full max-w-md bg-black/90 rounded-xl shadow-2xl p-4 sm:p-8 border-4 border-red-700 relative flex flex-col items-center"
         role="dialog"
         aria-labelledby="welcome-title"
@@ -36,24 +38,41 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onJoin }) => {
             LiberChat
           </h1>
           <p className="text-red-400 text-center text-base sm:text-lg font-semibold mb-1 uppercase tracking-wider">
-            Ni dieu, ni maître, ni patron, ni État
+            {t.welcome.title}
           </p>
           <p className="text-gray-300 text-center text-xs sm:text-sm italic">
-            La commune pour tous
+            {t.slogan}
           </p>
         </div>
-        <form 
-          onSubmit={handleSubmit} 
+
+        {/* Sélecteur de langue */}
+        <div className="mb-4 w-full">
+          <select
+            value={currentLanguage}
+            onChange={(e) => changeLanguage(e.target.value as SupportedLanguage)}
+            className="w-full px-3 py-2 bg-black border-2 border-red-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 text-white text-sm font-mono"
+            aria-label={t.messages.selectLanguage}
+          >
+            {getSupportedLanguages().map((lang) => (
+              <option key={lang.code} value={lang.code} className="bg-black text-white">
+                🌍 {lang.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
           className="space-y-3 sm:space-y-4 w-full"
           role="form"
           aria-label="Formulaire de connexion au chat"
         >
           <div>
-            <label 
-              htmlFor="username" 
+            <label
+              htmlFor="username"
               className="block text-xs sm:text-sm font-bold text-red-200 mb-2 uppercase tracking-wider"
             >
-              Nom de compagnon
+              {t.welcome.username}
             </label>
             <input
               type="text"
@@ -61,18 +80,18 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onJoin }) => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full px-3 py-2 sm:px-4 sm:py-2 bg-black border-2 border-red-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 text-white placeholder-gray-400 text-base sm:text-lg font-mono"
-              placeholder="Entrez votre nom révolutionnaire"
+              placeholder={t.welcome.usernamePlaceholder}
               required
               maxLength={24}
               autoFocus
               aria-describedby="username-help"
               aria-invalid={username.length > 0 && username.length < 3 ? 'true' : 'false'}
             />
-            <div 
-              id="username-help" 
+            <div
+              id="username-help"
               className="sr-only"
             >
-              Entrez un nom d'utilisateur entre 3 et 24 caractères pour rejoindre le chat
+              {t.messages.enterUsername}
             </div>
           </div>
           <button
@@ -81,13 +100,13 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onJoin }) => {
             disabled={username.length < 3}
             aria-describedby="join-button-help"
           >
-            Rejoindre la Commune !
+            {t.welcome.connect}
           </button>
-          <div 
-            id="join-button-help" 
+          <div
+            id="join-button-help"
             className="sr-only"
           >
-            Cliquez pour rejoindre le chat avec le nom d'utilisateur saisi
+            {t.messages.clickToJoinChat}
           </div>
         </form>
       </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Copy, Check } from 'lucide-react';
+import { useI18nContext } from '../contexts/I18nContext';
 
 interface TranslationModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export const TranslationModal: React.FC<TranslationModalProps> = ({
   targetLanguage,
   sourceLanguage
 }) => {
+  const { t } = useI18nContext();
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -32,7 +34,7 @@ export const TranslationModal: React.FC<TranslationModalProps> = ({
       await navigator.clipboard.writeText(translatedText);
       setCopied(true);
     } catch (error) {
-      console.error('Erreur lors de la copie:', error);
+      console.error(t.messages.copyError, error);
     }
   };
 
@@ -108,7 +110,7 @@ export const TranslationModal: React.FC<TranslationModalProps> = ({
               onClick={onClose}
               className="px-4 py-2 bg-red-700 text-white rounded hover:bg-red-600 transition-colors font-mono border-2 border-white"
             >
-              Fermer
+              {t.translation.close}
             </button>
           </div>
         </div>

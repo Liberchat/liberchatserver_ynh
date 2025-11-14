@@ -55,6 +55,15 @@
 - **🎛️ Paramètres visuels** : Interface claire avec statut du service et bouton de test de connexion
 - **📝 Messages d'état** : Indicateurs visuels pour "en cours", "disponible", "indisponible"
 
+### 🌍 Interface multilingue complète
+
+- **🗣️ Traduction de l'interface** : Toute l'application est maintenant disponible en 11 langues (Français, Anglais, Espagnol, Allemand, Italien, Portugais, Russe, Chinois, Japonais, Arabe, Espéranto)
+- **🎛️ Sélecteur de langue** : Bouton 🌍 dans l'en-tête pour changer la langue de l'interface instantanément
+- **💾 Sauvegarde automatique** : La langue choisie est sauvegardée localement et restaurée à chaque connexion
+- **🎨 Cohérence visuelle** : Tous les éléments de l'interface (boutons, menus, messages, paramètres) sont traduits
+- **♿ Accessibilité multilingue** : Les paramètres d'accessibilité et les thèmes sont traduits dans toutes les langues
+- **⚑ Terminologie adaptée** : Respect de la philosophie anarchiste dans toutes les traductions ("compagnons", "commune", "traduction libre")
+
 ---
 
 ## 🆕 Nouveautés de la version 6.6

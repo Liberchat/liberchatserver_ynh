@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Languages, Loader2 } from 'lucide-react';
 import { translationService, TranslationLanguage } from '../services/translationService';
+import { useI18nContext } from '../contexts/I18nContext';
 
 interface TranslationButtonProps {
   text: string;
@@ -15,6 +16,7 @@ export const TranslationButton: React.FC<TranslationButtonProps> = ({
   className = '',
   variant = 'button'
 }) => {
+  const { t } = useI18nContext();
   const [isTranslating, setIsTranslating] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [supportedLanguages, setSupportedLanguages] = useState<TranslationLanguage[]>([]);
@@ -35,7 +37,7 @@ export const TranslationButton: React.FC<TranslationButtonProps> = ({
     } catch (error) {
       console.error('Erreur de traduction:', error);
       // Afficher le texte original avec une indication d'erreur
-      onTranslation(`${text} [Traduction indisponible]`, targetLanguage);
+      onTranslation(`${text} [${t.messages.translationUnavailable}]`, targetLanguage);
     } finally {
       setIsTranslating(false);
     }
