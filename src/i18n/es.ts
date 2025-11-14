@@ -63,7 +63,9 @@ export const es: Translation = {
     original: "Texto original",
     copy: "Copiar",
     copied: "Copiado",
-    close: "Cerrar"
+    close: "Cerrar",
+    messagesTranslatedIn: "⚑ Mensajes traducidos a",
+    translationDisabled: "⚑ Traducción desactivada"
   },
   
   accessibility: {
@@ -157,16 +159,16 @@ export const es: Translation = {
   },
   
   languages: {
-    fr: "Français",
-    en: "English",
+    fr: "Francés",
+    en: "Inglés",
     es: "Español",
-    de: "Deutsch",
+    de: "Alemán",
     it: "Italiano",
-    pt: "Português",
-    ru: "Русский",
-    zh: "中文",
-    ja: "日本語",
-    ar: "العربية",
+    pt: "Portugués",
+    ru: "Ruso",
+    zh: "Chino",
+    ja: "Japonés",
+    ar: "Árabe",
     eo: "Esperanto"
   },
 

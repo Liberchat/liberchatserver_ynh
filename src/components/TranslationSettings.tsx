@@ -128,8 +128,8 @@ export const TranslationSettings: React.FC<TranslationSettingsProps> = ({
           <div className="text-xs text-red-300 font-mono space-y-1">
             <div>
               {enabled 
-                ? `⚑ Messages traduits en ${languages.find(l => l.code === targetLanguage)?.name || targetLanguage}`
-                : '⚑ Traduction désactivée'
+                ? `${t.translation.messagesTranslatedIn} ${t.languages[targetLanguage as keyof typeof t.languages] || targetLanguage}`
+                : t.translation.translationDisabled
               }
             </div>
             <div className="flex items-center justify-between">

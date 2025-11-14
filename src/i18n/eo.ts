@@ -63,7 +63,9 @@ export const eo: Translation = {
     original: "Originala teksto",
     copy: "Kopii",
     copied: "Kopiita",
-    close: "Fermi"
+    close: "Fermi",
+    messagesTranslatedIn: "⚑ Mesaĝoj tradukitaj al",
+    translationDisabled: "⚑ Traduko malŝaltita"
   },
   
   accessibility: {
@@ -157,16 +159,16 @@ export const eo: Translation = {
   },
   
   languages: {
-    fr: "Français",
-    en: "English",
-    es: "Español",
-    de: "Deutsch",
-    it: "Italiano",
-    pt: "Português",
-    ru: "Русский",
-    zh: "中文",
-    ja: "日本語",
-    ar: "العربية",
+    fr: "Franca",
+    en: "Angla",
+    es: "Hispana",
+    de: "Germana",
+    it: "Itala",
+    pt: "Portugala",
+    ru: "Rusa",
+    zh: "Ĉina",
+    ja: "Japana",
+    ar: "Araba",
     eo: "Esperanto"
   },
 
