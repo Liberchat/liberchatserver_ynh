@@ -63,9 +63,7 @@ if (localDomains.length > 0) {
 defaultCsp.connectSrc.push('https://libretranslate.unionlibertaireanarchiste.org');
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: defaultCsp
-    }
+    contentSecurityPolicy: false
   })
 );
 
