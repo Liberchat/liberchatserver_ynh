@@ -31,12 +31,12 @@ const getOriginFromRequest = (req) => {
   return host ? `${protocol}://${host}` : null;
 };
 const defaultCsp = {
-  defaultSrc: ["'self'"],
+  defaultSrc: ["'self'", "https:", "data:", "blob:"],
   mediaSrc: ["'self'", "data:", "blob:"],
   imgSrc: ["'self'", "data:", "blob:", "https://cdn.jsdelivr.net", "https://unpkg.com", "https://emoji-cdn.jsdelivr.net", "https://cdn.jsdelivr.net/npm/emoji-picker-react@*"],
   scriptSrc: ["'self'", "'unsafe-eval'"],
   styleSrc: ["'self'", "'unsafe-inline'"],
-  connectSrc: ["'self'", "ws://localhost:3000", "wss://liberchat-3-0-1.onrender.com", "wss://liberchat.onrender.com", "wss://*", "ws://*"],
+  connectSrc: ["'self'", "https:", "wss:", "ws:", "ws://localhost:3000", "wss://liberchat-3-0-1.onrender.com", "wss://liberchat.onrender.com"],
   frameSrc: ["*"]
 };
 defaultCsp.workerSrc = ["'self'"];
