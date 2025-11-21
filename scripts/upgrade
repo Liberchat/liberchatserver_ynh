@@ -120,9 +120,17 @@ pushd "$install_dir"
 	# Force clean install to fix ARM64 rollup issues
 	if ! ynh_exec_as $app env PATH="/usr/local/bin:$PATH" npm ci --production=false --legacy-peer-deps --no-audit --no-fund --ignore-engines 2>/dev/null; then
 		# Fallback to regular install if ci fails
+		ynh_print_info "npm ci failed, trying npm install..."
 		if ! ynh_exec_as $app env PATH="/usr/local/bin:$PATH" npm install --production=false --legacy-peer-deps --no-audit --no-fund --ignore-engines; then
 			ynh_die --message="Failed to install npm dependencies. Check Node.js version and dependencies."
 		fi
+	fi
+	
+	# Verify critical dependencies are installed
+	ynh_print_info "Verifying critical dependencies..."
+	if ! ynh_exec_as $app npm list dotenv >/dev/null 2>&1; then
+		ynh_print_info "dotenv missing, installing manually..."
+		ynh_exec_as $app env PATH="/usr/local/bin:$PATH" npm install dotenv@^16.4.5
 	fi
 	
 	# Run postinstall if needed
