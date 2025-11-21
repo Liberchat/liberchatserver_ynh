@@ -18,6 +18,17 @@ ynh_script_progression --message="Removing NGINX web server configuration..." --
 ynh_remove_nginx_config
 
 #=================================================
+# RESTORE YUNOHOST CSP
+#=================================================
+ynh_script_progression --message="Restoring original YunoHost CSP..." --weight=1
+
+# Restore original security config if backup exists
+if [ -f "/etc/nginx/conf.d/security.conf.inc.backup" ]; then
+    mv /etc/nginx/conf.d/security.conf.inc.backup /etc/nginx/conf.d/security.conf.inc
+    systemctl reload nginx
+fi
+
+#=================================================
 # END OF SCRIPT
 #=================================================
 ynh_script_progression --message="Removal of $app completed" --last

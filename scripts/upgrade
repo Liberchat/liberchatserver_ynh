@@ -147,6 +147,22 @@ ynh_add_nginx_config
 ynh_add_systemd_config
 
 #=================================================
+# FIX YUNOHOST CSP FOR WEBSOCKETS
+#=================================================
+ynh_script_progression --message="Fixing YunoHost CSP for WebSocket support..." --weight=1
+
+# Backup original security config if not already done
+if [ ! -f "/etc/nginx/conf.d/security.conf.inc.backup" ]; then
+    cp /etc/nginx/conf.d/security.conf.inc /etc/nginx/conf.d/security.conf.inc.backup
+fi
+
+# Add connect-src to CSP to allow WebSocket connections (only if not already present)
+if ! grep -q "connect-src" /etc/nginx/conf.d/security.conf.inc; then
+    sed -i 's/default-src https: data: blob:/default-src https: data: blob:; connect-src '\''self'\'' https: wss: ws:/g' /etc/nginx/conf.d/security.conf.inc
+    systemctl reload nginx
+fi
+
+#=================================================
 # START SYSTEMD SERVICE
 #=================================================
 ynh_script_progression --message="Starting a systemd service..." --weight=1

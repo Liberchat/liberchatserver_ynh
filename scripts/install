@@ -49,6 +49,22 @@ ynh_add_systemd_config
 yunohost service add $app --description="Liberchat chat application"
 
 #=================================================
+# FIX YUNOHOST CSP FOR WEBSOCKETS
+#=================================================
+ynh_script_progression --message="Fixing YunoHost CSP for WebSocket support..." --weight=1
+
+# Backup original security config
+if [ ! -f "/etc/nginx/conf.d/security.conf.inc.backup" ]; then
+    cp /etc/nginx/conf.d/security.conf.inc /etc/nginx/conf.d/security.conf.inc.backup
+fi
+
+# Add connect-src to CSP to allow WebSocket connections
+sed -i 's/default-src https: data: blob:/default-src https: data: blob:; connect-src '\''self'\'' https: wss: ws:/g' /etc/nginx/conf.d/security.conf.inc
+
+# Reload nginx to apply changes
+systemctl reload nginx
+
+#=================================================
 # APP INITIAL CONFIGURATION
 #=================================================
 ynh_script_progression --message="Adding app's configuration..." --weight=1
