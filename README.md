@@ -446,6 +446,22 @@ sudo yunohost app upgrade liberchat --no-safety-backup -u https://github.com/Lib
 
 Cette commande force la mise à jour sans créer de backup de sécurité.
 
+### 🔧 Patch automatique pour les connexions WebSocket
+
+**Important :** Cette version inclut un patch automatique qui corrige un problème de Content Security Policy (CSP) de YunoHost qui bloquait les connexions WebSocket.
+
+**Ce qui est corrigé automatiquement :**
+- Modification du fichier `/etc/nginx/conf.d/security.conf.inc` pour ajouter `connect-src 'self' https: wss: ws:` au CSP
+- Sauvegarde automatique de la configuration originale
+- Restauration automatique lors de la désinstallation
+
+**Si vous avez des problèmes de connexion WebSocket :**
+1. Vérifiez que la mise à jour s'est bien déroulée
+2. Redémarrez nginx : `sudo systemctl reload nginx`
+3. Vérifiez les logs : `sudo journalctl -u liberchat -f`
+
+**Note :** Ce patch est nécessaire suite à une mise à jour de YunoHost qui a rendu le CSP plus restrictif, bloquant les connexions WebSocket essentielles au fonctionnement du chat.
+
 ## Documentation et ressources
 
 - Site officiel de l'application : <https://liberchat-3-0-1.onrender.com>
