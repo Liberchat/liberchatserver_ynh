@@ -342,9 +342,27 @@ Pour activer le mode light :
 
 Liberchat est une application de chat libre et décentralisée qui privilégie la confidentialité et la sécurité.
 
-**Version livrée :** 6.1.21~ynh1
+**Version livrée :** 6.7.1~ynh1
 
 **Démo :** https://liberchat-3-0-1.onrender.com
+
+## 🆕 Nouveautés version 6.7.1 (21 novembre 2025)
+
+### 🔧 Patch automatique WebSocket
+- **Correction automatique du CSP YunoHost** : Patch intégré qui corrige automatiquement le Content Security Policy de YunoHost pour autoriser les connexions WebSocket
+- **Installation sans intervention** : Plus besoin de configuration manuelle, le patch s'applique automatiquement lors de l'installation
+- **Sauvegarde et restauration** : Sauvegarde automatique de la configuration originale et restauration lors de la désinstallation
+- **Support multi-domaines** : Fonctionne sur n'importe quel domaine configuré dans YunoHost
+
+### 🛡️ Sécurité améliorée
+- **CSP dynamique** : Content Security Policy qui s'adapte automatiquement au domaine d'installation
+- **CORS intelligent** : Configuration CORS automatique pour le domaine utilisé
+- **Compatibilité YunoHost** : Résolution des conflits avec les mises à jour récentes de YunoHost
+
+### 📚 Documentation enrichie
+- **Guide de dépannage** : Instructions détaillées pour résoudre les problèmes de connexion WebSocket
+- **Installation multi-domaines** : Documentation complète pour installer sur différents domaines
+- **Notes techniques** : Explication du patch et de son fonctionnement
 
 ## 🆕 Nouveautés version 6.1.21 (24 août 2025)
 
