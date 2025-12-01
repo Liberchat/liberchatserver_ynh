@@ -29,11 +29,11 @@
 - **🦀 Rust + WebAssembly** : Module crypto compilé en WASM pour des performances maximales
 - **🔐 Chiffrement renforcé** : Algorithmes résistants aux attaques quantiques
 - **🛡️ Obfuscation avancée** : Protection multi-couches du code JavaScript
-- **⚡ Performance native** : Vitesse proche du code natif grâce à WebAssembly
+- *    Performance native** : Vitesse proche du code natif grâce à WebAssembly
 
 ### 🔧 Installation automatique Rust/wasm-pack
 
-- **🚀 Installation système** : Rust et wasm-pack installés automatiquement dans `/opt/`
+- **  Installation système** : Rust et wasm-pack installés automatiquement dans `/opt/`
 - **🔄 Configuration toolchain** : Toolchain stable configuré automatiquement
 - **📦 Build WASM** : Compilation automatique du module crypto lors de l'installation
 - **♻️ Réutilisable** : Installation partagée entre toutes les instances
@@ -43,7 +43,7 @@
 - **⚛️ Exclusion intelligente** : React exclu de l'obfuscation pour éviter les erreurs
 - **🔒 Noms réservés** : Protection des propriétés internes React (`ReactCurrentOwner`)
 - **✨ Build stable** : Correction de l'erreur "Cannot read properties of undefined"
-- **🎯 Obfuscation ciblée** : Seul le code applicatif est obfusqué, pas les dépendances
+- **   Obfuscation ciblée** : Seul le code applicatif est obfusqué, pas les dépendances
 
 ---
 
