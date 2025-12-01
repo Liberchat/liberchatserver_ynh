@@ -24,7 +24,7 @@
 
 ## 🆕 Nouveautés de la version 6.8.0
 
-### ⚛️ Module WebAssembly de cryptographie quantique-résistante
+###  Module WebAssembly de cryptographie quantique-résistante
 
 - **🦀 Rust + WebAssembly** : Module crypto compilé en WASM pour des performances maximales
 - **🔐 Chiffrement renforcé** : Algorithmes résistants aux attaques quantiques
