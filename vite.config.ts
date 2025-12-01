@@ -10,7 +10,7 @@ export default defineConfig({
     react(),
     obfuscator({
       include: ['src/**/*.tsx', 'src/**/*.ts'],
-      exclude: [/node_modules/],
+      exclude: [/node_modules/, /react/, /react-dom/, /react-jsx-runtime/],
       apply: 'build', // Seulement en production
       options: {
         compact: true,
@@ -96,8 +96,10 @@ export default defineConfig({
         eval: true,
         keep_classnames: false,
         keep_fnames: false,
+        reserved: ['React', 'ReactDOM', 'ReactCurrentOwner'],
         properties: {
-          regex: /^_/ // Renomme les propriétés commençant par _
+          regex: /^_/, // Renomme les propriétés commençant par _
+          reserved: ['ReactCurrentOwner', '__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED']
         }
       },
       format: {
