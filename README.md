@@ -10,7 +10,7 @@
 [![Logiciel Libre](https://img.shields.io/badge/Logiciel_Libre-100%25-black?style=for-the-badge)](#)
 [![Anarcho-syndicaliste](https://img.shields.io/badge/Anarcho--syndicaliste-Noir_&_Rouge-black?style=for-the-badge&labelColor=ff2800)](#)
 
-[![Version](https://img.shields.io/badge/Version-6.8.0--beta-red?style=for-the-badge)](#)
+[![Version](https://img.shields.io/badge/Version-6.9.0--beta-red?style=for-the-badge)](#)
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white)](https://socket.io/)
@@ -19,6 +19,31 @@
 **Un chat en temps réel, autogéré, horizontal, pour la Commune numérique.**
 
 [📝 Documentation](#-documentation) | [🤝 Contribuer](#-contribution) | [📧 Contact](#-contact) | [🏠 YunoHost](https://github.com/Liberchat/liberchatserver_ynh)
+
+---
+
+## 🆕 Nouveautés de la version 6.9.0-beta
+
+### ⚛️ Module WebAssembly de cryptographie quantique-résistante
+
+- **🦀 Rust + WebAssembly** : Module crypto compilé en WASM pour des performances maximales
+- **🔐 Chiffrement renforcé** : Algorithmes résistants aux attaques quantiques
+- **🛡️ Obfuscation avancée** : Protection multi-couches du code JavaScript
+- **⚡ Performance native** : Vitesse proche du code natif grâce à WebAssembly
+
+### 🔧 Installation automatique Rust/wasm-pack
+
+- **🚀 Installation système** : Rust et wasm-pack installés automatiquement dans `/opt/`
+- **🔄 Configuration toolchain** : Toolchain stable configuré automatiquement
+- **📦 Build WASM** : Compilation automatique du module crypto lors de l'installation
+- **♻️ Réutilisable** : Installation partagée entre toutes les instances
+
+### 🛡️ Protection React améliorée
+
+- **⚛️ Exclusion intelligente** : React exclu de l'obfuscation pour éviter les erreurs
+- **🔒 Noms réservés** : Protection des propriétés internes React (`ReactCurrentOwner`)
+- **✨ Build stable** : Correction de l'erreur "Cannot read properties of undefined"
+- **🎯 Obfuscation ciblée** : Seul le code applicatif est obfusqué, pas les dépendances
 
 ---
 
@@ -369,7 +394,7 @@ Pour activer le mode light :
 
 Liberchat est une application de chat libre et décentralisée qui privilégie la confidentialité et la sécurité.
 
-**Version livrée :** 6.7.1~ynh1
+**Version livrée :** 6.9.0~ynh1
 
 **Démo :** https://liberchat-3-0-1.onrender.com
 
