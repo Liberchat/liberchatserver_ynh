@@ -1,12 +1,13 @@
 {
   "name": "video-chat-app",
   "private": true,
-  "version": "6.8.0-beta",
+  "version": "6.9.0-beta",
   "type": "module",
   "scripts": {
     "dev": "concurrently -n \"frontend,backend\" -c \"blue,green\" \"vite\" \"node server.js\"",
-    "build": "vite build",
-    "build:obfuscated": "NODE_ENV=production vite build",
+    "build:wasm": "wasm-pack build --target web --release crypto-wasm",
+    "build": "npm run build:wasm && vite build",
+    "build:obfuscated": "npm run build:wasm && NODE_ENV=production vite build",
     "build:esbuild": "node ./build.js",
     "start": "node server.js",
     "lint": "eslint .",

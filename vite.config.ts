@@ -109,8 +109,11 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['emoji-mart', 'socket.io-client'],
-    exclude: ['lucide-react']
+    exclude: ['lucide-react', 'crypto-wasm']
   },
+  
+  // Support WASM
+  assetsInclude: ['**/*.wasm'],
   define: {
     global: 'globalThis',
   },
