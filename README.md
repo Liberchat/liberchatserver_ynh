@@ -44,18 +44,6 @@
   - Identifier renaming hexadécimal
   - Transform object keys
 
-- **⏱️ Temps d'extraction de la clé** :
-  - Avant : 10 secondes
-  - Maintenant : 4-8 heures (expert)
-
-- **📊 Niveau de sécurité** : 9/10 🔐
-
-**Documentation complète :**
-- `OBFUSCATION_IMPROVEMENTS.md` - Détails techniques
-- `BUILD_OBFUSCATION.md` - Configuration build
-- `PROTECTION_COMPLETE.md` - Vue d'ensemble
-- `YUNOHOST_OBFUSCATION.md` - Guide YunoHost
-
 ---
 
 ## 🆕 Nouveautés de la version 6.7
