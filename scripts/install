@@ -24,13 +24,17 @@ npm install -g patch-package
 # Install Rust and wasm-pack for WebAssembly crypto module
 if ! command -v rustc &>/dev/null; then
     ynh_print_info "Installing Rust..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
-    source "$HOME/.cargo/env"
+    export CARGO_HOME="/opt/cargo"
+    export RUSTUP_HOME="/opt/rustup"
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --no-modify-path
+    export PATH="$CARGO_HOME/bin:$PATH"
 fi
 
 if ! command -v wasm-pack &>/dev/null; then
     ynh_print_info "Installing wasm-pack..."
-    curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+    export CARGO_HOME="/opt/cargo"
+    export PATH="$CARGO_HOME/bin:$PATH"
+    curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- --force
 fi
 
 #=================================================
@@ -113,9 +117,11 @@ pushd "$install_dir"
 	
 	# Build the application with obfuscation
 	ynh_print_info "Building the application with obfuscation..."
-	if ! ynh_exec_as $app env NODE_ENV=production YNH_APP_ARG_PATH="$path" PATH="/usr/local/bin:$PATH" npm run build:obfuscated; then
+	export CARGO_HOME="/opt/cargo"
+	export PATH="/opt/cargo/bin:/usr/local/bin:$PATH"
+	if ! ynh_exec_as $app env NODE_ENV=production YNH_APP_ARG_PATH="$path" PATH="/opt/cargo/bin:/usr/local/bin:$PATH" CARGO_HOME="/opt/cargo" npm run build:obfuscated; then
 		ynh_print_info "Obfuscated build failed, trying standard build..."
-		if ! ynh_exec_as $app env NODE_ENV=production YNH_APP_ARG_PATH="$path" PATH="/usr/local/bin:$PATH" npm run build; then
+		if ! ynh_exec_as $app env NODE_ENV=production YNH_APP_ARG_PATH="$path" PATH="/opt/cargo/bin:/usr/local/bin:$PATH" npm run build; then
 			ynh_die --message="Failed to build the application. Check build logs."
 		fi
 	fi
