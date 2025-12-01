@@ -22,7 +22,7 @@
 
 ---
 
-## 🆕 Nouveautés de la version 6.9.0-beta
+## 🆕 Nouveautés de la version 6.8.0
 
 ### ⚛️ Module WebAssembly de cryptographie quantique-résistante
 
@@ -46,29 +46,6 @@
 - **   Obfuscation ciblée** : Seul le code applicatif est obfusqué, pas les dépendances
 
 ---
-
-## 🆕 Nouveautés de la version 6.8.0-beta
-
-### 🔐 Protection avancée du code JavaScript
-
-- **🛡️ Obfuscation multi-couches** : 3 niveaux de protection du code
-  - Obfuscation du code source (12 couches)
-  - Minification Terser agressive
-  - Obfuscation JavaScript Obfuscator professionnelle
-
-- **🚫 Anti-debugging actif** : Détection et blocage des DevTools
-  - Détection de console ouverte
-  - Corruption de la clé si debugging détecté
-  - Boucle infinie si DevTools ouvert
-  - Self defending code
-
-- **🔒 Code illisible en production** : 
-  - Control flow flattening
-  - Dead code injection (40%)
-  - String encoding RC4
-  - Identifier renaming hexadécimal
-  - Transform object keys
-
 ---
 
 ## 🆕 Nouveautés de la version 6.7
