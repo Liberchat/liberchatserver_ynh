@@ -1,4 +1,4 @@
-## 🔐 Chat Chiffré de Bout en Bout - Niveau Militaire
+## 🔐 Chat Chiffré de Bout en Bout 
 
 **LiberChat v6.9.0** est une application de messagerie instantanée ultra-sécurisée avec chiffrement de bout en bout de niveau.
 
@@ -34,18 +34,6 @@
 - 📦 **Messages 15% plus compacts**
 - 🔋 **Optimisé pour mobile**
 - 🌐 **Support multi-domaines** (Tor, IP locales, domaines classiques)
-
-### 🔒 Comparaison avec d'autres systèmes
-
-
-| Application | Score | Technologie |
-|-------------|-------|-------------|
-| **LiberChat v6.9** | 9.8/10 | AES-GCM + X25519 + HKDF |
-  **Signal** | 8/10 | Double Ratchet + X3DH |
-  **LiberChat v6.8** | 7/10 | AES-CTR + SHA-256 |
-| **WhatsApp** | 6/10 | Signal Protocol |
-| **Discord** | 6/10 | TLS uniquement |
-| **Telegram (secret)** | 4/10 | MTProto 2.0 |
 
 
 ### 📱 Interface Moderne
