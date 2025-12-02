@@ -16,27 +16,23 @@
 
 Liberchat is a free and decentralized chat application that prioritizes privacy and security.
 
-**Shipped version:** 6.1.21~ynh1
+**Shipped version:** 6.9.1~ynh1
 
 **Demo:** https://liberchat-3-0-1.onrender.com
 
-## 🆕 What's new in version 6.1.21 (August 24, 2025)
+## 🆕 What's new in version 6.9.1 (December 2025)
 
-### 🔧 Important fixes
-- **Configuration panel**: Fixed "unbound variable" errors in configuration scripts
-- **Environment variables**: All config panel features are now actually implemented
+### � IBug fixes
+- **Emoji picker**: Fixed reaction emoji picker (unified emoji-mart usage)
+- **Event handling**: Improved event handling on emoji picker
+- **Mobile compatibility**: Better mobile support for reactions
 
-### ✨ New operational features
-- **MAX_MESSAGES**: Real control of messages kept in memory (default: 100)
-- **MAX_FILE_SIZE**: Effective file upload size limitation (default: 50MB)
-- **PING_TIMEOUT**: Socket.IO timeout configuration (default: 60000ms)
-- **PING_INTERVAL**: Socket.IO ping interval configuration (default: 25000ms)
-- **ALLOWED_DOMAINS**: CORS allowed domains management
-
-### 🐛 Bug fixes
-- Configuration variables with default values to avoid errors
-- Environment variables display in startup logs
-- Dynamic error messages for file sizes
+### 🔐 Security (v6.9.0)
+- **AES-256-GCM** with integrated authentication
+- **Perfect Forward Secrecy** (X25519 Diffie-Hellman)
+- **Automatic key rotation** (30 minutes)
+- **HKDF multi-layer derivation**
+- **4x faster performance** (WebAssembly)
 
 ## Features
 

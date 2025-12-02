@@ -12,7 +12,7 @@
 [![Logiciel Libre](https://img.shields.io/badge/Logiciel_Libre-100%25-black?style=for-the-badge)](#)
 [![Anarcho-syndicaliste](https://img.shields.io/badge/Anarcho--syndicaliste-Noir_&_Rouge-black?style=for-the-badge&labelColor=ff2800)](#)
 
-[![Version](https://img.shields.io/badge/Version-6.9.0-red?style=for-the-badge)](#)
+[![Version](https://img.shields.io/badge/Version-6.9.1-red?style=for-the-badge)](#)
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white)](https://socket.io/)
@@ -43,7 +43,7 @@ LiberChat est une application de chat en temps réel qui privilégie la confiden
 
 ---
 
-## Nouveautés v6.9.0
+## Nouveautés v6.9.1
 
 ### 🔐 Système de Cryptage v2.0
 
@@ -371,14 +371,21 @@ Ce projet est sous licence MIT. Voir [LICENSE](./LICENSE) pour plus de détails.
 
 **🔐 Chiffrez en toute sécurité avec LiberChat 🔐**
 
-Version 6.9.0 |
+Version 6.9.1
 
 </div>
-
 
 ---
 
 ## 📜 Historique des Versions
+
+### Version 6.9.1 (Décembre 2025)
+
+**Correction du sélecteur d'emojis**
+
+- 🐛 Fix du picker d'emojis pour les réactions (utilisation de emoji-mart unifié)
+- 🔧 Amélioration de la gestion des événements sur le picker
+- 📱 Meilleure compatibilité mobile
 
 ### Version 6.9.0 (Décembre 2025) - "Fortress"
 
