@@ -37,13 +37,16 @@
 
 ### 🔒 Comparaison avec d'autres systèmes
 
+
 | Application | Score | Technologie |
 |-------------|-------|-------------|
-| **Signal** | 9.9/10 | Double Ratchet + X3DH |
 | **LiberChat v6.9** | 9.8/10 | AES-GCM + X25519 + HKDF |
-| **WhatsApp** | 9.5/10 | Signal Protocol |
-| **Telegram (secret)** | 9/10 | MTProto 2.0 |
+  **Signal** | 8/10 | Double Ratchet + X3DH |
+  **LiberChat v6.8** | 7/10 | AES-CTR + SHA-256 |
+| **WhatsApp** | 6/10 | Signal Protocol |
 | **Discord** | 6/10 | TLS uniquement |
+| **Telegram (secret)** | 4/10 | MTProto 2.0 |
+
 
 ### 📱 Interface Moderne
 
