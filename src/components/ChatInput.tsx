@@ -145,14 +145,17 @@ const ChatInput: React.FC<ChatInputProps> = ({
         return;
       }
     } else if (isElectron) {
+      // Electron supporte généralement webm/opus (basé sur Chromium)
       if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
         mimeType = 'audio/webm;codecs=opus';
+      } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+        mimeType = 'audio/webm';
       } else if (MediaRecorder.isTypeSupported('audio/wav')) {
         mimeType = 'audio/wav';
       } else {
+        // Fallback : essayer sans spécifier de mimeType (laisse le navigateur choisir)
         mimeType = '';
-        alert('Aucun format audio compatible trouvé pour Electron.');
-        return;
+        console.warn('Aucun format audio spécifique supporté, utilisation du format par défaut');
       }
     } else if (isFirefox && MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
       mimeType = 'audio/ogg;codecs=opus';

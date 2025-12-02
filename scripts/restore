@@ -29,9 +29,24 @@ yunohost service add $app --description="Liberchat chat application"
 #=================================================
 ynh_script_progression --message="Reinstalling dependencies..." --weight=10
 
+# Ensure Rust and wasm-pack are available
+export CARGO_HOME="/opt/cargo"
+export RUSTUP_HOME="/opt/rustup"
+export PATH="/opt/cargo/bin:$PATH"
+
+if ! command -v rustc &>/dev/null; then
+    ynh_print_info "Installing Rust..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --no-modify-path
+fi
+
+if ! command -v wasm-pack &>/dev/null; then
+    ynh_print_info "Installing wasm-pack..."
+    curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- --force
+fi
+
 pushd "$install_dir"
-	ynh_exec_warn_less ynh_exec_as $app npm install --production=false
-	ynh_exec_warn_less ynh_exec_as $app env YNH_APP_ARG_PATH="$path" npm run build
+	ynh_exec_warn_less ynh_exec_as $app npm install --production=false --legacy-peer-deps
+	ynh_exec_warn_less ynh_exec_as $app env NODE_ENV=production YNH_APP_ARG_PATH="$path" PATH="/opt/cargo/bin:/usr/local/bin:$PATH" CARGO_HOME="/opt/cargo" RUSTUP_HOME="/opt/rustup" npm run build
 popd
 
 #=================================================

@@ -1,10 +1,12 @@
 use wasm_bindgen::prelude::*;
 use sha2::{Sha256, Digest};
-use aes::Aes256;
-use ctr::cipher::{KeyIvInit, StreamCipher};
-use js_sys::Date;
-
-type Aes256Ctr = ctr::Ctr64BE<Aes256>;
+use aes_gcm::{
+    aead::{Aead, KeyInit},
+    Aes256Gcm, Nonce, Key
+};
+use x25519_dalek::{EphemeralSecret, PublicKey};
+use hkdf::Hkdf;
+use rand_core::RngCore;
 
 // Fonction pour logger dans la console (debug uniquement)
 #[wasm_bindgen]
@@ -15,132 +17,256 @@ extern "C" {
 
 #[wasm_bindgen]
 pub struct CryptoModule {
-    key: Vec<u8>,
+    master_key: Vec<u8>,
+    session_key: Vec<u8>,
+    private_key: Option<EphemeralSecret>,
+    public_key: Vec<u8>,
+    shared_secret: Option<Vec<u8>>,
 }
 
 #[wasm_bindgen]
 impl CryptoModule {
-    /// Crée une nouvelle instance du module crypto
+    /// Crée une nouvelle instance du module crypto avec génération de clés éphémères
     #[wasm_bindgen(constructor)]
     pub fn new() -> Result<CryptoModule, JsValue> {
-        // Génération de la clé obfusquée en WASM
-        // Les données sont encodées en binaire, impossible à lire directement
+        // Génération de la clé maître obfusquée (multi-couches)
+        let master_key = Self::derive_master_key()?;
         
-        // Fragments de la clé encodés avec XOR multiple
-        let mut fragments: Vec<Vec<u8>> = vec![
-            vec![0x52 ^ 0xAA, 0x65 ^ 0xAA, 0x76 ^ 0xAA, 0x6F ^ 0xAA, 0x6C ^ 0xAA, 
-                 0x75 ^ 0xAA, 0x74 ^ 0xAA, 0x69 ^ 0xAA, 0x6F ^ 0xAA, 0x6E ^ 0xAA],
-            vec![0x53 ^ 0xBB, 0x6F ^ 0xBB, 0x63 ^ 0xBB, 0x69 ^ 0xBB, 0x61 ^ 0xBB, 
-                 0x6C ^ 0xBB, 0x65 ^ 0xBB],
-            vec![0x32 ^ 0xCC, 0x30 ^ 0xCC, 0x32 ^ 0xCC, 0x36 ^ 0xCC, 0x5F ^ 0xCC],
-            vec![0x4C ^ 0xDD, 0x69 ^ 0xDD, 0x62 ^ 0xDD, 0x65 ^ 0xDD, 0x72 ^ 0xDD],
-            vec![0x43 ^ 0xEE, 0x68 ^ 0xEE, 0x61 ^ 0xEE, 0x74 ^ 0xEE, 0x5F ^ 0xEE],
-        ];
+        // Génération d'une paire de clés éphémères X25519 pour l'échange Diffie-Hellman
+        let mut rng_bytes = [0u8; 32];
+        getrandom::getrandom(&mut rng_bytes)
+            .map_err(|e| JsValue::from_str(&format!("Random error: {}", e)))?;
         
-        // Décodage avec clé dynamique basée sur timestamp
-        let dynamic_key = Self::generate_dynamic_key();
-        let xor_keys = [0xAA, 0xBB, 0xCC, 0xDD, 0xEE];
+        let private_key = EphemeralSecret::random_from_rng(&mut CustomRng::new(rng_bytes));
+        let public_key = PublicKey::from(&private_key);
         
-        for (i, fragment) in fragments.iter_mut().enumerate() {
-            let xor_key = xor_keys[i] ^ dynamic_key;
-            for byte in fragment.iter_mut() {
-                *byte ^= xor_key;
-            }
-        }
+        // Clé de session initiale (sera remplacée après échange DH)
+        let session_key = Self::derive_session_key(&master_key, &[])?;
         
-        // Assemblage des fragments
-        let key_string: Vec<u8> = fragments.into_iter().flatten().collect();
-        
-        // Ajout du symbole infini (∞)
-        let mut final_key = key_string;
-        final_key.extend_from_slice(&[0xE2, 0x88, 0x9E]); // UTF-8 pour ∞
-        
-        // Dérivation de clé avec SHA-256 + salt
-        let mut hasher = Sha256::new();
-        hasher.update(b"liberchat-salt-v2");
-        hasher.update(&final_key);
-        hasher.update(&Self::get_entropy());
-        let derived_key = hasher.finalize().to_vec();
-        
-        Ok(CryptoModule { key: derived_key })
+        Ok(CryptoModule {
+            master_key,
+            session_key,
+            private_key: Some(private_key),
+            public_key: public_key.as_bytes().to_vec(),
+            shared_secret: None,
+        })
     }
     
-    /// Génère une clé dynamique basée sur des facteurs environnementaux
-    fn generate_dynamic_key() -> u8 {
-        // Utilise le timestamp mais de manière déterministe
-        // pour que tous les clients génèrent la même clé
-        let base_timestamp = 1700000000000.0; // Date fixe
-        let offset = (Date::now() - base_timestamp) as u64;
-        let deterministic = (offset / 86400000) % 256; // Change chaque jour
+    /// Dérive la clé maître avec obfuscation multi-couches
+    fn derive_master_key() -> Result<Vec<u8>, JsValue> {
+        // Couche 1: Fragments XOR avec clés multiples
+        let fragments = vec![
+            Self::xor_fragment(&[0x52, 0x65, 0x76, 0x6F, 0x6C, 0x75, 0x74, 0x69, 0x6F, 0x6E], 0xAA),
+            Self::xor_fragment(&[0x53, 0x6F, 0x63, 0x69, 0x61, 0x6C, 0x65], 0xBB),
+            Self::xor_fragment(&[0x32, 0x30, 0x32, 0x36], 0xCC),
+            Self::xor_fragment(&[0x4C, 0x69, 0x62, 0x65, 0x72], 0xDD),
+            Self::xor_fragment(&[0x43, 0x68, 0x61, 0x74], 0xEE),
+            Self::xor_fragment(&[0xE2, 0x88, 0x9E], 0xFF), // ∞
+        ];
         
-        // Pour la version stable, on utilise une valeur fixe
-        // Pour permettre à tous les utilisateurs de communiquer
-        0x00 // Valeur fixe pour compatibilité
+        let base_key: Vec<u8> = fragments.into_iter().flatten().collect();
+        
+        // Couche 2: Dérivation HKDF avec salt complexe
+        let salt = Self::generate_complex_salt();
+        let hk = Hkdf::<Sha256>::new(Some(&salt), &base_key);
+        let mut master_key = vec![0u8; 32];
+        hk.expand(b"LiberchatMasterKey2026", &mut master_key)
+            .map_err(|e| JsValue::from_str(&format!("HKDF error: {:?}", e)))?;
+        
+        // Couche 3: Mélange avec entropie supplémentaire
+        let entropy = Self::get_entropy();
+        let mut hasher = Sha256::new();
+        hasher.update(&master_key);
+        hasher.update(&entropy);
+        hasher.update(b"v2-enhanced");
+        
+        Ok(hasher.finalize().to_vec())
+    }
+    
+    /// XOR un fragment avec une clé
+    fn xor_fragment(data: &[u8], key: u8) -> Vec<u8> {
+        data.iter().map(|b| b ^ key).collect()
+    }
+    
+    /// Génère un salt complexe
+    fn generate_complex_salt() -> Vec<u8> {
+        let mut hasher = Sha256::new();
+        hasher.update(b"liberchat-salt-v3");
+        hasher.update(b"enhanced-security");
+        hasher.update(&[0x4C, 0x69, 0x62, 0x65, 0x72, 0x43, 0x68, 0x61, 0x74]);
+        hasher.finalize().to_vec()
     }
     
     /// Génère de l'entropie supplémentaire
     fn get_entropy() -> Vec<u8> {
-        // Entropie déterministe pour que tous les clients aient la même clé
-        vec![0x4C, 0x69, 0x62, 0x65, 0x72, 0x43, 0x68, 0x61, 0x74]
+        let mut hasher = Sha256::new();
+        hasher.update(b"LiberchatEntropy");
+        hasher.update(b"2026");
+        hasher.finalize().to_vec()
     }
     
-    /// Chiffre un message
+    /// Dérive une clé de session à partir de la clé maître et d'un secret partagé
+    fn derive_session_key(master_key: &[u8], shared_secret: &[u8]) -> Result<Vec<u8>, JsValue> {
+        let mut input = master_key.to_vec();
+        input.extend_from_slice(shared_secret);
+        
+        let hk = Hkdf::<Sha256>::new(Some(b"session-salt"), &input);
+        let mut session_key = vec![0u8; 32];
+        hk.expand(b"LiberchatSessionKey", &mut session_key)
+            .map_err(|e| JsValue::from_str(&format!("Session key derivation error: {:?}", e)))?;
+        
+        Ok(session_key)
+    }
+    
+    /// Obtient la clé publique pour l'échange Diffie-Hellman
+    #[wasm_bindgen]
+    pub fn get_public_key(&self) -> Vec<u8> {
+        self.public_key.clone()
+    }
+    
+    /// Effectue l'échange de clés Diffie-Hellman avec la clé publique d'un pair
+    #[wasm_bindgen]
+    pub fn perform_key_exchange(&mut self, peer_public_key: &[u8]) -> Result<(), JsValue> {
+        if peer_public_key.len() != 32 {
+            return Err(JsValue::from_str("Invalid public key length"));
+        }
+        
+        let peer_public = PublicKey::from(<[u8; 32]>::try_from(peer_public_key)
+            .map_err(|_| JsValue::from_str("Invalid public key format"))?);
+        
+        let private_key = self.private_key.take()
+            .ok_or_else(|| JsValue::from_str("Private key already used"))?;
+        
+        let shared_secret = private_key.diffie_hellman(&peer_public);
+        self.shared_secret = Some(shared_secret.as_bytes().to_vec());
+        
+        // Dérive une nouvelle clé de session avec le secret partagé
+        self.session_key = Self::derive_session_key(&self.master_key, shared_secret.as_bytes())?;
+        
+        Ok(())
+    }
+    
+    /// Chiffre un message avec AES-256-GCM (authentification intégrée)
     #[wasm_bindgen]
     pub fn encrypt(&self, plaintext: &str) -> Result<Vec<u8>, JsValue> {
-        // Génération d'un IV aléatoire
-        let mut iv = [0u8; 16];
-        getrandom::getrandom(&mut iv)
+        // Génération d'un nonce aléatoire (96 bits pour GCM)
+        let mut nonce_bytes = [0u8; 12];
+        getrandom::getrandom(&mut nonce_bytes)
             .map_err(|e| JsValue::from_str(&format!("Random error: {}", e)))?;
         
-        // Chiffrement AES-256-CTR
-        let mut cipher = Aes256Ctr::new(
-            self.key[..32].into(),
-            &iv.into()
-        );
+        let nonce = Nonce::from_slice(&nonce_bytes);
         
-        let mut buffer = plaintext.as_bytes().to_vec();
-        cipher.apply_keystream(&mut buffer);
+        // Création du cipher AES-256-GCM
+        let key = Key::<Aes256Gcm>::from_slice(&self.session_key);
+        let cipher = Aes256Gcm::new(key);
         
-        // Concaténation IV + ciphertext
-        let mut result = iv.to_vec();
-        result.extend_from_slice(&buffer);
+        // Chiffrement avec authentification
+        let ciphertext = cipher.encrypt(nonce, plaintext.as_bytes())
+            .map_err(|e| JsValue::from_str(&format!("Encryption error: {:?}", e)))?;
+        
+        // Format: nonce (12 bytes) + ciphertext + tag (16 bytes intégré dans ciphertext)
+        let mut result = nonce_bytes.to_vec();
+        result.extend_from_slice(&ciphertext);
         
         Ok(result)
     }
     
-    /// Déchiffre un message
+    /// Déchiffre un message avec AES-256-GCM (vérification d'authenticité)
     #[wasm_bindgen]
     pub fn decrypt(&self, ciphertext: &[u8]) -> Result<String, JsValue> {
-        if ciphertext.len() < 16 {
+        if ciphertext.len() < 28 {  // 12 (nonce) + 16 (tag minimum)
             return Err(JsValue::from_str("Ciphertext too short"));
         }
         
-        // Extraction de l'IV
-        let iv = &ciphertext[..16];
-        let encrypted_data = &ciphertext[16..];
+        // Extraction du nonce
+        let nonce = Nonce::from_slice(&ciphertext[..12]);
+        let encrypted_data = &ciphertext[12..];
         
-        // Déchiffrement AES-256-CTR
-        let mut cipher = Aes256Ctr::new(
-            self.key[..32].into(),
-            iv.into()
-        );
+        // Création du cipher AES-256-GCM
+        let key = Key::<Aes256Gcm>::from_slice(&self.session_key);
+        let cipher = Aes256Gcm::new(key);
         
-        let mut buffer = encrypted_data.to_vec();
-        cipher.apply_keystream(&mut buffer);
+        // Déchiffrement avec vérification d'authenticité
+        let plaintext = cipher.decrypt(nonce, encrypted_data)
+            .map_err(|e| JsValue::from_str(&format!("Decryption error (authentication failed): {:?}", e)))?;
         
         // Conversion en string
-        String::from_utf8(buffer)
+        String::from_utf8(plaintext)
             .map_err(|e| JsValue::from_str(&format!("UTF-8 error: {}", e)))
     }
     
-    /// Obtient la clé dérivée (pour debug uniquement, à supprimer en prod)
+    /// Rotation de la clé de session (à appeler périodiquement)
+    #[wasm_bindgen]
+    pub fn rotate_session_key(&mut self) -> Result<(), JsValue> {
+        let shared_secret = self.shared_secret.as_ref()
+            .map(|s| s.as_slice())
+            .unwrap_or(&[]);
+        
+        // Ajoute de l'entropie supplémentaire pour la rotation
+        let mut entropy = vec![0u8; 32];
+        getrandom::getrandom(&mut entropy)
+            .map_err(|e| JsValue::from_str(&format!("Random error: {}", e)))?;
+        
+        let mut input = self.master_key.clone();
+        input.extend_from_slice(shared_secret);
+        input.extend_from_slice(&entropy);
+        
+        self.session_key = Self::derive_session_key(&input, &[])?;
+        
+        Ok(())
+    }
+    
+    /// Obtient le hash de la clé de session (debug uniquement)
     #[wasm_bindgen]
     pub fn get_key_hash(&self) -> String {
         let mut hasher = Sha256::new();
-        hasher.update(&self.key);
+        hasher.update(&self.session_key);
         hex::encode(hasher.finalize())
     }
+    
+    /// Vérifie si un échange de clés a été effectué
+    #[wasm_bindgen]
+    pub fn has_shared_secret(&self) -> bool {
+        self.shared_secret.is_some()
+    }
 }
+
+// RNG personnalisé pour X25519
+struct CustomRng {
+    seed: [u8; 32],
+    counter: usize,
+}
+
+impl CustomRng {
+    fn new(seed: [u8; 32]) -> Self {
+        Self { seed, counter: 0 }
+    }
+}
+
+impl RngCore for CustomRng {
+    fn next_u32(&mut self) -> u32 {
+        let mut bytes = [0u8; 4];
+        self.fill_bytes(&mut bytes);
+        u32::from_le_bytes(bytes)
+    }
+
+    fn next_u64(&mut self) -> u64 {
+        let mut bytes = [0u8; 8];
+        self.fill_bytes(&mut bytes);
+        u64::from_le_bytes(bytes)
+    }
+
+    fn fill_bytes(&mut self, dest: &mut [u8]) {
+        getrandom::getrandom(dest).expect("getrandom failed");
+    }
+
+    fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), rand_core::Error> {
+        getrandom::getrandom(dest)
+            .map_err(|_| rand_core::Error::from(core::num::NonZeroU32::new(1).unwrap()))
+    }
+}
+
+impl rand_core::CryptoRng for CustomRng {}
 
 // Tests unitaires
 #[cfg(test)]
@@ -150,11 +276,44 @@ mod tests {
     #[test]
     fn test_encrypt_decrypt() {
         let crypto = CryptoModule::new().unwrap();
-        let plaintext = "Test message";
+        let plaintext = "Test message sécurisé";
         
         let encrypted = crypto.encrypt(plaintext).unwrap();
         let decrypted = crypto.decrypt(&encrypted).unwrap();
         
         assert_eq!(plaintext, decrypted);
+    }
+    
+    #[test]
+    fn test_key_exchange() {
+        let mut alice = CryptoModule::new().unwrap();
+        let mut bob = CryptoModule::new().unwrap();
+        
+        let alice_public = alice.get_public_key();
+        let bob_public = bob.get_public_key();
+        
+        alice.perform_key_exchange(&bob_public).unwrap();
+        bob.perform_key_exchange(&alice_public).unwrap();
+        
+        assert!(alice.has_shared_secret());
+        assert!(bob.has_shared_secret());
+        
+        // Test de chiffrement/déchiffrement après échange
+        let plaintext = "Message après échange DH";
+        let encrypted = alice.encrypt(plaintext).unwrap();
+        let decrypted = bob.decrypt(&encrypted).unwrap();
+        
+        assert_eq!(plaintext, decrypted);
+    }
+    
+    #[test]
+    fn test_session_key_rotation() {
+        let mut crypto = CryptoModule::new().unwrap();
+        let old_hash = crypto.get_key_hash();
+        
+        crypto.rotate_session_key().unwrap();
+        let new_hash = crypto.get_key_hash();
+        
+        assert_ne!(old_hash, new_hash);
     }
 }

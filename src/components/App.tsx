@@ -81,6 +81,12 @@ function AppContent() {
     if (!wasmReady) {
       console.log('🔥 Initialisation du module WebAssembly...');
       
+      // Détection Electron
+      const isElectron = typeof navigator === 'object' && navigator.userAgent.toLowerCase().includes('electron');
+      if (isElectron) {
+        console.log('🖥️ Electron détecté - utilisation du fallback JavaScript pour compatibilité');
+      }
+      
       initWasmCrypto()
         .then(() => {
           console.log('✅ WebAssembly initialisé avec succès');
@@ -92,6 +98,11 @@ function AppContent() {
         .catch((error) => {
           console.warn('⚠️ WebAssembly non disponible, fallback sur JavaScript obfusqué');
           console.error('Erreur WASM:', error);
+          
+          if (isElectron) {
+            console.log('ℹ️ Fallback JavaScript activé pour Electron');
+          }
+          
           setUseWasm(false);
           setWasmReady(false);
           setIsFallbackCrypto(true);
@@ -343,39 +354,38 @@ function AppContent() {
       if (msg.type === 'text' && msg.content) {
         let decrypted = msg.content;
         try {
-          if (useWasm && wasmReady) {
-            // Déchiffrement avec WebAssembly
+          // Essayer d'abord de détecter le format du message
+          const isBase64Wasm = typeof msg.content === 'string' && 
+                               !msg.content.trim().startsWith('{') && 
+                               msg.content.length > 0;
+          const isJsonFormat = typeof msg.content === 'string' &&
+                               msg.content.trim().startsWith('{') &&
+                               msg.content.trim().endsWith('}');
+          
+          if (isBase64Wasm && useWasm && wasmReady) {
+            // Message chiffré avec WASM (format base64)
             try {
               const encryptedBytes = base64ToUint8Array(msg.content);
               decrypted = await decryptWasm(encryptedBytes);
             } catch (wasmError) {
               console.error('Erreur déchiffrement WASM:', wasmError);
-              // Essayer le fallback JavaScript
-              if (
-                typeof msg.content === 'string' &&
-                msg.content.length > 0 &&
-                msg.content.trim().startsWith('{') &&
-                msg.content.trim().endsWith('}')
-              ) {
-                const encrypted = JSON.parse(msg.content);
-                if (encrypted && encrypted.iv && encrypted.content) {
-                  decrypted = await decryptMessageE2EE(encrypted, symmetricKey);
-                }
-              }
+              console.warn('⚠️ Impossible de déchiffrer ce message (chiffré avec WASM, mais WASM non disponible)');
+              decrypted = '[Message chiffré - WASM requis]';
             }
-          } else {
-            // Fallback JavaScript obfusqué
-            if (
-              typeof msg.content === 'string' &&
-              msg.content.length > 0 &&
-              msg.content.trim().startsWith('{') &&
-              msg.content.trim().endsWith('}')
-            ) {
+          } else if (isJsonFormat) {
+            // Message chiffré avec JavaScript (format JSON)
+            try {
               const encrypted = JSON.parse(msg.content);
               if (encrypted && encrypted.iv && encrypted.content) {
                 decrypted = await decryptMessageE2EE(encrypted, symmetricKey);
               }
+            } catch (jsonError) {
+              console.error('Erreur déchiffrement JSON:', jsonError);
             }
+          } else if (isBase64Wasm && !useWasm) {
+            // Message WASM reçu mais WASM non disponible
+            console.warn('⚠️ Message chiffré avec WASM reçu, mais WASM non disponible sur cet appareil');
+            decrypted = '[Message chiffré - incompatible]';
           }
         } catch (e) {
           // Si déchiffrement impossible, on affiche le contenu brut
@@ -891,19 +901,6 @@ function AppContent() {
           </div>
         </div>
       </div>
-      {/* Indicateur de protection WebAssembly */}
-      {useWasm && wasmReady && (
-        <div className="fixed top-0 left-0 w-full bg-green-900 text-green-200 text-center py-2 z-50 font-mono text-xs shadow-lg">
-          🔥 Protection WebAssembly active - Niveau de sécurité : 9.5/10
-        </div>
-      )}
-      
-      {/* Affichage de l'avertissement si fallback JS */}
-      {isFallbackCrypto && !useWasm && (
-        <div className="fixed top-0 left-0 w-full bg-yellow-900 text-yellow-200 text-center py-2 z-50 font-mono text-xs shadow-lg">
-          ⚠️ Chiffrement fallback JS (crypto-js) utilisé: sécurité réduite, changez de navigateur si possible.
-        </div>
-      )}
     </div>
   );
 }

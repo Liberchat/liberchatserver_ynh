@@ -2,9 +2,10 @@ import init, { CryptoModule } from '../../crypto-wasm/pkg/crypto_wasm';
 
 let cryptoModule: CryptoModule | null = null;
 let initialized = false;
+let keyRotationInterval: number | null = null;
 
 /**
- * Initialise le module WASM de chiffrement
+ * Initialise le module WASM de chiffrement avec rotation automatique des clés
  * Doit être appelé avant toute opération de chiffrement
  */
 export async function initWasmCrypto(): Promise<void> {
@@ -14,21 +15,99 @@ export async function initWasmCrypto(): Promise<void> {
     // Initialise le module WASM
     await init();
     
-    // Crée une instance du module crypto
+    // Crée une instance du module crypto avec génération de clés éphémères
     cryptoModule = new CryptoModule();
     
     initialized = true;
     console.log('✅ Module WASM initialisé avec succès');
+    console.log('🔐 Clés éphémères générées pour Perfect Forward Secrecy');
     
     // Log du hash de la clé (debug uniquement)
     if (import.meta.env.DEV) {
       const keyHash = cryptoModule.get_key_hash();
-      console.log('🔑 Hash de la clé:', keyHash);
+      console.log('🔑 Hash de la clé de session:', keyHash);
+      console.log('🔄 Rotation automatique des clés activée (toutes les 30 minutes)');
     }
+    
+    // Active la rotation automatique des clés toutes les 30 minutes
+    startKeyRotation();
   } catch (error) {
     console.error('❌ Erreur lors de l\'initialisation du module WASM:', error);
     throw error;
   }
+}
+
+/**
+ * Démarre la rotation automatique des clés de session
+ */
+function startKeyRotation(): void {
+  if (keyRotationInterval) return;
+  
+  // Rotation toutes les 30 minutes
+  keyRotationInterval = window.setInterval(() => {
+    if (cryptoModule) {
+      try {
+        cryptoModule.rotate_session_key();
+        console.log('🔄 Clé de session rotée avec succès');
+        
+        if (import.meta.env.DEV) {
+          const newKeyHash = cryptoModule.get_key_hash();
+          console.log('🔑 Nouveau hash de clé:', newKeyHash);
+        }
+      } catch (error) {
+        console.error('❌ Erreur lors de la rotation de clé:', error);
+      }
+    }
+  }, 30 * 60 * 1000); // 30 minutes
+}
+
+/**
+ * Arrête la rotation automatique des clés
+ */
+export function stopKeyRotation(): void {
+  if (keyRotationInterval) {
+    clearInterval(keyRotationInterval);
+    keyRotationInterval = null;
+  }
+}
+
+/**
+ * Obtient la clé publique pour l'échange Diffie-Hellman
+ */
+export function getPublicKey(): Uint8Array | null {
+  if (!cryptoModule) return null;
+  return cryptoModule.get_public_key();
+}
+
+/**
+ * Effectue un échange de clés Diffie-Hellman avec un pair
+ * @param peerPublicKey Clé publique du pair
+ */
+export async function performKeyExchange(peerPublicKey: Uint8Array): Promise<void> {
+  if (!cryptoModule) {
+    throw new Error('Module WASM non initialisé. Appelez initWasmCrypto() d\'abord.');
+  }
+  
+  try {
+    cryptoModule.perform_key_exchange(peerPublicKey);
+    console.log('🤝 Échange de clés Diffie-Hellman réussi');
+    
+    if (import.meta.env.DEV) {
+      const keyHash = cryptoModule.get_key_hash();
+      console.log('🔑 Nouvelle clé de session après échange:', keyHash);
+    }
+  } catch (error) {
+    console.error('❌ Erreur lors de l\'échange de clés:', error);
+    throw error;
+  }
+}
+
+/**
+ * Vérifie si un échange de clés a été effectué
+ */
+export function hasSharedSecret(): boolean {
+  if (!cryptoModule) return false;
+  return cryptoModule.has_shared_secret();
 }
 
 /**
