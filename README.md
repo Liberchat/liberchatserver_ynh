@@ -37,7 +37,7 @@ LiberChat est une application de chat en temps réel qui privilégie la confiden
 - � **Partage de fichiers** - Images, documents, GIFs, messages vocaux (chiffrés)
 - 😊 **Réactions emoji** - Réagissez aux messages
 - 🌍 **Traduction automatique** - Support multi-langues (FR, EN, ES, EO)
-- � **Tuhèmes personnalisables** - Mode sombre/clair + thèmes custom
+- � **Thèmes personnalisables** - Mode sombre/clair + thèmes custom
 - ♿ **Accessibilité** - Support lecteurs d'écran, contraste élevé
 - 🌐 **Multi-instance** - Plusieurs instances sur le même serveur
 
