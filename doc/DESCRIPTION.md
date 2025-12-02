@@ -1,4 +1,4 @@
-## 🔐 Chat Chiffré de Bout en Bout 
+
 
 **LiberChat v6.9.0** est une application de messagerie instantanée ultra-sécurisée avec chiffrement de bout en bout de niveau.
 
