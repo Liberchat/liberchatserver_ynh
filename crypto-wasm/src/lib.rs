@@ -52,7 +52,7 @@ impl CryptoModule {
         })
     }
     
-    /// Dérive la clé maître avec obfuscation multi-couches
+    /// Dérive la clé  avec obfuscation multi-couches
     fn derive_master_key() -> Result<Vec<u8>, JsValue> {
         // Couche 1: Fragments XOR avec clés multiples
         let fragments = vec![
