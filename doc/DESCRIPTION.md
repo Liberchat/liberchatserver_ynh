@@ -1,6 +1,6 @@
 ## 🔐 Chat Chiffré de Bout en Bout - Niveau Militaire
 
-**LiberChat v7.0** est une application de messagerie instantanée ultra-sécurisée avec chiffrement de bout en bout de niveau militaire (9.8/10).
+**LiberChat v6.9.0** est une application de messagerie instantanée ultra-sécurisée avec chiffrement de bout en bout de niveau.
 
 ### ✨ Fonctionnalités Principales
 
@@ -15,9 +15,10 @@
 - ♿ **Accessibilité** - Support lecteurs d'écran, contraste élevé
 - 🔄 **Rotation automatique des clés** - Nouvelle clé toutes les 30 minutes
 
-### 🛡️ Sécurité de Niveau Militaire
-
-**Niveau de sécurité : 9.8/10** (comparable à Signal et WhatsApp)
+### 🛡️ Sécurité collectif 
+ 
+ 
+    Niveau de sécurité  comparable à Signal 
 
 - ✅ **AES-256-GCM** - Chiffrement avec authentification intégrée
 - ✅ **X25519 Diffie-Hellman** - Perfect Forward Secrecy
@@ -27,9 +28,9 @@
 - ✅ **Pas de logs serveur** - Confidentialité totale
 - ✅ **Authentification des messages** - Détection de toute modification
 
-### 🚀 Performance
+###  Performance
 
-- ⚡ **4x plus rapide** que la version précédente
+-     **4x plus rapide** que la version précédente
 - 📦 **Messages 15% plus compacts**
 - 🔋 **Optimisé pour mobile**
 - 🌐 **Support multi-domaines** (Tor, IP locales, domaines classiques)
@@ -38,8 +39,8 @@
 
 | Application | Score | Technologie |
 |-------------|-------|-------------|
-| **Signal** | 10/10 | Double Ratchet + X3DH |
-| **LiberChat v7.0** | 9.8/10 | AES-GCM + X25519 + HKDF |
+| **Signal** | 9.9/10 | Double Ratchet + X3DH |
+| **LiberChat v6.9** | 9.8/10 | AES-GCM + X25519 + HKDF |
 | **WhatsApp** | 9.5/10 | Signal Protocol |
 | **Telegram (secret)** | 9/10 | MTProto 2.0 |
 | **Discord** | 6/10 | TLS uniquement |
@@ -48,8 +49,8 @@
 
 - 🎨 Design épuré et intuitif
 - 📱 Responsive (mobile, tablette, desktop)
-- 🌙 Mode sombre par défaut
-- ⚡ Indicateur "en train d'écrire"
+-    Mode sombre par défaut
+-    Indicateur "en train d'écrire"
 - 🔔 Notifications visuelles
 
 ### 🌐 Multi-Instance
