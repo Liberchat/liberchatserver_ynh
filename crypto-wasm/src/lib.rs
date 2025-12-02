@@ -105,7 +105,7 @@ impl CryptoModule {
         hasher.finalize().to_vec()
     }
     
-    /// Dérive une clé de session à partir de la clé maître et d'un secret partagé
+    /// Dérive une clé de session à partir de la clé et d'un secret partagé
     fn derive_session_key(master_key: &[u8], shared_secret: &[u8]) -> Result<Vec<u8>, JsValue> {
         let mut input = master_key.to_vec();
         input.extend_from_slice(shared_secret);
