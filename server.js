@@ -108,15 +108,25 @@ app.use(cors({
     // Autorise les requêtes sans origin (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true);
 
-    // Autorise si dans la liste
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    // Nettoie l'origin en enlevant le path si présent
+    const cleanOrigin = origin.replace(/\/[^/]*$/, '');
+
+    // Autorise si dans la liste (avec ou sans path)
+    if (allowedOrigins.includes(origin) || allowedOrigins.includes(cleanOrigin)) {
+      return callback(null, true);
+    }
 
     // Autorise tous les domaines HTTPS (pour YunoHost et autres déploiements)
-    if (origin.startsWith('https://')) return callback(null, true);
+    if (origin.startsWith('https://') || cleanOrigin.startsWith('https://')) {
+      return callback(null, true);
+    }
 
     // Autorise localhost sur n'importe quel port
-    if (origin.match(/^https?:\/\/localhost(:\d+)?$/)) return callback(null, true);
+    if (origin.match(/^https?:\/\/localhost(:\d+)?$/) || cleanOrigin.match(/^https?:\/\/localhost(:\d+)?$/)) {
+      return callback(null, true);
+    }
 
+    console.log('CORS refusé pour origin:', origin);
     callback(new Error('Non autorisé par CORS'));
   },
   methods: ['GET', 'POST'],
@@ -132,6 +142,11 @@ const io = new Server(server, {
   pingInterval: parseInt(process.env.PING_INTERVAL) || 25000,
   cors: {
     origin: (origin, callback) => {
+      // Autorise tout en HTTPS ou sans origin
+      if (!origin || origin.startsWith('https://') || origin.startsWith('http://localhost')) {
+        return callback(null, true);
+      }
+      
       const allowedOrigins = [
         'https://liberchat-3-0-1.onrender.com',
         'http://localhost:5173',
