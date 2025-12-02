@@ -46,19 +46,38 @@ function startKeyRotation(): void {
   // Rotation toutes les 30 minutes
   keyRotationInterval = window.setInterval(() => {
     if (cryptoModule) {
-      try {
-        cryptoModule.rotate_session_key();
-        console.log('🔄 Clé de session rotée avec succès');
-        
-        if (import.meta.env.DEV) {
-          const newKeyHash = cryptoModule.get_key_hash();
-          console.log('🔑 Nouveau hash de clé:', newKeyHash);
-        }
-      } catch (error) {
-        console.error('❌ Erreur lors de la rotation de clé:', error);
+      // Utilise requestIdleCallback pour ne pas bloquer le thread principal
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+          performKeyRotation();
+        });
+      } else {
+        // Fallback pour les navigateurs qui ne supportent pas requestIdleCallback
+        setTimeout(() => {
+          performKeyRotation();
+        }, 0);
       }
     }
   }, 30 * 60 * 1000); // 30 minutes
+}
+
+/**
+ * Effectue la rotation de clé
+ */
+function performKeyRotation(): void {
+  if (!cryptoModule) return;
+  
+  try {
+    cryptoModule.rotate_session_key();
+    console.log('🔄 Clé de session rotée avec succès');
+    
+    if (import.meta.env.DEV) {
+      const newKeyHash = cryptoModule.get_key_hash();
+      console.log('🔑 Nouveau hash de clé:', newKeyHash);
+    }
+  } catch (error) {
+    console.error('❌ Erreur lors de la rotation de clé:', error);
+  }
 }
 
 /**
