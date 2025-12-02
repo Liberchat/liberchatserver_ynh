@@ -4,7 +4,7 @@
 
 ### ✨ Fonctionnalités Principales
 
-- � **Chnat en temps réel** - Messages instantanés avec WebSocket
+- � **Chat en temps réel** - Messages instantanés avec WebSocket
 - 🔐 **Chiffrement E2EE** - AES-256-GCM + Perfect Forward Secrecy (X25519)
 - 📁 **Partage de fichiers** - Images, documents, GIFs, messages vocaux (chiffrés)
 - 😊 **Réactions emoji** - Réagissez aux messages
