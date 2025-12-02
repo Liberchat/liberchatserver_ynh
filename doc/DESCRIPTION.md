@@ -4,7 +4,7 @@
 
 ### ✨ Fonctionnalités Principales
 
-- � **Chnat en temps réel** - Messages instantanés avec WebSocket
+- � **Chat en temps réel** - Messages instantanés avec WebSocket
 - 🔐 **Chiffrement E2EE** - AES-256-GCM + Perfect Forward Secrecy (X25519)
 - 📁 **Partage de fichiers** - Images, documents, GIFs, messages vocaux (chiffrés)
 - 😊 **Réactions emoji** - Réagissez aux messages
@@ -35,17 +35,6 @@
 - 🔋 **Optimisé pour mobile**
 - 🌐 **Support multi-domaines** (Tor, IP locales, domaines classiques)
 
-### 🔒 Comparaison avec d'autres systèmes
-
-
-| Application | Score | Technologie |
-|-------------|-------|-------------|
-| **LiberChat v6.9** | 9.8/10 | AES-GCM + X25519 + HKDF |
-  **Signal** | 8/10 | Double Ratchet + X3DH |
-  **LiberChat v6.8** | 7/10 | AES-CTR + SHA-256 |
-| **WhatsApp** | 6/10 | Signal Protocol |
-| **Discord** | 6/10 | TLS uniquement |
-| **Telegram (secret)** | 4/10 | MTProto 2.0 |
 
 
 ### 📱 Interface Moderne
