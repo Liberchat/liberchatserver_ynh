@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Système de Cryptage v2.0</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #ff0000;
+            text-align: center;
+            border-bottom: 2px solid #ff0000;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            background: #2a2a2a;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-section h2 {
+            color: #ffff00;
+            margin-top: 0;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .test-result.success {
+            background: #004400;
+            border: 1px solid #00ff00;
+        }
+        .test-result.error {
+            background: #440000;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+        }
+        .test-result.info {
+            background: #004444;
+            border: 1px solid #00ffff;
+            color: #00ffff;
+        }
+        button {
+            background: #ff0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin: 5px;
+            font-family: 'Courier New', monospace;
+        }
+        button:hover {
+            background: #cc0000;
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #333;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #555;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff00;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+        }
+        pre {
+            background: #000;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border: 1px solid #333;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #333;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #ffff00);
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔐 Test Système de Cryptage LiberChat v2.0</h1>
+
+    <div class="test-section">
+        <h2>📊 Statistiques</h2>
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="stat-tests">0</div>
+                <div class="stat-label">Tests exécutés</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-success">0</div>
+                <div class="stat-label">Réussis</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-failed">0</div>
+                <div class="stat-label">Échoués</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-time">0ms</div>
+                <div class="stat-label">Temps total</div>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🚀 Tests Automatiques</h2>
+        <button onclick="runAllTests()">▶️ Lancer tous les tests</button>
+        <button onclick="clearResults()">🗑️ Effacer les résultats</button>
+        <div id="auto-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 Tests Manuels</h2>
+        <button onclick="testEncryptDecrypt()">Test 1: Chiffrement/Déchiffrement</button>
+        <button onclick="testKeyExchange()">Test 2: Échange de clés DH</button>
+        <button onclick="testKeyRotation()">Test 3: Rotation de clés</button>
+        <button onclick="testAuthentication()">Test 4: Authentification</button>
+        <button onclick="testPerformance()">Test 5: Performance</button>
+        <div id="manual-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📝 Logs</h2>
+        <pre id="logs"></pre>
+    </div>
+
+    <script type="module">
+        import init, { CryptoModule } from './crypto-wasm/pkg/crypto_wasm.js';
+
+        let crypto1, crypto2;
+        let stats = { tests: 0, success: 0, failed: 0, time: 0 };
+
+        // Initialisation
+        async function initialize() {
+            log('🔥 Initialisation du module WASM...');
+            try {
+                await init();
+                crypto1 = new CryptoModule();
+                crypto2 = new CryptoModule();
+                log('✅ Module WASM initialisé avec succès');
+                log('🔑 Hash clé 1: ' + crypto1.get_key_hash());
+                log('🔑 Hash clé 2: ' + crypto2.get_key_hash());
+                return true;
+            } catch (error) {
+                log('❌ Erreur initialisation: ' + error, 'error');
+                return false;
+            }
+        }
+
+        // Fonctions utilitaires
+        function log(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            logs.textContent += `[${timestamp}] ${message}\n`;
+            logs.scrollTop = logs.scrollHeight;
+            console.log(message);
+        }
+
+        function addResult(container, message, success) {
+            const div = document.createElement('div');
+            div.className = `test-result ${success ? 'success' : 'error'}`;
+            div.textContent = (success ? '✅ ' : '❌ ') + message;
+            document.getElementById(container).appendChild(div);
+        }
+
+        function updateStats() {
+            document.getElementById('stat-tests').textContent = stats.tests;
+            document.getElementById('stat-success').textContent = stats.success;
+            document.getElementById('stat-failed').textContent = stats.failed;
+            document.getElementById('stat-time').textContent = stats.time + 'ms';
+            const progress = stats.tests > 0 ? (stats.success / stats.tests * 100) : 0;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        // Tests
+        window.testEncryptDecrypt = async function() {
+            log('🧪 Test 1: Chiffrement/Déchiffrement');
+            const start = performance.now();
+            
+            try {
+                const plaintext = "Message de test sécurisé 🔐";
+                log('📝 Message original: ' + plaintext);
+                
+                const encrypted = crypto1.encrypt(plaintext);
+                log('🔒 Message chiffré (longueur: ' + encrypted.length + ' bytes)');
+                
+                const decrypted = crypto1.decrypt(encrypted);
+                log('🔓 Message déchiffré: ' + decrypted);
+                
+                const success = plaintext === decrypted;
+                const time = Math.round(performance.now() - start);
+                
+                stats.tests++;
+                if (success) stats.success++;
+                else stats.failed++;
+                stats.time += time;
+                
+                addResult('manual-results', `Chiffrement/Déchiffrement (${time}ms)`, success);
+                updateStats();
+            } catch (error) {
+                log('❌ Erreur: ' + error, 'error');
+                stats.tests++;
+                stats.failed++;
+                addResult('manual-results', 'Chiffrement/Déchiffrement: ' + error, false);
+                updateStats();
+            }
+        };
+
+        window.testKeyExchange = async function() {
+            log('🧪 Test 2: Échange de clés Diffie-Hellman');
+            const start = performance.now();
+            
+            try {
+                const pubKey1 = crypto1.get_public_key();
+                const pubKey2 = crypto2.get_public_key();
+                log('🔑 Clé publique 1: ' + Array.from(pubKey1.slice(0, 8)).join(',') + '...');
+                log('🔑 Clé publique 2: ' + Array.from(pubKey2.slice(0, 8)).join(',') + '...');
+                
+                crypto1.perform_key_exchange(pubKey2);
+                crypto2.perform_key_exchange(pubKey1);
+                log('🤝 Échange de clés effectué');
+                
+                const hasSecret1 = crypto1.has_shared_secret();
+                const hasSecret2 = crypto2.has_shared_secret();
+                log('🔐 Secret partagé 1: ' + hasSecret1);
+                log('🔐 Secret partagé 2: ' + hasSecret2);
+                
+                // Test de communication après échange
+                const message = "Message après échange DH";
+                const encrypted = crypto1.encrypt(message);
+                const decrypted = crypto2.decrypt(encrypted);
+                
+                const success = hasSecret1 && hasSecret2 && message === decrypted;
+                const time = Math.round(performance.now() - start);
+                
+                stats.tests++;
+                if (success) stats.success++;
+                else stats.failed++;
+                stats.time += time;
+                
+                addResult('manual-results', `Échange de clés DH (${time}ms)`, success);
+                updateStats();
+            } catch (error) {
+                log('❌ Erreur: ' + error, 'error');
+                stats.tests++;
+                stats.failed++;
+                addResult('manual-results', 'Échange de clés: ' + error, false);
+                updateStats();
+            }
+        };
+
+        window.testKeyRotation = async function() {
+            log('🧪 Test 3: Rotation de clés');
+            const start = performance.now();
+            
+            try {
+                const oldHash = crypto1.get_key_hash();
+                log('🔑 Hash avant rotation: ' + oldHash);
+                
+                crypto1.rotate_session_key();
+                
+                const newHash = crypto1.get_key_hash();
+                log('🔑 Hash après rotation: ' + newHash);
+                
+                const success = oldHash !== newHash;
+                const time = Math.round(performance.now() - start);
+                
+                stats.tests++;
+                if (success) stats.success++;
+                else stats.failed++;
+                stats.time += time;
+                
+                addResult('manual-results', `Rotation de clés (${time}ms)`, success);
+                updateStats();
+            } catch (error) {
+                log('❌ Erreur: ' + error, 'error');
+                stats.tests++;
+                stats.failed++;
+                addResult('manual-results', 'Rotation de clés: ' + error, false);
+                updateStats();
+            }
+        };
+
+        window.testAuthentication = async function() {
+            log('🧪 Test 4: Authentification des messages');
+            const start = performance.now();
+            
+            try {
+                const message = "Message authentifié";
+                const encrypted = crypto1.encrypt(message);
+                log('🔒 Message chiffré et authentifié');
+                
+                // Modifier un byte du ciphertext
+                const corrupted = new Uint8Array(encrypted);
+                corrupted[corrupted.length - 1] ^= 0xFF;
+                log('🔨 Message corrompu (1 byte modifié)');
+                
+                let authFailed = false;
+                try {
+                    crypto1.decrypt(corrupted);
+                    log('⚠️ Déchiffrement réussi (ne devrait pas arriver)');
+                } catch (error) {
+                    authFailed = true;
+                    log('✅ Authentification échouée comme prévu: ' + error);
+                }
+                
+                const time = Math.round(performance.now() - start);
+                
+                stats.tests++;
+                if (authFailed) stats.success++;
+                else stats.failed++;
+                stats.time += time;
+                
+                addResult('manual-results', `Authentification (${time}ms)`, authFailed);
+                updateStats();
+            } catch (error) {
+                log('❌ Erreur: ' + error, 'error');
+                stats.tests++;
+                stats.failed++;
+                addResult('manual-results', 'Authentification: ' + error, false);
+                updateStats();
+            }
+        };
+
+        window.testPerformance = async function() {
+            log('🧪 Test 5: Performance');
+            const iterations = 100;
+            
+            try {
+                const message = "Message de test pour benchmark de performance";
+                
+                // Test chiffrement
+                const encStart = performance.now();
+                for (let i = 0; i < iterations; i++) {
+                    crypto1.encrypt(message);
+                }
+                const encTime = performance.now() - encStart;
+                const encAvg = (encTime / iterations).toFixed(2);
+                log(`⚡ Chiffrement: ${encAvg}ms/op (${iterations} ops en ${encTime.toFixed(0)}ms)`);
+                
+                // Test déchiffrement
+                const encrypted = crypto1.encrypt(message);
+                const decStart = performance.now();
+                for (let i = 0; i < iterations; i++) {
+                    crypto1.decrypt(encrypted);
+                }
+                const decTime = performance.now() - decStart;
+                const decAvg = (decTime / iterations).toFixed(2);
+                log(`⚡ Déchiffrement: ${decAvg}ms/op (${iterations} ops en ${decTime.toFixed(0)}ms)`);
+                
+                const totalTime = Math.round(encTime + decTime);
+                stats.tests++;
+                stats.success++;
+                stats.time += totalTime;
+                
+                addResult('manual-results', `Performance: ${encAvg}ms enc, ${decAvg}ms dec`, true);
+                updateStats();
+            } catch (error) {
+                log('❌ Erreur: ' + error, 'error');
+                stats.tests++;
+                stats.failed++;
+                addResult('manual-results', 'Performance: ' + error, false);
+                updateStats();
+            }
+        };
+
+        window.runAllTests = async function() {
+            log('🚀 Lancement de tous les tests...');
+            document.getElementById('auto-results').innerHTML = '';
+            
+            await testEncryptDecrypt();
+            await new Promise(r => setTimeout(r, 100));
+            
+            await testKeyExchange();
+            await new Promise(r => setTimeout(r, 100));
+            
+            await testKeyRotation();
+            await new Promise(r => setTimeout(r, 100));
+            
+            await testAuthentication();
+            await new Promise(r => setTimeout(r, 100));
+            
+            await testPerformance();
+            
+            log('✅ Tous les tests terminés !');
+            log(`📊 Résultats: ${stats.success}/${stats.tests} réussis (${Math.round(stats.success/stats.tests*100)}%)`);
+        };
+
+        window.clearResults = function() {
+            document.getElementById('manual-results').innerHTML = '';
+            document.getElementById('auto-results').innerHTML = '';
+            document.getElementById('logs').textContent = '';
+            stats = { tests: 0, success: 0, failed: 0, time: 0 };
+            updateStats();
+            log('🗑️ Résultats effacés');
+        };
+
+        // Initialisation au chargement
+        window.addEventListener('load', async () => {
+            const success = await initialize();
+            if (success) {
+                log('✅ Prêt pour les tests !');
+                log('💡 Cliquez sur "Lancer tous les tests" ou testez individuellement');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+#!/bin/bash
+
+source /usr/share/yunohost/helpers
+source _common.sh
+
+#=================================================
+# REMOVE SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Stopping and removing the systemd service..." --weight=1
+
+ynh_remove_systemd_config
+
+#=================================================
+# REMOVE NGINX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Removing NGINX web server configuration..." --weight=1
+
+ynh_remove_nginx_config
+
+#=================================================
+# RESTORE YUNOHOST CSP
+#=================================================
+ynh_script_progression --message="Restoring original YunoHost CSP..." --weight=1
+
+# Restore original security config if backup exists
+if [ -f "/etc/nginx/conf.d/security.conf.inc.backup" ]; then
+    mv /etc/nginx/conf.d/security.conf.inc.backup /etc/nginx/conf.d/security.conf.inc
+    systemctl reload nginx
+fi
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+ynh_script_progression --message="Removal of $app completed" --last
