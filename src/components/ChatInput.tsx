@@ -36,6 +36,7 @@ interface ChatInputProps {
   onStopTyping?: () => void;
   disabled?: boolean;
   placeholder?: string;
+  onStartPrivateChat?: (user: string) => void;
 }
 
 interface EmojiData {
@@ -59,7 +60,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
   onTyping,
   onStopTyping,
   disabled = false,
-  placeholder = 'Tapez votre message...'
+  placeholder = 'Tapez votre message...',
+  onStartPrivateChat
 }) => {
   const { t } = useI18nContext();
   const [message, setMessage] = useState<string>('');
@@ -441,8 +443,14 @@ const ChatInput: React.FC<ChatInputProps> = ({
         {onTranslationSettingsChange && (
           <TranslationSettings onSettingsChange={onTranslationSettingsChange} />
         )}
-        <div className="block sm:hidden">
-          <UserList users={users} currentUser={currentUser} isMobile={true} inChatInput={true} />
+        <div className="block sm:hidden flex-shrink-0">
+          <UserList
+            users={users}
+            currentUser={currentUser}
+            isMobile={true}
+            inChatInput={true}
+            onStartPrivateChat={onStartPrivateChat}
+          />
         </div>
       </div>
 

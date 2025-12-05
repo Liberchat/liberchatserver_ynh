@@ -1104,6 +1104,7 @@ function AppContent() {
               autoTranslationEnabled={autoTranslationEnabled}
               autoTranslationLanguage={autoTranslationLanguage}
               onTranslationSettingsChange={handleTranslationSettingsChange}
+              onStartPrivateChat={(user) => setPrivateChatUser(user)}
             />
           </div>
 
@@ -1115,15 +1116,7 @@ function AppContent() {
         </div>
       </div>
 
-      {/* UserList pour Mobile (Bouton flottant) */}
-      <div className="sm:hidden">
-        <UserList
-          users={users}
-          currentUser={username}
-          onStartPrivateChat={(user) => setPrivateChatUser(user)}
-          isMobile={true}
-        />
-      </div>
+
 
       {privateChatUser && socket && (
         <PrivateChat
