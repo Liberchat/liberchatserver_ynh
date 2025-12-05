@@ -3,7 +3,7 @@ packaging_format = 2
 id = "liberchat"
 name = "Liberchat"
 
-description.fr = "Chat décentralisé axé militant(e)s sur la confidentialité avec chiffrement de bout en bout niveau militaire (AES-256-GCM + X25519), partage de fichiers et support multi-domaines incluant Tor."
+description.fr = "Chat décentralisé axé militant(e)s sur la confidentialité avec chiffrement de bout en bout  (AES-256-GCM + X25519), partage de fichiers et support multi-domaines incluant Tor."
 
 version = "6.9.0~ynh1"
 
