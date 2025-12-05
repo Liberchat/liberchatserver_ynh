@@ -136,7 +136,7 @@ app.use(cors({
 const server = createServer(app);
 
 const io = new Server(server, {
-  path: basePath ? `${basePath}/socket.io/` : '/socket.io/',
+  path: '/socket.io/',
   serveClient: false,
   pingTimeout: parseInt(process.env.PING_TIMEOUT) || 60000,
   pingInterval: parseInt(process.env.PING_INTERVAL) || 25000,
