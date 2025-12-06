@@ -453,11 +453,12 @@ if (basePath) {
   app.get(`${basePath}`, staticFileLimiter, (req, res) => {
     res.sendFile(join(__dirname, 'dist', 'index.html'));
   });
-} else {
-  app.get('*', staticFileLimiter, (req, res) => {
-    res.sendFile(join(__dirname, 'dist', 'index.html'));
-  });
 }
+
+// Toujours ajouter le catch-all général pour supporter le proxy Nginx qui strip le path
+app.get('*', staticFileLimiter, (req, res) => {
+  res.sendFile(join(__dirname, 'dist', 'index.html'));
+});
 
 const users = new Map();
 const usersByName = new Map();
