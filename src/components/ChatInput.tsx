@@ -403,7 +403,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
         </div>
       )}
 
-      <div className="flex gap-2 w-full sm:w-auto order-1 sm:order-none">
+      <div className="flex flex-wrap gap-2 w-full sm:w-auto order-1 sm:order-none">
         <button
           type="button"
           onClick={() => setShowEmojiPicker((v) => !v)}

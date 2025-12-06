@@ -288,6 +288,7 @@ function AppContent() {
     newSocket.on('connect', () => setIsConnected(true));
     newSocket.on('disconnect', () => setIsConnected(false));
     newSocket.on('connect_error', (err: any) => {
+      console.error('Erreur de connexion Socket.IO:', err);
     });
 
     newSocket.on('users', (userList: UserInfo[]) => {
