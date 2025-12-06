@@ -276,12 +276,13 @@ function AppContent() {
 
 
 
-    const newSocket = io(socketUrl, {
-      path: socketPath,
-      transports: ['websocket', 'polling'],
-      forceNew: true,
-      reconnection: true,
-      timeout: 20000
+    const newSocket = io(undefined, {
+      path: '/socket.io/', // Bypass SSO folder protection by using root path
+      transports: ['websocket', 'polling'], // Force Websocket first
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000,
+      withCredentials: true // Important for CORS/Cookies
     });
     setSocket(newSocket);
 
