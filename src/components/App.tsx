@@ -278,7 +278,7 @@ function AppContent() {
 
     const newSocket = io(undefined, {
       path: '/socket.io/', // Bypass SSO folder protection by using root path
-      transports: ['websocket', 'polling'], // Force Websocket first
+      transports: ['polling', 'websocket'], // Polling first for better compatibility
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
       timeout: 20000,
