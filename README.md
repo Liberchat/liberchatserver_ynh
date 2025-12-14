@@ -82,7 +82,7 @@ LiberChat est une application de chat en temps réel qui privilégie la confiden
 -    **4x plus rapide** que la version précédente
 - 📦 **Messages 15% plus compacts**
 - 🔋 **Optimisé pour mobile**
-- 🚀 **WebAssembly natif**
+-    **WebAssembly natif**
 
 ### 🛡️ Comparaison de Sécurité
 
