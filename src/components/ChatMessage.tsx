@@ -595,7 +595,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                 {showEmojiPicker && (
                   <div className="absolute z-50 mt-2 border-4 border-red-700 rounded-2xl shadow-2xl bg-black/95 p-2 anarchist-emoji-picker left-1/2 -translate-x-1/2 w-[95vw] max-w-xs sm:left-0 sm:translate-x-0 sm:w-auto sm:max-w-[100vw]" style={{ minWidth: 200 }}>
                     <div className="text-center text-red-500 font-mono font-bold mb-2 text-lg tracking-widest">⚑ EMOJIS LIBRES</div>
-                    <div className="anarchist-emoji-inner">
+                    <div className="anarchist-emoji-inner" style={{ height: '260px', width: '100%', minHeight: '260px' }}>
                       <EmojiPicker
                         onEmojiClick={(emojiData: EmojiClickData) => {
                           handleReact(emojiData.emoji);
@@ -603,11 +603,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                         }}
                         theme={Theme.DARK}
                         width="100%"
-                        height={260}
+                        height="100%"
                         searchDisabled
                         skinTonesDisabled
                         previewConfig={{ showPreview: false }}
-                        lazyLoadEmojis
                       />
                     </div>
                   </div>
@@ -671,7 +670,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                 {showEmojiPicker && (
                   <div className="absolute z-50 mt-2 border-4 border-red-700 rounded-2xl shadow-2xl bg-black/95 p-2 anarchist-emoji-picker left-1/2 -translate-x-1/2 w-[95vw] max-w-xs sm:left-0 sm:translate-x-0 sm:w-auto sm:max-w-[100vw]" style={{ minWidth: 200 }}>
                     <div className="text-center text-red-500 font-mono font-bold mb-2 text-lg tracking-widest">⚑ EMOJIS LIBRES</div>
-                    <div className="anarchist-emoji-inner">
+                    <div className="anarchist-emoji-inner" style={{ height: '260px', width: '100%', minHeight: '260px' }}>
                       <EmojiPicker
                         onEmojiClick={(emojiData: EmojiClickData) => {
                           handleReact(emojiData.emoji);
@@ -679,11 +678,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                         }}
                         theme={Theme.DARK}
                         width="100%"
-                        height={260}
+                        height="100%"
                         searchDisabled
                         skinTonesDisabled
                         previewConfig={{ showPreview: false }}
-                        lazyLoadEmojis
                       />
                     </div>
                   </div>

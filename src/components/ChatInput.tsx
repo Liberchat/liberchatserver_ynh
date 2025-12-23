@@ -445,23 +445,22 @@ const ChatInput: React.FC<ChatInputProps> = ({
             className="absolute z-50 border-4 border-red-700 rounded-2xl shadow-2xl bg-black/95 p-2 anarchist-emoji-picker"
             style={{
               left: 0,
-              bottom: '110%',
+              bottom: 'calc(100% + 10px)',
               maxWidth: '100vw',
-              minWidth: 260,
+              minWidth: 280,
               right: 'auto',
             }}
           >
             <div className="text-center text-red-500 font-mono font-bold mb-2 text-lg tracking-widest">⚑ EMOJIS LIBRES</div>
-            <div className="anarchist-emoji-inner">
+            <div className="anarchist-emoji-inner" style={{ height: '320px', width: '100%', minHeight: '320px' }}>
               <EmojiPicker
                 onEmojiClick={handleEmojiSelect}
                 theme={Theme.DARK}
                 width="100%"
-                height={320}
+                height="100%"
                 searchDisabled
                 skinTonesDisabled
                 previewConfig={{ showPreview: false }}
-                lazyLoadEmojis
               />
             </div>
           </div>

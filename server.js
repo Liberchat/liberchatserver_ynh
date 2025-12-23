@@ -34,9 +34,9 @@ const defaultCsp = {
   defaultSrc: ["'self'", "https:", "data:", "blob:"],
   mediaSrc: ["'self'", "data:", "blob:"],
   imgSrc: ["'self'", "data:", "blob:", "https://cdn.jsdelivr.net", "https://unpkg.com", "https://emoji-cdn.jsdelivr.net"],
-  scriptSrc: ["'self'", "'unsafe-eval'"],
+  scriptSrc: ["'self'", "'unsafe-eval'", "blob:"],
   styleSrc: ["'self'", "'unsafe-inline'"],
-  connectSrc: ["'self'", "https:", "wss:", "ws:", "ws://localhost:3000", "wss://liberchat-3-0-1.onrender.com", "wss://liberchat.onrender.com", "https://cdn.jsdelivr.net"],
+  connectSrc: ["'self'", "https:", "wss:", "ws:", "ws://localhost:3000", "wss://liberchat-3-0-1.onrender.com", "wss://liberchat.onrender.com", "https://cdn.jsdelivr.net", "blob:"],
   frameSrc: ["*"]
 };
 defaultCsp.workerSrc = ["'self'"];
