@@ -437,6 +437,14 @@ if (basePath) {
   });
 }
 
+// Limiteur de débit pour les fichiers statiques
+const staticFileLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 30, // limite chaque IP à 30 requêtes par minute
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Route catch-all pour SPA (fallback vers index.html)
 const handleSpa = (req, res) => {
   res.sendFile(join(__dirname, 'dist', 'index.html'));
