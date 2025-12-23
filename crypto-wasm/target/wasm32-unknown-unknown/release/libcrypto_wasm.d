@@ -1,0 +1,1 @@
+/home/calyps/Images/liberchatserver_ynh-Liberchat6.9.0/crypto-wasm/target/wasm32-unknown-unknown/release/libcrypto_wasm.rlib: /home/calyps/Images/liberchatserver_ynh-Liberchat6.9.0/crypto-wasm/src/lib.rs

@@ -1,0 +1,154 @@
+#!/bin/bash
+
+#=================================================
+# GENERIC STARTING
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
+source /usr/share/yunohost/helpers
+source _common.sh
+
+#=================================================
+# RETRIEVE ARGUMENTS
+#=================================================
+
+app=$YNH_APP_INSTANCE_NAME
+install_dir=$(ynh_app_setting_get --app=$app --key=install_dir)
+
+#=================================================
+# SPECIFIC GETTERS FOR TOML SHORT KEY
+#=================================================
+
+get__allowed_domains() {
+    # Get the current allowed domains from .env file
+    if [ -f "$install_dir/.env" ]; then
+        grep "^ALLOWED_DOMAINS=" "$install_dir/.env" | cut -d'=' -f2- | tr -d '"'
+    else
+        echo ""
+    fi
+}
+
+get__max_file_size() {
+    if [ -f "$install_dir/.env" ] && grep -q "^MAX_FILE_SIZE=" "$install_dir/.env"; then
+        grep "^MAX_FILE_SIZE=" "$install_dir/.env" | cut -d'=' -f2-
+    else
+        echo "50"
+    fi
+}
+
+get__max_messages() {
+    if [ -f "$install_dir/.env" ] && grep -q "^MAX_MESSAGES=" "$install_dir/.env"; then
+        grep "^MAX_MESSAGES=" "$install_dir/.env" | cut -d'=' -f2-
+    else
+        echo "100"
+    fi
+}
+
+get__ping_timeout() {
+    if [ -f "$install_dir/.env" ] && grep -q "^PING_TIMEOUT=" "$install_dir/.env"; then
+        grep "^PING_TIMEOUT=" "$install_dir/.env" | cut -d'=' -f2-
+    else
+        echo "300000"
+    fi
+}
+
+get__ping_interval() {
+    if [ -f "$install_dir/.env" ] && grep -q "^PING_INTERVAL=" "$install_dir/.env"; then
+        grep "^PING_INTERVAL=" "$install_dir/.env" | cut -d'=' -f2-
+    else
+        echo "120000"
+    fi
+}
+
+#=================================================
+# SPECIFIC SETTERS FOR TOML SHORT KEY
+#=================================================
+
+set__allowed_domains() {
+    local allowed_domains="${1:-}"
+    
+    # Update .env file
+    if [ -f "$install_dir/.env" ]; then
+        ynh_replace_string "^ALLOWED_DOMAINS=.*" "ALLOWED_DOMAINS=\"$allowed_domains\"" "$install_dir/.env"
+    else
+        echo "ALLOWED_DOMAINS=\"$allowed_domains\"" >> "$install_dir/.env"
+    fi
+    
+    # Restart the service
+    ynh_systemd_action --service_name=$app --action=restart
+}
+
+set__max_file_size() {
+    local max_file_size="${1:-50}"
+    
+    chmod 666 "$install_dir/.env" 2>/dev/null || true
+    
+    if [ -f "$install_dir/.env" ] && grep -q "^MAX_FILE_SIZE=" "$install_dir/.env"; then
+        sed -i "s/^MAX_FILE_SIZE=.*/MAX_FILE_SIZE=$max_file_size/" "$install_dir/.env"
+    else
+        echo "MAX_FILE_SIZE=$max_file_size" >> "$install_dir/.env"
+    fi
+    
+    chmod 644 "$install_dir/.env" 2>/dev/null || true
+    chown $app:$app "$install_dir/.env" 2>/dev/null || true
+    
+    ynh_systemd_action --service_name=$app --action=restart
+}
+
+set__max_messages() {
+    local max_messages="${1:-100}"
+    
+    chmod 666 "$install_dir/.env" 2>/dev/null || true
+    
+    if [ -f "$install_dir/.env" ] && grep -q "^MAX_MESSAGES=" "$install_dir/.env"; then
+        sed -i "s/^MAX_MESSAGES=.*/MAX_MESSAGES=$max_messages/" "$install_dir/.env"
+    else
+        echo "MAX_MESSAGES=$max_messages" >> "$install_dir/.env"
+    fi
+    
+    chmod 644 "$install_dir/.env" 2>/dev/null || true
+    chown $app:$app "$install_dir/.env" 2>/dev/null || true
+    
+    ynh_systemd_action --service_name=$app --action=restart
+}
+
+set__ping_timeout() {
+    local ping_timeout="${1:-300000}"
+    
+    chmod 666 "$install_dir/.env" 2>/dev/null || true
+    
+    if [ -f "$install_dir/.env" ] && grep -q "^PING_TIMEOUT=" "$install_dir/.env"; then
+        sed -i "s/^PING_TIMEOUT=.*/PING_TIMEOUT=$ping_timeout/" "$install_dir/.env"
+    else
+        echo "PING_TIMEOUT=$ping_timeout" >> "$install_dir/.env"
+    fi
+    
+    chmod 644 "$install_dir/.env" 2>/dev/null || true
+    chown $app:$app "$install_dir/.env" 2>/dev/null || true
+    
+    ynh_systemd_action --service_name=$app --action=restart
+}
+
+set__ping_interval() {
+    local ping_interval="${1:-120000}"
+    
+    chmod 666 "$install_dir/.env" 2>/dev/null || true
+    
+    if [ -f "$install_dir/.env" ] && grep -q "^PING_INTERVAL=" "$install_dir/.env"; then
+        sed -i "s/^PING_INTERVAL=.*/PING_INTERVAL=$ping_interval/" "$install_dir/.env"
+    else
+        echo "PING_INTERVAL=$ping_interval" >> "$install_dir/.env"
+    fi
+    
+    chmod 644 "$install_dir/.env" 2>/dev/null || true
+    chown $app:$app "$install_dir/.env" 2>/dev/null || true
+    
+    ynh_systemd_action --service_name=$app --action=restart
+}
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+
+ynh_app_config_run $1
