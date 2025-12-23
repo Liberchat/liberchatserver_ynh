@@ -150,21 +150,8 @@ body.theme-light {
   color: #fff;
   border: none;
 }
-.anarchist-emoji-inner,
-.anarchist-emoji-inner .epr-body,
-.anarchist-emoji-inner .epr-emoji-picker {
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-  overflow-x: auto !important;
-  padding: 0 !important;
-}
 .anarchist-emoji-inner {
   width: 100%;
-  max-width: 100%;
-  max-height: 320px;
-  overflow-x: hidden;
-  overflow-y: auto;
 }
 
 /* ===== STYLES D'ACCESSIBILITÉ ===== */
