@@ -146,7 +146,7 @@ const io = new Server(server, {
       if (!origin || origin.startsWith('https://') || origin.startsWith('http://localhost')) {
         return callback(null, true);
       }
-      
+
       const allowedOrigins = [
         'https://liberchat-3-0-1.onrender.com',
         'http://localhost:5173',
@@ -428,7 +428,7 @@ if (basePath) {
           const u = new URL(url);
           image = u.origin + (imageRaw.startsWith('/') ? imageRaw : '/' + imageRaw);
         }
-      } catch {}
+      } catch { }
       if (!image) image = '/liberchat-logo.svg';
       res.json({ title, description, image });
     } catch (e) {
@@ -437,27 +437,19 @@ if (basePath) {
   });
 }
 
-// Route catch-all pour SPA
-// Define rate limiter for static file routes
-const staticFileLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 30, // limit each IP to 30 requests per minute
-  standardHeaders: true, // Return rate limit info in the RateLimit-* headers
-  legacyHeaders: false, // Disable the X-RateLimit-* headers
-});
+// Route catch-all pour SPA (fallback vers index.html)
+const handleSpa = (req, res) => {
+  res.sendFile(join(__dirname, 'dist', 'index.html'));
+};
 
 if (basePath) {
-  app.get(`${basePath}/*`, staticFileLimiter, (req, res) => {
-    res.sendFile(join(__dirname, 'dist', 'index.html'));
-  });
-  app.get(`${basePath}`, staticFileLimiter, (req, res) => {
-    res.sendFile(join(__dirname, 'dist', 'index.html'));
-  });
-} else {
-  app.get('*', staticFileLimiter, (req, res) => {
-    res.sendFile(join(__dirname, 'dist', 'index.html'));
-  });
+  // Supporte à la fois le sous-chemin et la racine
+  app.get(`${basePath}`, staticFileLimiter, handleSpa);
+  app.get(`${basePath}/*`, staticFileLimiter, handleSpa);
 }
+
+// Catch-all global (inclut la racine /)
+app.get('*', staticFileLimiter, handleSpa);
 
 const users = new Map();
 const usersByName = new Map();
