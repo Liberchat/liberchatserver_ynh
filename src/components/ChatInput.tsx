@@ -1,5 +1,5 @@
 import React, { useState, FormEvent, ChangeEvent, useRef } from 'react';
-import EmojiPicker, { Theme, EmojiClickData, EmojiStyle } from 'emoji-picker-react';
+import SimpleEmojiPicker from './SimpleEmojiPicker';
 import { UserList } from './UserList';
 import { TranslationSettings } from './TranslationSettings';
 import { useI18nContext } from '../contexts/I18nContext';
@@ -69,8 +69,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
     mentionQuery && u.username.toLowerCase().includes(mentionQuery.toLowerCase()) && u.username !== currentUser
   );
 
-  const handleEmojiSelect = (emojiData: EmojiClickData) => {
-    setMessage(prev => prev + emojiData.emoji);
+  const handleEmojiSelect = (emoji: string) => {
+    setMessage(prev => prev + emoji);
     setShowEmoji(false);
   };
 
@@ -442,28 +442,16 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
         {showEmoji && (
           <div
-            className="absolute z-50 border-4 border-red-700 rounded-2xl shadow-2xl bg-black/95 p-2 anarchist-emoji-picker"
+            className="absolute z-50"
             style={{
               left: 0,
               bottom: 'calc(100% + 10px)',
-              maxWidth: '100vw',
-              minWidth: 280,
-              right: 'auto',
             }}
           >
-            <div className="text-center text-red-500 font-mono font-bold mb-2 text-lg tracking-widest">⚑ EMOJIS LIBRES</div>
-            <div className="anarchist-emoji-inner" style={{ height: '320px', width: '100%', minHeight: '320px' }}>
-              <EmojiPicker
-                onEmojiClick={handleEmojiSelect}
-                theme={Theme.DARK}
-                width="100%"
-                height="100%"
-                searchDisabled
-                skinTonesDisabled
-                previewConfig={{ showPreview: false }}
-                emojiStyle={EmojiStyle.NATIVE}
-              />
-            </div>
+            <SimpleEmojiPicker
+              onEmojiSelect={handleEmojiSelect}
+              onClose={() => setShowEmoji(false)}
+            />
           </div>
         )}
 

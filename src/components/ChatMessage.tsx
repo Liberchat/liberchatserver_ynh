@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import ImageModal from './ImageModal';
-import EmojiPicker, { Theme, EmojiClickData, EmojiStyle } from 'emoji-picker-react';
+import SimpleEmojiPicker from './SimpleEmojiPicker';
 import { TranslationButton } from './TranslationButton';
 import { TranslationModal } from './TranslationModal';
 import { AutoTranslation } from './AutoTranslation';
@@ -593,23 +593,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                   <X size={16} /> {t.chat.cancel}
                 </button>
                 {showEmojiPicker && (
-                  <div className="absolute z-50 mt-2 border-4 border-red-700 rounded-2xl shadow-2xl bg-black/95 p-2 anarchist-emoji-picker left-1/2 -translate-x-1/2 w-[95vw] max-w-xs sm:left-0 sm:translate-x-0 sm:w-auto sm:max-w-[100vw]" style={{ minWidth: 200 }}>
-                    <div className="text-center text-red-500 font-mono font-bold mb-2 text-lg tracking-widest">⚑ EMOJIS LIBRES</div>
-                    <div className="anarchist-emoji-inner" style={{ height: '260px', width: '100%', minHeight: '260px' }}>
-                      <EmojiPicker
-                        onEmojiClick={(emojiData: EmojiClickData) => {
-                          handleReact(emojiData.emoji);
-                          setShowEmojiPicker(false);
-                        }}
-                        theme={Theme.DARK}
-                        width="100%"
-                        height="100%"
-                        searchDisabled
-                        skinTonesDisabled
-                        previewConfig={{ showPreview: false }}
-                        emojiStyle={EmojiStyle.NATIVE}
-                      />
-                    </div>
+                  <div className="absolute z-50 mt-2 left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0">
+                    <SimpleEmojiPicker
+                      onEmojiSelect={(emoji) => {
+                        handleReact(emoji);
+                        setShowEmojiPicker(false);
+                      }}
+                      onClose={() => setShowEmojiPicker(false)}
+                    />
                   </div>
                 )}
               </div>
@@ -669,23 +660,14 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                   <X size={16} /> Annuler
                 </button>
                 {showEmojiPicker && (
-                  <div className="absolute z-50 mt-2 border-4 border-red-700 rounded-2xl shadow-2xl bg-black/95 p-2 anarchist-emoji-picker left-1/2 -translate-x-1/2 w-[95vw] max-w-xs sm:left-0 sm:translate-x-0 sm:w-auto sm:max-w-[100vw]" style={{ minWidth: 200 }}>
-                    <div className="text-center text-red-500 font-mono font-bold mb-2 text-lg tracking-widest">⚑ EMOJIS LIBRES</div>
-                    <div className="anarchist-emoji-inner" style={{ height: '260px', width: '100%', minHeight: '260px' }}>
-                      <EmojiPicker
-                        onEmojiClick={(emojiData: EmojiClickData) => {
-                          handleReact(emojiData.emoji);
-                          setShowEmojiPicker(false);
-                        }}
-                        theme={Theme.DARK}
-                        width="100%"
-                        height="100%"
-                        searchDisabled
-                        skinTonesDisabled
-                        previewConfig={{ showPreview: false }}
-                        emojiStyle={EmojiStyle.NATIVE}
-                      />
-                    </div>
+                  <div className="absolute z-50 mt-2 left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0">
+                    <SimpleEmojiPicker
+                      onEmojiSelect={(emoji) => {
+                        handleReact(emoji);
+                        setShowEmojiPicker(false);
+                      }}
+                      onClose={() => setShowEmojiPicker(false)}
+                    />
                   </div>
                 )}
               </div>
