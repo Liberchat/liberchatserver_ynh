@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import ImageModal from './ImageModal';
-import EmojiPicker, { Theme, EmojiClickData } from 'emoji-picker-react';
+import EmojiPicker, { Theme, EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 import { TranslationButton } from './TranslationButton';
 import { TranslationModal } from './TranslationModal';
 import { AutoTranslation } from './AutoTranslation';
@@ -607,6 +607,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                         searchDisabled
                         skinTonesDisabled
                         previewConfig={{ showPreview: false }}
+                        emojiStyle={EmojiStyle.NATIVE}
                       />
                     </div>
                   </div>
@@ -682,6 +683,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
                         searchDisabled
                         skinTonesDisabled
                         previewConfig={{ showPreview: false }}
+                        emojiStyle={EmojiStyle.NATIVE}
                       />
                     </div>
                   </div>

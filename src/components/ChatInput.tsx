@@ -1,5 +1,5 @@
 import React, { useState, FormEvent, ChangeEvent, useRef } from 'react';
-import EmojiPicker, { Theme, EmojiClickData } from 'emoji-picker-react';
+import EmojiPicker, { Theme, EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 import { UserList } from './UserList';
 import { TranslationSettings } from './TranslationSettings';
 import { useI18nContext } from '../contexts/I18nContext';
@@ -461,6 +461,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
                 searchDisabled
                 skinTonesDisabled
                 previewConfig={{ showPreview: false }}
+                emojiStyle={EmojiStyle.NATIVE}
               />
             </div>
           </div>
