@@ -10,7 +10,7 @@ export default defineConfig({
     react(),
     obfuscator({
       include: ['src/**/*.tsx', 'src/**/*.ts'],
-      exclude: [/node_modules/, /react/, /react-dom/, /react-jsx-runtime/],
+      exclude: [/node_modules/, /react/, /react-dom/, /react-jsx-runtime/, /emoji-picker-react/],
       apply: 'build', // Seulement en production
       options: {
         compact: true,
@@ -18,14 +18,14 @@ export default defineConfig({
         controlFlowFlatteningThreshold: 0.75,
         deadCodeInjection: true,
         deadCodeInjectionThreshold: 0.4,
-        debugProtection: true,
-        debugProtectionInterval: 2000,
+        debugProtection: false, // Désactivé - peut casser emoji-picker-react
+        debugProtectionInterval: 0,
         disableConsoleOutput: true,
         identifierNamesGenerator: 'hexadecimal',
         log: false,
         numbersToExpressions: true,
         renameGlobals: false,
-        selfDefending: true,
+        selfDefending: false, // Désactivé - peut casser des libs tierces
         simplify: true,
         splitStrings: true,
         splitStringsChunkLength: 10,
