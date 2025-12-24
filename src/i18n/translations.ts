@@ -41,6 +41,17 @@ export interface Translation {
     audioNotSupported: string;
   };
 
+  // Messages privés
+  privateChat?: {
+    title: string;
+    noMessages: string;
+    newMessages: string;
+    startConversation: string;
+    typing: string;
+    read: string;
+    delivered: string;
+  };
+
   // Utilisateurs
   users: {
     online: string;
@@ -231,6 +242,16 @@ export const fr: Translation = {
     voiceMessageLabel: "Message vocal",
     fileNotSupported: "Fichier non supporté",
     audioNotSupported: "Lecture vocale non supportée sur ce navigateur/appareil"
+  },
+
+  privateChat: {
+    title: "Message privé",
+    noMessages: "Aucun message. Commencez la conversation !",
+    newMessages: "nouveaux",
+    startConversation: "Cliquez pour envoyer un message privé",
+    typing: "écrit...",
+    read: "Lu",
+    delivered: "Envoyé"
   },
 
   users: {

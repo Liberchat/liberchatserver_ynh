@@ -6,6 +6,7 @@ import ChatInput from './ChatInput';
 import { UserList } from './UserList';
 import Header from './Header';
 import { TranslationSettings } from './TranslationSettings';
+import PrivateChat from './PrivateChat';
 import CryptoJS from 'crypto-js';
 import { useAccessibility } from '../hooks/useAccessibility';
 import { useCustomThemes } from '../hooks/useCustomThemes';
@@ -45,6 +46,8 @@ function AppContent() {
   const [callingUser, setCallingUser] = useState<string>('');
   // State pour la clé symétrique (CryptoKey ou string selon le backend)
   const [symmetricKey, setSymmetricKey] = useState<CryptoKey | string | null>(null);
+  // Clé JavaScript pour les messages privés (toujours générée, même avec WASM)
+  const [privateMessageKey, setPrivateMessageKey] = useState<CryptoKey | null>(null);
   const [keyPrompt, setKeyPrompt] = useState(false);
   const [keyInput, setKeyInput] = useState('');
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
@@ -59,6 +62,9 @@ function AppContent() {
   const [autoTranslationLanguage, setAutoTranslationLanguage] = useState('fr');
   const [useWasm, setUseWasm] = useState(false);
   const [wasmReady, setWasmReady] = useState(false);
+  const [privateChatUser, setPrivateChatUser] = useState<string | null>(null);
+  const [unreadPrivateMessages, setUnreadPrivateMessages] = useState<{ [username: string]: number }>({});
+  const privateChatUserRef = useRef<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Hook d'accessibilité
@@ -74,7 +80,10 @@ function AppContent() {
     deleteTheme: deleteCustomTheme
   } = useCustomThemes();
 
-
+  // Synchroniser la ref avec l'état du chat privé
+  useEffect(() => {
+    privateChatUserRef.current = privateChatUser;
+  }, [privateChatUser]);
 
   // Initialisation du module WebAssembly (protection maximale)
   useEffect(() => {
@@ -88,12 +97,19 @@ function AppContent() {
       }
 
       initWasmCrypto()
-        .then(() => {
+        .then(async () => {
           console.log('✅ WebAssembly initialisé avec succès');
           setUseWasm(true);
           setWasmReady(true);
           setSymmetricKey('wasm-initialized' as any); // Flag pour indiquer que WASM est prêt
           setIsFallbackCrypto(false);
+          
+          // Générer aussi une clé JavaScript pour les messages privés
+          const pmKey = await generateSymmetricKeyFromPassword('liberchat-private-messages-shared-key-2024');
+          if (typeof pmKey !== 'string') {
+            setPrivateMessageKey(pmKey);
+            console.log('🔐 Clé pour messages privés générée');
+          }
         })
         .catch((error) => {
           console.warn('⚠️ WebAssembly non disponible, fallback sur JavaScript obfusqué');
@@ -228,6 +244,17 @@ function AppContent() {
       // Si l'utilisateur qui part était en appel, on termine l'appel
       if (user === callingUser) {
         setCallingUser('');
+      }
+    });
+
+    // Gestion des messages privés non lus
+    newSocket.on('private message', (msg: any) => {
+      // Si le chat privé n'est pas ouvert avec cet utilisateur, incrémenter le compteur
+      if (msg.from !== username && privateChatUserRef.current !== msg.from) {
+        setUnreadPrivateMessages(prev => ({
+          ...prev,
+          [msg.from]: (prev[msg.from] || 0) + 1
+        }));
       }
     });
 
@@ -848,7 +875,15 @@ function AppContent() {
           role="complementary"
           aria-label="Liste des utilisateurs connectés"
         >
-          <UserList users={users} currentUser={username} />
+          <UserList 
+            users={users} 
+            currentUser={username}
+            onPrivateMessage={(user) => {
+              setPrivateChatUser(user);
+              setUnreadPrivateMessages(prev => ({ ...prev, [user]: 0 }));
+            }}
+            unreadPrivateMessages={unreadPrivateMessages}
+          />
         </aside>
         <div className="flex-1 flex flex-col bg-black/80 border-l-0 sm:border-l-4 border-red-700 min-h-0">
           <main
@@ -917,6 +952,28 @@ function AppContent() {
           </div>
         </div>
       </div>
+
+      {/* Modal de chat privé */}
+      {privateChatUser && (
+        <PrivateChat
+          socket={socket}
+          currentUser={username}
+          targetUser={privateChatUser}
+          onClose={() => setPrivateChatUser(null)}
+          symmetricKey={privateMessageKey || symmetricKey}
+          encryptMessageE2EE={encryptMessageE2EE}
+          decryptMessageE2EE={decryptMessageE2EE}
+          useWasm={useWasm}
+          wasmReady={wasmReady}
+          encryptWasm={encryptWasm}
+          decryptWasm={decryptWasm}
+          uint8ArrayToBase64={uint8ArrayToBase64}
+          base64ToUint8Array={base64ToUint8Array}
+          autoTranslationEnabled={autoTranslationEnabled}
+          autoTranslationLanguage={autoTranslationLanguage}
+          onTranslationSettingsChange={handleTranslationSettingsChange}
+        />
+      )}
     </div>
   );
 }

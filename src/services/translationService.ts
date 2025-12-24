@@ -10,15 +10,21 @@ export interface TranslationResult {
 }
 
 class TranslationService {
-  private baseUrl = 'https://libretranslate.unionlibertaireanarchiste.org';
+  // Utiliser le proxy du serveur pour éviter les problèmes CORS
+  private getApiBaseUrl(): string {
+    if (import.meta.env.DEV) {
+      return 'http://localhost:3000/api/translate';
+    }
+    // En production, utiliser le chemin relatif
+    const basePath = window.location.pathname.match(/^(\/[^/]+)/)?.[1] || '';
+    return `${basePath}/api/translate`;
+  }
+
   private fallbackUrls = [
     'https://libretranslate.com',
-    'https://translate.argosopentech.com',
-    'https://libretranslate.de'
+    'https://translate.argosopentech.com'
   ];
   private supportedLanguages: TranslationLanguage[] = [];
-  private currentBaseUrl = this.baseUrl;
-  private apiKey: string | null = null; // Certaines instances peuvent nécessiter une clé API
 
   constructor() {
     this.loadSupportedLanguages();
@@ -26,30 +32,35 @@ class TranslationService {
 
   // Charge la liste des langues supportées
   async loadSupportedLanguages(): Promise<void> {
-    // Essayer d'abord l'URL principale, puis les fallbacks
-    const urlsToTry = [this.baseUrl, ...this.fallbackUrls];
+    try {
+      // Essayer d'abord via le proxy du serveur
+      const response = await fetch(`${this.getApiBaseUrl()}/languages`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        signal: AbortSignal.timeout(5000)
+      });
 
-    for (const url of urlsToTry) {
+      if (response.ok) {
+        const languages = await response.json();
+        this.supportedLanguages = languages;
+        return;
+      }
+    } catch (error) {
+      console.warn('Proxy translation service unavailable, trying direct access');
+    }
+
+    // Fallback: essayer les URLs directes
+    for (const url of this.fallbackUrls) {
       try {
-        const headers: Record<string, string> = {
-          'Accept': 'application/json',
-        };
-
-        // Ajouter la clé API si disponible
-        if (this.apiKey && url === this.baseUrl) {
-          headers['Authorization'] = `Bearer ${this.apiKey}`;
-        }
-
         const response = await fetch(`${url}/languages`, {
           method: 'GET',
-          headers,
-          signal: AbortSignal.timeout(5000) // Timeout de 5 secondes
+          headers: { 'Accept': 'application/json' },
+          signal: AbortSignal.timeout(5000)
         });
 
         if (response.ok) {
           const languages = await response.json();
           this.supportedLanguages = languages;
-          this.currentBaseUrl = url;
           return;
         }
       } catch (error) {
@@ -79,7 +90,7 @@ class TranslationService {
   // Détecte la langue d'un texte
   async detectLanguage(text: string): Promise<string> {
     try {
-      const response = await fetch(`${this.currentBaseUrl}/detect`, {
+      const response = await fetch(`${this.getApiBaseUrl()}/detect`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,55 +110,60 @@ class TranslationService {
     return 'auto';
   }
 
-  // Traduit un texte avec fallback sur plusieurs services
+  // Traduit un texte
   async translateText(
     text: string,
     targetLanguage: string,
     sourceLanguage: string = 'auto'
   ): Promise<TranslationResult> {
-    // Essayer d'abord le service actuel, puis les fallbacks
-    const urlsToTry = [this.currentBaseUrl, ...this.fallbackUrls.filter(url => url !== this.currentBaseUrl)];
-
-    for (const url of urlsToTry) {
-      try {
-        const requestBody = {
+    // Essayer d'abord via le proxy du serveur
+    try {
+      const response = await fetch(this.getApiBaseUrl(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
           q: text,
           source: sourceLanguage,
           target: targetLanguage,
           format: 'text'
+        }),
+        signal: AbortSignal.timeout(10000)
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        return {
+          translatedText: result.translatedText,
+          detectedLanguage: result.detectedLanguage
         };
+      }
+    } catch (error) {
+      console.warn('Proxy translation failed, trying direct access');
+    }
 
-        // Ajouter la clé API si nécessaire
-        if (this.apiKey && url === this.baseUrl) {
-          (requestBody as any).api_key = this.apiKey;
-        }
-
-        const headers: Record<string, string> = {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        };
-
-        // Certaines instances utilisent l'en-tête Authorization
-        if (this.apiKey && url === this.baseUrl) {
-          headers['Authorization'] = `Bearer ${this.apiKey}`;
-        }
-
+    // Fallback: essayer les URLs directes
+    for (const url of this.fallbackUrls) {
+      try {
         const response = await fetch(`${url}/translate`, {
           method: 'POST',
-          mode: 'cors',
-          headers,
-          body: JSON.stringify(requestBody),
-          signal: AbortSignal.timeout(10000) // Timeout de 10 secondes
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            q: text,
+            source: sourceLanguage,
+            target: targetLanguage,
+            format: 'text'
+          }),
+          signal: AbortSignal.timeout(10000)
         });
 
         if (response.ok) {
           const result = await response.json();
-
-          // Mettre à jour le service actuel si ce n'était pas le premier essayé
-          if (url !== this.currentBaseUrl) {
-            this.currentBaseUrl = url;
-          }
-
           return {
             translatedText: result.translatedText,
             detectedLanguage: result.detectedLanguage
@@ -158,7 +174,7 @@ class TranslationService {
       }
     }
 
-    // Si tous les services échouent, retourner une traduction simulée ou le texte original
+    // Si tous les services échouent
     return this.getFallbackTranslation(text, targetLanguage, sourceLanguage);
   }
 

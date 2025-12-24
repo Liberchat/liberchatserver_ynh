@@ -39,6 +39,16 @@ export const eo: Translation = {
     audioNotSupported: "Voĉa ludado ne subtenata en ĉi tiu retumilo/aparato"
   },
 
+  privateChat: {
+    title: "Privata mesaĝo",
+    noMessages: "Neniuj mesaĝoj. Komencu la konversacion!",
+    newMessages: "novaj",
+    startConversation: "Klaku por sendi privatan mesaĝon",
+    typing: "skribas...",
+    read: "Legita",
+    delivered: "Sendita"
+  },
+
   users: {
     online: "enrete",
     you: "Vi",

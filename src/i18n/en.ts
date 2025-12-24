@@ -39,6 +39,16 @@ export const en: Translation = {
         audioNotSupported: "Voice playback not supported on this browser/device"
     },
 
+    privateChat: {
+        title: "Private message",
+        noMessages: "No messages. Start the conversation!",
+        newMessages: "new",
+        startConversation: "Click to send a private message",
+        typing: "typing...",
+        read: "Read",
+        delivered: "Delivered"
+    },
+
     users: {
         online: "online",
         you: "You",

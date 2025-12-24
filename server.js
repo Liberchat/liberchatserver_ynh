@@ -199,7 +199,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // Routes pour LibreTranslate (proxy pour éviter CORS)
 app.get(`${basePath}/api/translate/languages`, async (req, res) => {
   try {
-    const response = await fetch('https://libretranslate.unionlibertaireanarchiste.org/languages');
+    const response = await fetch('https://libretranslate.com/languages');
     const data = await response.json();
     res.json(data);
   } catch (error) {
@@ -211,7 +211,7 @@ app.get(`${basePath}/api/translate/languages`, async (req, res) => {
 app.post(`${basePath}/api/translate`, async (req, res) => {
   try {
     const { q, source, target, format } = req.body;
-    const response = await fetch('https://libretranslate.unionlibertaireanarchiste.org/translate', {
+    const response = await fetch('https://libretranslate.com/translate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -229,7 +229,7 @@ app.post(`${basePath}/api/translate`, async (req, res) => {
 app.post(`${basePath}/api/translate/detect`, async (req, res) => {
   try {
     const { q } = req.body;
-    const response = await fetch('https://libretranslate.unionlibertaireanarchiste.org/detect', {
+    const response = await fetch('https://libretranslate.com/detect', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -462,8 +462,15 @@ app.get('*', staticFileLimiter, handleSpa);
 const users = new Map();
 const usersByName = new Map();
 const messages = [];
+const privateMessages = new Map(); // Map<conversationId, Message[]> pour les messages privés
 const MAX_MESSAGES = parseInt(process.env.MAX_MESSAGES) || 100;
+const MAX_PRIVATE_MESSAGES = 50; // Limite par conversation privée
 let nextMessageId = 1;
+
+// Génère un ID de conversation unique entre deux utilisateurs (ordre alphabétique)
+const getConversationId = (user1, user2) => {
+  return [user1, user2].sort().join(':');
+};
 
 const cleanOldMessages = () => {
   if (messages.length > MAX_MESSAGES) {
@@ -667,6 +674,139 @@ io.on('connection', (socket) => {
     };
     messages.push(systemMessage);
     io.emit('chat message', systemMessage);
+  });
+
+  // ===== MESSAGES PRIVÉS =====
+
+  // Envoi d'un message privé
+  socket.on('private message', (data) => {
+    const sender = users.get(socket.id);
+    if (!sender) return;
+
+    const { to, content, type = 'text', fileData, fileType, fileName, replyTo } = data;
+    const recipientSocketId = usersByName.get(to);
+
+    if (!recipientSocketId) {
+      socket.emit('private message error', { error: 'Utilisateur non connecté' });
+      return;
+    }
+
+    const conversationId = getConversationId(sender.username, to);
+    const message = {
+      id: nextMessageId++,
+      type,
+      from: sender.username,
+      to,
+      content: type === 'text' ? xss(content) : content,
+      fileData,
+      fileType,
+      fileName: fileName ? xss(fileName) : undefined,
+      timestamp: Date.now(),
+      replyTo,
+      read: false
+    };
+
+    // Stockage du message privé
+    if (!privateMessages.has(conversationId)) {
+      privateMessages.set(conversationId, []);
+    }
+    const convMessages = privateMessages.get(conversationId);
+    convMessages.push(message);
+    // Limite le nombre de messages par conversation
+    if (convMessages.length > MAX_PRIVATE_MESSAGES) {
+      convMessages.splice(0, convMessages.length - MAX_PRIVATE_MESSAGES);
+    }
+
+    // Envoie au destinataire
+    io.to(recipientSocketId).emit('private message', message);
+    // Envoie aussi à l'expéditeur pour confirmation
+    socket.emit('private message', message);
+
+    logger.info(`Message privé de ${encodeURIComponent(sender.username)} à ${encodeURIComponent(to)}`);
+  });
+
+  // Récupération de l'historique d'une conversation privée
+  socket.on('get private history', (data) => {
+    const user = users.get(socket.id);
+    if (!user) return;
+
+    const { with: otherUser } = data;
+    const conversationId = getConversationId(user.username, otherUser);
+    const history = privateMessages.get(conversationId) || [];
+
+    socket.emit('private history', {
+      with: otherUser,
+      messages: history.slice(-MAX_PRIVATE_MESSAGES)
+    });
+  });
+
+  // Marquer les messages comme lus
+  socket.on('mark private read', (data) => {
+    const user = users.get(socket.id);
+    if (!user) return;
+
+    const { from } = data;
+    const conversationId = getConversationId(user.username, from);
+    const convMessages = privateMessages.get(conversationId);
+
+    if (convMessages) {
+      convMessages.forEach(msg => {
+        if (msg.to === user.username && !msg.read) {
+          msg.read = true;
+        }
+      });
+      // Notifie l'expéditeur que ses messages ont été lus
+      const senderSocketId = usersByName.get(from);
+      if (senderSocketId) {
+        io.to(senderSocketId).emit('private messages read', { by: user.username });
+      }
+    }
+  });
+
+  // Indicateur "en train d'écrire" pour les messages privés
+  socket.on('private typing', (data) => {
+    const user = users.get(socket.id);
+    if (!user) return;
+
+    const { to } = data;
+    const recipientSocketId = usersByName.get(to);
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit('private typing', { from: user.username });
+    }
+  });
+
+  socket.on('private stop typing', (data) => {
+    const user = users.get(socket.id);
+    if (!user) return;
+
+    const { to } = data;
+    const recipientSocketId = usersByName.get(to);
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit('private stop typing', { from: user.username });
+    }
+  });
+
+  // Suppression d'un message privé
+  socket.on('delete private message', (data) => {
+    const user = users.get(socket.id);
+    if (!user) return;
+
+    const { id, with: otherUser } = data;
+    const conversationId = getConversationId(user.username, otherUser);
+    const convMessages = privateMessages.get(conversationId);
+
+    if (convMessages) {
+      const msgIndex = convMessages.findIndex(m => m.id === id);
+      if (msgIndex !== -1 && convMessages[msgIndex].from === user.username) {
+        convMessages.splice(msgIndex, 1);
+        // Notifie les deux utilisateurs
+        socket.emit('private message deleted', { id, with: otherUser });
+        const otherSocketId = usersByName.get(otherUser);
+        if (otherSocketId) {
+          io.to(otherSocketId).emit('private message deleted', { id, with: user.username });
+        }
+      }
+    }
   });
 });
 
