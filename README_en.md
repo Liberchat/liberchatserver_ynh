@@ -16,9 +16,23 @@
 
 Liberchat is a free and decentralized chat application that prioritizes privacy and security.
 
-**Shipped version:** 6.1.21~ynh1
+**Shipped version:** 6.9.1~ynh1
 
 **Demo:** https://liberchat-3-0-1.onrender.com
+
+## 🆕 What's new in version 6.9.1 (December 24, 2025)
+
+### 😊 Local Emoji Picker
+- **100% local** - No external dependency (emoji-picker-react removed)
+- **Native Unicode emojis** - Uses system emojis, no CDN images
+- **Anarchist design** - Black/red/white style matching the app
+- **Recent emojis** - Remembers frequently used emojis
+- **10 categories** - Smileys, Gestures, Hearts, Animals, Food, Sports, Travel, Objects, Symbols, Flags
+- **Works everywhere** - Local, YunoHost, all browsers
+
+### 🔧 YunoHost Fixes
+- **restore/backup scripts** - Fixed `_common.sh` path issue
+- **CSP compatibility** - No more Content Security Policy blocking
 
 ## 🆕 What's new in version 6.1.21 (August 24, 2025)
 

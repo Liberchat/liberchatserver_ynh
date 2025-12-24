@@ -12,7 +12,7 @@
 [![Logiciel Libre](https://img.shields.io/badge/Logiciel_Libre-100%25-black?style=for-the-badge)](#)
 [![Anarcho-syndicaliste](https://img.shields.io/badge/Anarcho--syndicaliste-Noir_&_Rouge-black?style=for-the-badge&labelColor=ff2800)](#)
 
-[![Version](https://img.shields.io/badge/Version-6.9.0-red?style=for-the-badge)](#)
+[![Version](https://img.shields.io/badge/Version-6.9.1-red?style=for-the-badge)](#)
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white)](https://socket.io/)
@@ -40,6 +40,24 @@ LiberChat est une application de chat en temps réel qui privilégie la confiden
 - � **Tuhèmes personnalisables** - Mode sombre/clair + thèmes custom
 - ♿ **Accessibilité** - Support lecteurs d'écran, contraste élevé
 - 🌐 **Multi-instance** - Plusieurs instances sur le même serveur
+
+---
+
+## Nouveautés v6.9.1
+
+### 😊 Sélecteur d'Emojis Local
+
+- **100% local** - Plus de dépendance externe (emoji-picker-react supprimé)
+- **Emojis Unicode natifs** - Utilise les emojis système, pas d'images CDN
+- **Design anarchiste** - Style noir/rouge/blanc cohérent avec l'app
+- **Récents** - Mémorisation des emojis fréquemment utilisés
+- **10 catégories** - Smileys, Gestes, Coeurs, Animaux, Food, Sport, Voyage, Objets, Symboles, Drapeaux
+- **Fonctionne partout** - Local, YunoHost, tous navigateurs
+
+### 🔧 Corrections YunoHost
+
+- **Scripts restore/backup** - Correction du chemin `_common.sh`
+- **Compatibilité CSP** - Plus de blocage par Content Security Policy
 
 ---
 
@@ -371,7 +389,7 @@ Ce projet est sous licence MIT. Voir [LICENSE](./LICENSE) pour plus de détails.
 
 **🔐 Chiffrez en toute sécurité avec LiberChat 🔐**
 
-Version 6.9.0 |
+Version 6.9.1 |
 
 </div>
 
@@ -379,6 +397,14 @@ Version 6.9.0 |
 ---
 
 ## 📜 Historique des Versions
+
+### Version 6.9.1 (Décembre 2025) - "Local Emoji"
+
+- 😊 Sélecteur d'emojis 100% local (plus de CDN)
+- 🎨 Design anarchiste noir/rouge/blanc
+- 🕐 Emojis récents mémorisés
+- 🔧 Correction scripts YunoHost (restore/backup)
+- 🛡️ Compatibilité CSP améliorée
 
 ### Version 6.9.0 (Décembre 2025) - "Fortress"
 
