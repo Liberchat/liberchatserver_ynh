@@ -2,472 +2,507 @@
 
 <img src="./icon.png" alt="LiberChat Logo" width="200"/>
 
-# 🚩🏴 ✊ LiberChat — La Commune Numérique
+# LiberChat — End-to-End Encrypted Chat
 
-<p align="center" style="font-size:1.2em; color:#ff2800; font-weight:bold;">
-« Pour l'autogestion, la solidarité et la liberté numérique. Un chat libre, par et pour le prolétariat. »
-</p>
+**Real-time, self-hosted chat for secure communication**
 
-[![Anticapitaliste](https://img.shields.io/badge/Anticapitaliste-✊-red?style=for-the-badge)](#)
-[![Logiciel Libre](https://img.shields.io/badge/Logiciel_Libre-100%25-black?style=for-the-badge)](#)
-[![Anarcho-syndicaliste](https://img.shields.io/badge/Anarcho--syndicaliste-Noir_&_Rouge-black?style=for-the-badge&labelColor=ff2800)](#)
-
-[![Version](https://img.shields.io/badge/Version-6.9.1-red?style=for-the-badge)](#)
+[![Version](https://img.shields.io/badge/Version-6.9.2-red?style=for-the-badge)](#)
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white)](https://socket.io/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-**Un chat en temps réel, autogéré, horizontal, pour la Commune numérique.**
+**A self-managed, privacy-focused chat application designed for YunoHost.**
 
-[📝 Documentation](#documentation) | [🤝 Contribuer](#contribution) | [📧 Contact](#support) | [🏠 YunoHost](https://github.com/Liberchat/liberchatserver_ynh)
+[Documentation](#documentation) | [Contribute](#contribution) | [Support](#support) | [YunoHost](https://github.com/Liberchat/liberchatserver_ynh)
 
 </div>
 
 ---
 
-## Vue d'ensemble
+## Overview
 
-LiberChat est une application de chat en temps réel qui privilégie la confidentialité et la sécurité. Conçue pour être auto-hébergée sur YunoHost, elle offre un niveau de sécurité comparable à Signal et WhatsApp.
+LiberChat is a real-time chat application that prioritizes privacy and security. Designed to be self-hosted on YunoHost, it offers a security level comparable to Signal and WhatsApp.
 
-### Caractéristiques principales
+### Main Features
 
-- 💬 **Chat en temps réel** - Messages instantanés avec WebSocket
-- 🔐 **Chiffrement E2EE** - AES-256-GCM avec Perfect Forward Secrecy
-- � **Partage de fichiers** - Images, documents, GIFs, messages vocaux (chiffrés)
-- 😊 **Réactions emoji** - Réagissez aux messages
-- 🌍 **Traduction automatique** - Support multi-langues (FR, EN, ES, EO)
-- � **Tuhèmes personnalisables** - Mode sombre/clair + thèmes custom
-- ♿ **Accessibilité** - Support lecteurs d'écran, contraste élevé
-- 🌐 **Multi-instance** - Plusieurs instances sur le même serveur
-
----
-
-## Nouveautés v6.9.1
-
-### 😊 Sélecteur d'Emojis Local
-
-- **100% local** - Plus de dépendance externe (emoji-picker-react supprimé)
-- **Emojis Unicode natifs** - Utilise les emojis système, pas d'images CDN
-- **Design anarchiste** - Style noir/rouge/blanc cohérent avec l'app
-- **Récents** - Mémorisation des emojis fréquemment utilisés
-- **10 catégories** - Smileys, Gestes, Coeurs, Animaux, Food, Sport, Voyage, Objets, Symboles, Drapeaux
-- **Fonctionne partout** - Local, YunoHost, tous navigateurs
-
-### 🔧 Corrections YunoHost
-
-- **Scripts restore/backup** - Correction du chemin `_common.sh`
-- **Compatibilité CSP** - Plus de blocage par Content Security Policy
+- Real-time chat - Instant messages with WebSocket
+- E2EE Encryption - AES-256-GCM with Perfect Forward Secrecy
+- File sharing - Images, documents, GIFs, voice messages (encrypted)
+- Reactions - React to messages
+- Auto translation - Multi-language support (EN, FR, ES, EO)
+- Custom themes - Dark/light mode + custom themes
+- Accessibility - Screen reader support, high contrast
+- Multi-instance - Multiple instances on the same server
 
 ---
 
-## Nouveautés v6.9.0
+## What's New v6.9.2
 
-### 🔐 Système de Cryptage v2.0
+###  Enhanced Security
 
-**Niveau de sécurité : 9.8/10** (comparable à Signal et WhatsApp)
+- Full security audit of the project  
+- Fixed **10 vulnerabilities** in the dependency tree  
+  - 1 minor  
+  - 4 moderate  
+  - 5 critical  
+- **No remaining known vulnerabilities**
 
-#### AES-256-GCM avec Authentification
+###  Dependency Updates (NPM)
 
-- Chiffrement avec authentification intégrée (NIST SP 800-38D)
-- Détection automatique de toute modification de message
-- Tag d'authentification de 16 bytes par message
-- Protection contre les attaques par manipulation
+- Updated several major dependencies to their latest stable versions  
+- Improved overall reliability and long-term maintenance  
 
-#### Perfect Forward Secrecy (X25519)
+### Build Improvements
 
-- Échange de clés Diffie-Hellman avec courbe elliptique
-- Clés éphémères uniques pour chaque session
-- Protection rétroactive : compromission d'une clé ≠ compromission historique
-- Technologie utilisée par Signal et WhatsApp
+- Validated **WebAssembly build** (`wasm-pack`)  
+- Verified JavaScript **code obfuscation and compression** after updates  
+- Ensured compatibility with the latest toolchain versions  
 
-#### Rotation Automatique des Clés
+---
 
-- Renouvellement automatique toutes les 30 minutes
-- Limite la fenêtre d'exposition en cas de compromission
-- Entropie supplémentaire à chaque rotation
-- Transparent pour l'utilisateur
+###  Notes
 
-#### Dérivation HKDF Multi-Couches
+- This update **does not change existing features**  
+- Focused on **stability, security, and long-term sustainability**  
+- Helps prevent potential **server compromise and security risks**
 
-- 3 couches de protection : XOR + HKDF + SHA-256
-- Impossible d'extraire la clé du code source
-- Protection contre rainbow tables avec salt complexe
-- Standard IETF (RFC 5869)
+---
 
-#### Performance
+## v6.9.1
 
--    **4x plus rapide** que la version précédente
-- 📦 **Messages 15% plus compacts**
-- 🔋 **Optimisé pour mobile**
--    **WebAssembly natif**
+### Local Emoji Selector
 
-### 🛡️ Comparaison de Sécurité
+- **100% local** - No external dependency (emoji-picker-react removed)
+- **Native Unicode emojis** - Uses system emojis, no CDN images
+- **10 categories** - Smileys, Gestures, Hearts, Animals, Food, Sport, Travel, Objects, Symbols, Flags
+- **Works everywhere** - Local, YunoHost, all browsers
 
-| Application | Score | Technologie |
+### YunoHost Fixes
+
+- **Restore/backup scripts** - Fixed `_common.sh` path
+- **CSP Compatibility** - No more Content Security Policy blocking
+
+---
+
+## Security v2.0
+
+**Security level: 9.8/10** (comparable to Signal)
+
+### AES-256-GCM with Authentication
+- Encryption with integrated authentication (NIST SP 800-38D)
+- Automatic detection of any message modification
+- 16-byte authentication tag per message
+- Protection against manipulation attacks
+
+### Perfect Forward Secrecy (X25519)
+- Elliptic curve Diffie-Hellman key exchange
+- Unique ephemeral keys for each session
+- Retroactive protection: one key compromise does not compromise history
+- Technology used by Signal and WhatsApp
+
+### Automatic Key Rotation
+- Automatic renewal every 30 minutes
+- Limits exposure window in case of compromise
+- Additional entropy at each rotation
+- Transparent for users
+
+### Multi-Layer HKDF Key Derivation
+- 3 layers of protection: XOR + HKDF + SHA-256
+- Impossible to extract key from source code
+- Protection against rainbow tables with complex salt
+- IETF Standard (RFC 5869)
+
+### Performance
+- **4x faster** than previous version
+- **15% more compact** messages
+- **Optimized for mobile**
+- **Native WebAssembly**
+
+### Security Comparison
+
+| Application | Score | Technology |
 |-------------|-------|-------------|
 | **LiberChat v6.9** | 9.8/10 | AES-GCM + X25519 + HKDF |
-  **Signal** | 8/10 | Double Ratchet + X3DH |
-  **LiberChat v6.8** | 7/10 | AES-CTR + SHA-256 |
+| **Signal** | 8/10 | Double Ratchet + X3DH |
+| **LiberChat v6.8** | 7/10 | AES-CTR + SHA-256 |
 | **WhatsApp** | 6/10 | Signal Protocol |
-| **Discord** | 6/10 | TLS uniquement |
+| **Discord** | 6/10 | TLS only |
 | **Telegram (secret)** | 4/10 | MTProto 2.0 |
 ---
 
-## Installation
-
-### Installation Simple
+## Simple Installation
 
 ```bash
 sudo yunohost app install https://github.com/Liberchat/liberchatserver_ynh
 ```
 
-### Installation Multi-Instance
+### Multi-Instance Installation
 
 ```bash
-sudo yunohost app install liberchat --args "domain=exemple.com&path=/equipe1"
-sudo yunohost app install liberchat --args "domain=exemple.com&path=/equipe2"
+sudo yunohost app install liberchat --args "domain=example.com&path=/team1"
+sudo yunohost app install liberchat --args "domain=example.com&path=/team2"
 ```
 
-### Prérequis
+### Requirements
 
 - YunoHost 11.2+
 - Node.js 20+
-- Rust (installé automatiquement)
-- 512 MB RAM minimum (1 GB recommandé)
+- Rust (installed automatically)
+- 512 MB RAM minimum (1 GB recommended)
 
 ---
 
-## Sécurité
+## Security
 
-### Chiffrement de Bout en Bout
+### End-to-End Encryption
 
-Tous les messages, fichiers et réactions sont chiffrés avant transmission :
+All messages, files, and reactions are encrypted before transmission:
 
-- **Messages texte** : AES-256-GCM
-- **Fichiers** : Chiffrement avant upload
-- **Messages vocaux** : Chiffrement audio
-- **Réactions emoji** : Chiffrées et authentifiées
+- **Text messages** : AES-256-GCM
+- **Files** : Encryption before upload
+- **Voice messages** : Audio encryption
+- **Reactions** : Encrypted and authenticated
 
-### Protections Actives
+### Active Protections
 
-- ✅ **Authentification des messages** - Détection de toute modification
-- ✅ **Perfect Forward Secrecy** - Protection rétroactive
-- ✅ **Rotation automatique** - Nouvelle clé toutes les 30 minutes
-- ✅ **Pas de logs serveur** - Confidentialité totale
-- ✅ **WebAssembly** - Code natif difficile à reverse-engineer
+- **Message authentication** - Detection of any modification
+- **Perfect Forward Secrecy** - Retroactive protection
+- **Automatic rotation** - New key every 30 minutes
+- **No server logs** - Total privacy
+- **WebAssembly** - Native code difficult to reverse-engineer
 
-### Standards Utilisés
+### Standards Used
 
 - **AES-256-GCM** : NIST SP 800-38D
 - **X25519** : RFC 7748 (Curve25519)
 - **HKDF** : RFC 5869
 - **WebAssembly** : W3C Standard
 
----
-
-## Fonctionnalités
-
 ### Communication
 
-- � Meossages instantanés en temps réel
-- 🎤 Messages vocaux chiffrés
-- 📎 Partage de fichiers (images, documents, GIFs)
-- 💬 Réponses aux messages
-- ✏️ Édition et suppression de messages
-- 😊 Réactions emoji
--    Indicateur "en train d'écrire"
+- Real-time instant messages
+- Encrypted voice messages
+- File sharing (images, documents, GIFs)
+- Message replies
+- Edit and delete messages
+- Reactions
+- Typing indicator
 
 ### Interface
 
-- 🎨 Thèmes personnalisables (mode sombre/clair)
-- 🌍 Interface multilingue (FR, EN, ES, DE, IT, PT, RU, ZH, JA, AR, EO)
-- 📱 Design responsive (mobile, tablette, desktop)
-- ♿ Accessibilité complète (WCAG 2.1 niveau AA)
-- 🔔 Notifications visuelles
+- Customizable themes (dark/light mode)
+- Multilingual interface (EN, FR, ES, DE, IT, PT, RU, ZH, JA, AR, EO)
+- Responsive design (mobile, tablet, desktop)
+- Full accessibility (WCAG 2.1 AA)
+- Visual notifications
 
-### Traduction
+### Translation
 
-- 🌐 Traduction automatique des messages
-- 🔄 Support de plus de 10 langues
-- 🎛️ Activation/désactivation par utilisateur
-- � API LibireTranslate (libre et open-source)
+- Automatic message translation
+- Support for 10+ languages
+- Per-user enable/disable
+- LibreTranslate API (free and open-source)
 
-### Accessibilité
+### Accessibility
 
-- � Taiflle de police ajustable (4 niveaux)
-- 🎨 Contraste élevé (noir/blanc/jaune)
-- 📖 Police dyslexie (Comic Sans MS)
-- 🔊 Support lecteurs d'écran (NVDA, JAWS, VoiceOver)
-- ⌨️ Navigation clavier complète
-- � Étiquetttes ARIA
+- Adjustable font size (4 levels)
+- High contrast (black/white/yellow)
+- Dyslexia font (Comic Sans MS)
+- Screen reader support (NVDA, JAWS, VoiceOver)
+- Full keyboard navigation
+- ARIA labels
 
 ---
 
 ## Configuration
 
-### Variables d'Environnement
+### Environment Variables
 
-Configurables via le panneau d'administration YunoHost :
+Configurable via YunoHost admin panel:
 
 ```bash
-MAX_MESSAGES=100          # Messages en mémoire
-MAX_FILE_SIZE=50          # Taille max fichiers (MB)
-PING_TIMEOUT=60000        # Timeout ping (ms)
-PING_INTERVAL=25000       # Intervalle ping (ms)
+MAX_MESSAGES=100          # Messages in memory
+MAX_FILE_SIZE=50          # Max file size (MB)
+PING_TIMEOUT=60000        # Ping timeout (ms)
+PING_INTERVAL=25000       # Ping interval (ms)
 ```
 
-### Domaines Supportés
+### Supported Domains
 
-- Domaines classiques (https://exemple.com/liberchat)
-- Adresses IP locales
-- Domaines .onion (Tor)
-- Localhost (développement)
-
----
-
-## Utilisation
-
-1. **Accédez à votre instance** : `https://votre-domaine.com/liberchat`
-2. **Choisissez un nom d'utilisateur**
-3. **Commencez à chatter** en toute sécurité
-
-Le chiffrement est automatique et transparent. Aucune configuration requise.
+- Classic domains (https://example.com/liberchat)
+- Local IP addresses
+- .onion domains (Tor)
+- Localhost (development)
 
 ---
 
-## Dépannage
+## Usage
 
-### Problème de Connexion WebSocket
+1. **Access your instance**: `https://your-domain.com/liberchat`
+2. **Choose a username**
+3. **Start chatting** securely
 
-Si les messages ne s'envoient pas :
+Encryption is automatic and transparent. No configuration required.
+
+---
+
+## Troubleshooting
+
+### WebSocket Connection Problem
+
+If messages don't send:
 
 ```bash
-# Vérifier le service
+# Check service
 sudo systemctl status liberchat
 
-# Voir les logs
+# View logs
 sudo journalctl -u liberchat -f
 
-# Redémarrer nginx
+# Reload nginx
 sudo systemctl reload nginx
 ```
 
-### Module WASM Non Chargé
+### WASM Module Not Loaded
 
 ```bash
-# Vérifier le fichier WASM
+# Check WASM file
 ls -lh /var/www/liberchat/crypto-wasm/pkg/
 
-# Recompiler si nécessaire
+# Recompile if needed
 cd /var/www/liberchat/crypto-wasm
 sudo -u liberchat wasm-pack build --target web --release
 
-# Redémarrer
+# Restart
 sudo systemctl restart liberchat
 ```
 
-### Mise à Jour
+### Update
 
 ```bash
 sudo yunohost app upgrade liberchat
 ```
 
----
 
-## Documentation
+### Useful Scripts
 
-### Guides Techniques
-
-- [CRYPTO_IMPROVEMENTS.md](./CRYPTO_IMPROVEMENTS.md) - Documentation technique du cryptage
-- [MIGRATION_CRYPTO_V2.md](./MIGRATION_CRYPTO_V2.md) - Guide de migration
-- [YUNOHOST_CRYPTO_V2.md](./YUNOHOST_CRYPTO_V2.md) - Guide YunoHost détaillé
-- [RELEASE_NOTES_7.0.0.md](./RELEASE_NOTES_7.0.0.md) - Notes de version
-
-### Scripts Utiles
-
-- `build-crypto.sh` - Compilation du module WASM
-- `test-yunohost-crypto.sh` - Tests automatiques
-- `test-crypto.html` - Suite de tests interactive
+- `build-crypto.sh` - WASM module compilation
+- `test-yunohost-crypto.sh` - Automated tests
+- `test-crypto.html` - Interactive test suite
 
 ---
 
-## Développement
+## Development
 
-### Structure du Projet
+### Project Structure
 
 ```
-├── src/                  # Code source React/TypeScript
-├── crypto-wasm/          # Module WASM de cryptage
-│   ├── src/lib.rs       # Code Rust
-│   └── pkg/             # Module compilé
-├── server.js             # Serveur Express/Socket.IO
-├── scripts/              # Scripts YunoHost
-└── conf/                 # Configuration YunoHost
+├── src/                  # React/TypeScript source code
+├── crypto-wasm/          # WASM encryption module
+│   ├── src/lib.rs       # Rust code
+│   └── pkg/             # Compiled module
+├── server.js             # Express/Socket.IO server
+├── scripts/              # YunoHost scripts
+└── conf/                 # YunoHost configuration
 ```
 
-### Build Local
+### Local Build
 
 ```bash
-# Installation des dépendances
+# Install dependencies
 npm install
 
-# Compilation WASM
+# Compile WASM
 npm run build:wasm
 
-# Build complet
+# Full build
 npm run build
 
-# Développement
+# Development
 npm run dev
 ```
 
 ### Tests
 
 ```bash
-# Tests unitaires Rust
+# Rust unit tests
 cd crypto-wasm && cargo test
 
-# Tests interactifs
-# Ouvrir test-crypto.html dans un navigateur
+# Interactive tests
+# Open test-crypto.html in a browser
 ```
 
 ---
 
 ## Contribution
 
-Les contributions sont les bienvenues ! Veuillez :
+Contributions are welcome! Please:
 
-1. Fork le projet
-2. Créer une branche (`git checkout -b feature/amelioration`)
-3. Commit vos changements (`git commit -m 'Ajout fonctionnalité'`)
-4. Push vers la branche (`git push origin feature/amelioration`)
-5. Ouvrir une Pull Request vers la branche `testing`
+1. Fork the project
+2. Create a branch (`git checkout -b feature/improvement`)
+3. Commit your changes (`git commit -m 'Add feature'`)
+4. Push to the branch (`git push origin feature/improvement`)
+5. Open a Pull Request to the `testing` branch
 
 ---
 
-## Licence
+## License
 
-Ce projet est sous licence MIT. Voir [LICENSE](./LICENSE) pour plus de détails.
+This project is under MIT license. See [LICENSE](./LICENSE) for more details.
 
 ---
 
 ## Support
 
 - **Issues** : [GitHub Issues](https://github.com/Liberchat/liberchatserver_ynh/issues)
-- **Forum YunoHost** : [Catégorie Apps](https://forum.yunohost.org/c/apps)
-- **Documentation** : [README principal](./README.md)
+- **YunoHost Forum** : [Apps Category](https://forum.yunohost.org/c/apps)
+- **Documentation** : [Main README](./README.md)
 
 ---
 
-## Crédits
+## Credits
 
 ### Technologies
 
-- **React** - Interface utilisateur
-- **TypeScript** - Typage statique
-- **Socket.IO** - Communication temps réel
-- **Express** - Serveur web
-- **Rust** - Module de cryptage WASM
-- **TailwindCSS** - Styles
+- **React** - User interface
+- **TypeScript** - Static typing
+- **Socket.IO** - Real-time communication
+- **Express** - Web server
+- **Rust** - WASM encryption module
+- **TailwindCSS** - Styling
 
-### Bibliothèques Cryptographiques
+### Cryptographic Libraries
 
 - **RustCrypto** - aes-gcm, hkdf, sha2
 - **Dalek Cryptography** - x25519-dalek
-- **wasm-bindgen** - Bindings Rust/JavaScript
+- **wasm-bindgen** - Rust/JavaScript bindings
 
 ### Inspiration
 
-- **Signal Protocol** - Architecture de sécurité
-- **WhatsApp** - Implémentation E2EE
-- **Matrix** - Chiffrement de bout en bout
+- **Signal Protocol** - Security architecture
+- **WhatsApp** - E2EE implementation
+- **Matrix** - End-to-end encryption
 
 ---
 
 <div align="center">
 
-**🔐 Chiffrez en toute sécurité avec LiberChat 🔐**
+**Secure messaging with LiberChat**
 
-Version 6.9.1 |
+Version 6.9.2 |
 
 </div>
 
 
 ---
 
-## 📜 Historique des Versions
+## Version History
 
-### Version 6.9.1 (Décembre 2025) - "Local Emoji"
+### Version 6.9.2 (2026) - "Stable"
 
-- 😊 Sélecteur d'emojis 100% local (plus de CDN)
-- 🎨 Design anarchiste noir/rouge/blanc
-- 🕐 Emojis récents mémorisés
-- 🔧 Correction scripts YunoHost (restore/backup)
-- 🛡️ Compatibilité CSP améliorée
+####  Enhanced Security
 
-### Version 6.9.0 (Décembre 2025) - "Fortress"
+- Full security audit of the project  
+- Fixed **10 vulnerabilities** in the dependency tree  
+  - 1 minor  
+  - 4 moderate  
+  - 5 critical  
+- **No remaining known vulnerabilities**
 
-**Système de cryptage v2.0 -**
+####  Dependency Updates (NPM)
 
-- 🔐 AES-256-GCM avec authentification intégrée
-- 🤝 Perfect Forward Secrecy (X25519 Diffie-Hellman)
-- 🔄 Rotation automatique des clés (30 minutes)
-- 🔑 Dérivation HKDF multi-couches
--     Performance 4x plus rapide (WebAssembly)
-- 🛡️ Niveau de sécurité : 9.8/10
+- Updated several major dependencies to their latest stable versions  
+- Improved overall reliability and long-term maintenance  
 
-### Version 6.8.0-(Novembre 2025)
+#### Build Improvements
 
-**Protection avancée du code**
+- Validated **WebAssembly build** (`wasm-pack`)  
+- Verified JavaScript **code obfuscation and compression** after updates  
+- Ensured compatibility with the latest toolchain versions  
 
-- 🛡️ Obfuscation multi-couches (12 niveaux)
-- 🚫 Anti-debugging actif
-- 🔒 Code illisible en production
-- 🔐 Chiffrement E2EE amélioré
+####  Notes
 
-### Version 6.7.1 (Novembre 2025)
+- This update **does not change existing features**  
+- Focused on **stability, security, and long-term sustainability**  
+- Helps prevent potential **server compromise and security risks**
 
-**Patch WebSocket automatique**
+### Version 6.9.1 (January 2026)
 
-- 🔧 Correction automatique du CSP YunoHost
-- 🛡️ Sécurité améliorée
-- 📚 Documentation enrichie
-- 🌐 Support multi-domaines
+#### Local Emoji Selector
 
-### Version 6.7.0 (Octobre 2025)
+- **100% local** - No external dependency (emoji-picker-react removed)
+- **Native Unicode emojis** - Uses system emojis, no CDN images
+- **10 categories** - Smileys, Gestures, Hearts, Animals, Food, Sport, Travel, Objects, Symbols, Flags
+- **Works everywhere** - Local, YunoHost, all browsers
 
-**Traduction automatique**
+#### YunoHost Fixes
 
-- 🌐 Traduction en temps réel des messages
-- 🎛️ Paramètres personnalisables
-- 🌍 Support de 10+ langues
-- 🔄 Fallback intelligent
+- **Restore/backup scripts** - Fixed `_common.sh` path
+- **CSP Compatibility** - No more Content Security Policy blocking
 
-### Version 6.6.0 (Septembre 2025)
+### Version 6.9.0 (December 2025) - "Fortress"
 
-**Accessibilité avancée**
+**Encryption system v2.0**
 
-- ♿ Interface adaptative intelligente
-- 🔤 Taille de police ajustable
-- 🎨 Contraste élevé
-- 📱 Optimisation mobile
+- AES-256-GCM with integrated authentication
+- Perfect Forward Secrecy (X25519 Diffie-Hellman)
+- Automatic key rotation (30 minutes)
+- Multi-layer HKDF key derivation
+- 4x faster performance (WebAssembly)
+- Security level: 9.8/10
 
-### Version 6.5.0 (Août 2025)
+### Version 6.8.0 (November 2025)
 
-**Architecture P2P**
+**Advanced code protection**
 
-- 🔗 Communication peer-to-peer
-- 🌍 Décentralisation totale
-- 🔐 Sécurité maximale renforcée
-- 🎭 Anonymat total
+- Multi-layer obfuscation (12 levels)
+- Active anti-debugging
+- Illegible code in production
+- Improved E2EE encryption
 
-### Versions Antérieures
+### Version 6.7.1 (November 2025)
 
-- **6.1.21** - Corrections panneau de configuration
-- **6.1.20** - Thèmes personnalisés en mode clair
-- **6.1.19** - Implémentation accessibilité complète
-- **6.1.18** - Indicateur "en train d'écrire"
-- **6.1.16** - Nouveau sélecteur d'emojis
+**Automatic WebSocket patch**
+
+- Automatic YunoHost CSP fix
+- Improved security
+- Enhanced documentation
+- Multi-domain support
+
+### Version 6.7.0 (October 2025)
+
+**Automatic translation**
+
+- Real-time message translation
+- Customizable settings
+- Support for 10+ languages
+- Intelligent fallback
+
+### Version 6.6.0 (September 2025)
+
+**Advanced accessibility**
+
+- Adaptive intelligent interface
+- Adjustable font size
+- High contrast
+- Mobile optimization
+
+### Version 6.5.0 (August 2025)
+
+**P2P Architecture**
+
+- Peer-to-peer communication
+- Total decentralization
+- Maximum security reinforced
+- Total anonymity
+
+### Previous Versions
+
+- **6.1.21** - Configuration panel fixes
+- **6.1.20** - Custom themes in light mode
+- **6.1.19** - Full accessibility implementation
+- **6.1.18** - Typing indicator
+- **6.1.16** - New emoji selector
 
 ---

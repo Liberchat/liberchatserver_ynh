@@ -1,49 +1,47 @@
-## 🔐 Chat Chiffré de Bout en Bout 
+## End-to-End Encrypted Chat
 
-**LiberChat v6.9.0** est une application de messagerie instantanée ultra-sécurisée avec chiffrement de bout en bout de niveau.
+**LiberChat v6.9.2** is an ultra-secure instant messaging application with military-grade end-to-end encryption.
 
-### ✨ Fonctionnalités Principales
+### Main Features
 
-- � **Chat en temps réel** - Messages instantanés avec WebSocket
-- 🔐 **Chiffrement E2EE** - AES-256-GCM + Perfect Forward Secrecy (X25519)
-- 📁 **Partage de fichiers** - Images, documents, GIFs, messages vocaux (chiffrés)
-- 😊 **Réactions emoji** - Réagissez aux messages
-- 💬 **Réponses** - Répondez à des messages spécifiques
-- ✏️ **Édition/Suppression** - Modifiez ou supprimez vos messages
-- 🌍 **Traduction automatique** - Support multi-langues (FR, EN, ES, EO)
-- 🎨 **Thèmes personnalisables** - Mode sombre/clair + thèmes custom
-- ♿ **Accessibilité** - Support lecteurs d'écran, contraste élevé
-- 🔄 **Rotation automatique des clés** - Nouvelle clé toutes les 30 minutes
+- Real-time chat - Instant messages with WebSocket
+- E2EE Encryption - AES-256-GCM + Perfect Forward Secrecy (X25519)
+- File sharing - Images, documents, GIFs, voice messages (encrypted)
+- Reactions - React to messages
+- Replies - Reply to specific messages
+- Edit/Delete - Edit or delete your messages
+- Automatic translation - Multi-language support (FR, EN, ES, EO)
+- Customizable themes - Dark/light mode + custom themes
+- Accessibility - Screen reader support, high contrast
+- Automatic key rotation - New key every 30 minutes
 
-### 🛡️ Sécurité collectif 
- 
- 
-    Niveau de sécurité  comparable à Signal 
+### Collective Security
 
-- ✅ **AES-256-GCM** - Chiffrement avec authentification intégrée
-- ✅ **X25519 Diffie-Hellman** - Perfect Forward Secrecy
-- ✅ **HKDF multi-couches** - Dérivation de clés ultra-sécurisée
-- ✅ **Rotation automatique** - Nouvelle clé toutes les 30 minutes
-- ✅ **WebAssembly** - Code natif difficile à reverse-engineer
-- ✅ **Pas de logs serveur** - Confidentialité totale
-- ✅ **Authentification des messages** - Détection de toute modification
+Security level comparable to Signal
 
-###  Performance
+- AES-256-GCM - Encryption with integrated authentication
+- X25519 Diffie-Hellman - Perfect Forward Secrecy
+- Multi-layer HKDF - Ultra-secure key derivation
+- Automatic rotation - New key every 30 minutes
+- WebAssembly - Native code difficult to reverse-engineer
+- No server logs - Total privacy
+- Message authentication - Detection of any modification
 
--     **4x plus rapide** que la version précédente
-- 📦 **Messages 15% plus compacts**
-- 🔋 **Optimisé pour mobile**
-- 🌐 **Support multi-domaines** (Tor, IP locales, domaines classiques)
+### Performance
 
+- 4x faster than the previous version
+- Messages 15% more compact
+- Optimized for mobile
+- Multi-domain support (Tor, local IPs, classic domains)
 
-### 📱 Interface Moderne
+### Modern Interface
 
-- 🎨 Design épuré et intuitif
-- 📱 Responsive (mobile, tablette, desktop)
--    Mode sombre par défaut
--    Indicateur "en train d'écrire"
-- 🔔 Notifications visuelles
+- Clean and intuitive design
+- Responsive (mobile, tablet, desktop)
+- Dark mode by default
+- "Typing" indicator
+- Visual notifications
 
-### 🌐 Multi-Instance
+### Multi-Instance
 
-Installez plusieurs instances sur le même serveur avec des configurations différentes.
+Install multiple instances on the same server with different configurations.
